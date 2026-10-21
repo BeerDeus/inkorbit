@@ -1,0 +1,16 @@
+/* Decks de la communauté (pubdecks.js) */
+.dk-build-sec{display:flex;flex-direction:column;gap:12px}
+.pub-tools{display:flex;flex-direction:column;gap:8px}
+.pub-tools .chip{padding:0 10px}
+.pub-sel{display:flex;gap:8px}
+.pub-sel .select{flex:1;min-width:0}
+.pub-zone{display:contents}
+.chip-mini{font-size:11px;font-weight:800;padding:2px 7px;border-radius:99px;background:var(--accent-soft);color:var(--ink-2)}
+.pub-desc{white-space:pre-wrap;color:var(--ink-2);font-style:italic}
+.pub-detail .grid-cards{grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.pub-report{align-self:center;color:var(--ink-3)}
+@media (min-width:1024px){
+  .pub-tools{flex-direction:row;align-items:center;justify-content:space-between}
+  .pub-sel .select{width:200px;flex:none}
+  .pub-detail .grid-cards{grid-template-columns:repeat(auto-fill,minmax(120px,1fr))}
+}

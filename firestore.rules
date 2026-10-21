@@ -1,5 +1,5 @@
 rules_version = '2';
-// Ink Orbit : un document de synchro par compte (src/cloud.js), lisible et modifiable par son seul propriétaire. Tout le reste est fermé.
+// Ink Orbit : un document de synchro par compte (src/cloud.js), lisible et modifiable par son seul propriétaire ; decks de la communauté (src/pubdecks.js). Tout le reste est fermé.
 // Publier : console Firebase › Firestore › Règles (coller ce fichier), ou « firebase deploy --only firestore:rules ». Testé par tests/rules-test.mjs.
 service cloud.firestore {
   match /databases/{db}/documents {
@@ -14,6 +14,43 @@ service cloud.firestore {
         && request.resource.data.decks is list && request.resource.data.decks.size() <= 500
         && request.resource.data.prefs is map
         && request.resource.data.dev is string && request.resource.data.dev.size() <= 20;
+    }
+    // Decks de la communauté (src/pubdecks.js) : lecture publique ; écriture par l'auteur seul, champs et tailles contrôlés ;
+    // « reports » : 0 à la création, jamais changé par l'auteur, +1 exactement par un autre compte qui crée son pubreports dans le même lot.
+    match /pubdecks/{id} {
+      function deck(d) {
+        return d.keys().hasOnly(['v', 'uid', 'author', 'name', 'desc', 'fmt', 'inks', 'cards', 'at', 'reports'])
+          && d.v == 1 && d.uid == request.auth.uid
+          && d.author is string && d.author.size() <= 30
+          && d.name is string && d.name.size() > 0 && d.name.size() <= 60
+          && d.desc is string && d.desc.size() <= 280
+          && d.fmt in ['core', 'infinity']
+          && d.inks is list && d.inks.size() <= 2
+          && d.cards is map && d.cards.size() > 0 && d.cards.size() <= 120
+          && d.at is int && d.reports is int;
+      }
+      function report() { return /databases/$(db)/documents/pubreports/$(id + '_' + request.auth.uid); }
+      allow read: if true;
+      allow create: if request.auth != null && deck(request.resource.data) && request.resource.data.reports == 0;
+      allow update: if request.auth != null && (
+        (resource.data.uid == request.auth.uid && deck(request.resource.data) && request.resource.data.reports == resource.data.reports)
+        || (request.resource.data.diff(resource.data).affectedKeys().hasOnly(['reports'])
+            && request.resource.data.reports == resource.data.reports + 1
+            && !exists(report()) && existsAfter(report())));
+      allow delete: if request.auth != null && resource.data.uid == request.auth.uid;
+    }
+    // Signalements : un par compte et par deck (identifiant <deck>_<uid>), créés seulement avec reports + 1 sur le deck ; jamais lus par l'appli.
+    match /pubreports/{rid} {
+      allow create: if request.auth != null
+        && request.resource.data.keys().hasOnly(['deck', 'uid', 'why', 'at'])
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.deck is string
+        && rid == request.resource.data.deck + '_' + request.auth.uid
+        && request.resource.data.why is string && request.resource.data.why.size() <= 20
+        && request.resource.data.at is int
+        && exists(/databases/$(db)/documents/pubdecks/$(request.resource.data.deck))
+        && getAfter(/databases/$(db)/documents/pubdecks/$(request.resource.data.deck)).data.reports
+           == get(/databases/$(db)/documents/pubdecks/$(request.resource.data.deck)).data.reports + 1;
     }
   }
 }

@@ -19,7 +19,7 @@ for (const f of (existsSync(I18N_DIR) ? readdirSync(I18N_DIR) : []).sort()) {
   Object.assign(i18nAll[m[1]] = i18nAll[m[1]] || {}, JSON.parse(readFileSync(join(I18N_DIR, f), 'utf8')));
 }
 // Ordre de chargement : core (logique pure, testable sous Node) d'abord, main (démarrage) à la fin.
-const JS = ['core.js', 'data.js', 'ui.js', 'motion.js', 'viewer.js', 'catalog.js', 'collection.js', 'value.js', 'trade.js', 'qr.js', 'binder.js', 'masterset.js', 'decks.js', 'scan.js', 'lore.js', 'mystery.js', 'cloud.js', 'badgeart.js', 'progress.js', 'home.js', 'settings.js', 'onboard.js', 'pwa.js', 'main.js'];
+const JS = ['core.js', 'data.js', 'ui.js', 'motion.js', 'viewer.js', 'catalog.js', 'collection.js', 'value.js', 'trade.js', 'qr.js', 'binder.js', 'masterset.js', 'decks.js', 'starters.js', 'pubdecks.js', 'scan.js', 'lore.js', 'mystery.js', 'cloud.js', 'badgeart.js', 'progress.js', 'home.js', 'settings.js', 'onboard.js', 'pwa.js', 'main.js'];
 const js = JS.filter(f => existsSync(join(root, 'src', f))).map(rd).join('\n\n').replace(/<\/script/gi, '<\\/script').trim();
 { const seen = new Set(), dup = []; for (const m of js.matchAll(/^(?:async )?function\*? ?([A-Za-z0-9_$]+)\s*\(/gm)) { if (seen.has(m[1])) dup.push(m[1]); seen.add(m[1]); } if (dup.length) { console.error('Fonctions déclarées deux fois (la 2e remplace la 1re) : ' + dup.join(', ')); process.exit(1); } }
 const i18nTags = Object.keys(i18nAll).sort().map(c => `<script type="application/json" id="i18n-${c}">${JSON.stringify(i18nAll[c]).replace(/</g, '\\u003c')}</script>`).join('\n');

@@ -21,6 +21,9 @@ jobs:
           node-version: 22
       - name: Catalogue
         run: node gen-cards.mjs
+      - name: Decks de démarrage
+        continue-on-error: true
+        run: node gen-starters.mjs
       - name: Prix
         continue-on-error: true
         run: node gen-prices.mjs

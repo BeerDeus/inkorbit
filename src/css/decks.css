@@ -88,3 +88,4 @@
   .dk-pane .dk-grid{grid-template-columns:repeat(auto-fill,minmax(130px,1fr))}
   .dk-card-open:hover{background:var(--surface-2)}
 }
+.dk-vtabs{margin-top:-4px}

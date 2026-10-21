@@ -43,7 +43,7 @@ const deckFromParsed = parsed => { const d = {}; for (const [c, n] of parsed.car
 if (typeof module !== 'undefined' && module.exports) module.exports = { deckNameKey, deckCurve, deckCanAdd, deckValue, deckCover, deckFromParsed };
 
 /* ── Interface ────────────────────────────────────────────────────────────────────────────────── */
-const DK = { list: null, el: null, ed: null };
+const DK = { list: null, el: null, ed: null, tab: '' };      // tab : onglet (Mes decks | À monter), lu dans dkListPaint
 const dkList = () => DK.list || (DK.list = load('decks', []));
 function dkSave() { save('decks', dkList()); }
 const dkFind = id => dkList().find(d => d.id === id);
@@ -77,7 +77,15 @@ function dkListPaint() {
       <button type="button" class="btn-icon dk-more" data-dk-more="${esc(d.id)}" aria-label="${esc(T('Actions du deck {name}', { name: d.name }))}"><svg class="i"><use href="#i-more"/></svg></button>
     </article>`;
   }).join('');
-  el.innerHTML = `<div class="dk-top"><h1 class="da-title">${esc(T('Mes decks'))}</h1><span class="muted small">${esc(TN(list.length, '{n} deck', '{n} decks'))}</span></div>
+  if (!DK.tab) DK.tab = load('dkTab', 'mine');
+  const tabs = `<div class="tabs dk-vtabs" role="tablist">${[['mine', T('Mes decks')], ['build', T('À monter')]].map(([k, l]) => `<button type="button" role="tab" data-dk-tab="${k}" aria-selected="${DK.tab === k}">${esc(l)}</button>`).join('')}</div>`;
+  if (DK.tab === 'build') {      // « À monter » : decks de démarrage officiels (starters.js) et decks publiés par la communauté (pubdecks.js)
+    el.innerHTML = `<div class="dk-top"><h1 class="da-title">${esc(T('Decks'))}</h1></div>${tabs}<section class="dk-build-sec" data-starters></section><section class="dk-build-sec" data-pub></section>`;
+    if (typeof starterMount === 'function') starterMount($('[data-starters]', el));
+    if (typeof pubMount === 'function') pubMount($('[data-pub]', el));
+    return;
+  }
+  el.innerHTML = `<div class="dk-top"><h1 class="da-title">${esc(T('Decks'))}</h1><span class="muted small">${esc(TN(list.length, '{n} deck', '{n} decks'))}</span></div>${tabs}
     <div class="btn-row"><button type="button" class="btn btn-primary" data-dk-new><svg class="i"><use href="#i-plus"/></svg>${esc(T('Nouveau deck'))}</button>
     <button type="button" class="btn" data-dk-import><svg class="i"><use href="#i-upload"/></svg>${esc(T('Importer une liste'))}</button>
     <button type="button" class="btn btn-ghost" data-dk-price><svg class="i"><use href="#i-chart"/></svg>${esc(T('Prix d\'une liste'))}</button></div>
@@ -91,6 +99,7 @@ function dkMount(el) {
   DK.el = el;
   el.addEventListener('click', e => {
     const t = e.target;
+    const tb = t.closest('[data-dk-tab]'); if (tb) { DK.tab = tb.dataset.dkTab; save('dkTab', DK.tab); dkListPaint(); return; }
     if (t.closest('[data-dk-new]')) { dkNameSheet(T('Nouveau deck'), '', name => dkOpen(dkCreate(name).id)); return; }
     if (t.closest('[data-dk-import]')) { dkImportSheet(); return; }
     if (t.closest('[data-dk-price]')) { dkPriceSheet(); return; }
@@ -232,7 +241,7 @@ function dkDeckPaint(st) {
     <div class="dk-lines" data-cards>${groups.map(g => `<h4 class="dk-gh">${esc(label(g.k))} <span class="muted num">${g.ids.reduce((a, id) => a + d.cards[id], 0)}</span></h4>${g.ids.map(id => dkLine(byId.get(id), d.cards[id], (own.get(id) || { n: 0 }).n, cur, d)).join('')}`).join('')}</div>
     ${missN ? `<div class="panel dk-miss"><p><b>${esc(TN(missN, '{n} carte manque à ta collection', '{n} cartes manquent à ta collection'))}</b></p>
       <button type="button" class="btn${wantsOk ? '' : ' btn-primary'}" data-wants ${wantsOk ? 'disabled' : ''}><svg class="i"><use href="#i-heart"/></svg>${esc(wantsOk ? T('Déjà dans mes recherches') : TN(missN, 'Ajouter la manquante à mes recherches', 'Ajouter les {n} manquantes à mes recherches'))}</button></div>` : ''}
-    <div class="btn-row"><button type="button" class="btn" data-export><svg class="i"><use href="#i-share"/></svg>${esc(T('Exporter la liste'))}</button><button type="button" class="btn btn-ghost" data-rename><svg class="i"><use href="#i-edit"/></svg>${esc(T('Renommer'))}</button></div>`;
+    <div class="btn-row">${typeof pubDeckButtonHtml === 'function' ? pubDeckButtonHtml(d) : ''}<button type="button" class="btn" data-export><svg class="i"><use href="#i-share"/></svg>${esc(T('Exporter la liste'))}</button><button type="button" class="btn btn-ghost" data-rename><svg class="i"><use href="#i-edit"/></svg>${esc(T('Renommer'))}</button></div>`;
 }
 function dkLine(c, n, have, cur, d) {
   const short = Math.max(0, n - have), can = deckCanAdd(d.cards, CARDS.byId, c), p = cardPrice(c, false);

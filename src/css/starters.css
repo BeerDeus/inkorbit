@@ -1,0 +1,12 @@
+/* Decks de démarrage (starters.js) : réutilise les cartes de deck de decks.css (.dk-card…). */
+.dk-build-sec{display:flex;flex-direction:column;gap:12px}
+.st-tools{display:flex;flex-direction:column;gap:10px}
+.st-tools .chip{padding:0 10px}
+.st-bar{display:block;height:6px;border-radius:99px;background:var(--surface-2);overflow:hidden;max-width:220px}
+.st-bar i{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,var(--gold-2),var(--gold))}
+.st-host{display:flex;flex-direction:column;gap:12px}
+.st-host .dk-inks{display:inline-flex;vertical-align:middle}
+@media (min-width:1024px){
+  .st-tools{flex-direction:row;align-items:center;justify-content:space-between}
+  .st-tools .seg{flex:none}
+}
