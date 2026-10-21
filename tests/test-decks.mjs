@@ -8,7 +8,7 @@ Object.assign(globalThis, core, { DECK_MIN: 60, DECK_COPIES: 4, DECK_INKS: 2 });
 const dk = require('../src/decks.js');
 
 // Petit catalogue : Elsa (Améthyste, 2 impressions : base + Enchantée), Ariel (Ambre), Stitch (Ambre-Acier), Chiot (Ambre, 99 exemplaires permis), Gaston (Rubis).
-const mk = (id, name, ver, ink, cost, o = {}) => ({ id, set: '1', num: String(id), name, ver, nameEn: name, verEn: ver, ink, cost, inkwell: o.inkwell ?? true, type: o.type ?? 0, rar: o.rar ?? 0, max: o.max || 0 });
+const mk = (id, name, ver, ink, cost, o = {}) => ({ core: true, id, set: '1', num: String(id), name, ver, nameEn: name, verEn: ver, ink, cost, inkwell: o.inkwell ?? true, type: o.type ?? 0, rar: o.rar ?? 0, max: o.max || 0 });
 const cards = [mk(1, 'Elsa', 'Snow Queen', 2, 4), mk(2, 'Ariel', 'On Human Legs', 1, 4, { inkwell: false }), mk(3, 'Stitch', 'Rock Star', 1 | 32, 6, { type: 1 }),
   mk(4, 'Dalmatian Puppy', 'Tail Wagger', 1, 1, { max: 99 }), mk(5, 'Gaston', 'Baritone Bully', 8, 9, { type: 2 }), mk(6, 'Elsa', 'Snow Queen', 2, 4, { rar: 6 })];
 const byId = new Map(cards.map(c => [c.id, c]));

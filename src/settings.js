@@ -15,7 +15,7 @@ onAct('about', openAbout);
 function openSettings() {
   const p = prefs(), seg = (k, opts) => `<div class="seg" role="group" data-pref="${k}">${opts.map(([v, l]) => `<button type="button" data-v="${v}" aria-pressed="${String(p[k]) === String(v)}">${esc(l)}</button>`).join('')}</div>`;
   const inst = typeof PWA !== 'undefined' ? PWA.state() : 'manual';
-  const el = openSheet({ title: T('Réglages'), cls: 'settings-sheet', html: `<div class="acct-host">${cloudAccountHtml()}</div>
+  const el = openSheet({ title: T('Réglages'), cls: 'settings-sheet', html: `<div class="acct-host">${cloudAccountHtml()}</div>${typeof prgRowHtml === 'function' ? `<div class="list">${prgRowHtml()}</div>` : ''}
     <div class="field"><span class="label">${esc(T('Langue de l\'appli'))}</span><select class="select" data-ui>${i18nLangs().map(([c, n]) => `<option value="${c}"${c === I18N.lang ? ' selected' : ''}>${esc(n)}</option>`).join('')}</select></div>
     <div class="field"><span class="label">${esc(T('Langue des cartes'))}</span><select class="select" data-clang>${IO_LANGS.map(l => `<option value="${l}"${l === p.clang ? ' selected' : ''}>${esc(I18N_LANGS[l])}</option>`).join('')}</select><span class="muted small">${esc(T('Noms et recherche. Les images restent en anglais.'))}</span></div>
     <div class="field"><span class="label">${esc(T('Devise des prix'))}</span>${seg('cur', [['EUR', T('Euro (Cardmarket)')], ['USD', T('Dollar (TCGplayer)')]])}</div>
@@ -23,6 +23,7 @@ function openSettings() {
     <div class="da-rule"><span>${esc(T('Sauvegarde'))}</span></div>
     <p class="muted small">${esc(T('Tes données restent sur cet appareil. Exporte une sauvegarde pour les retrouver sur un autre téléphone ou après avoir vidé le navigateur.'))}</p>
     <div class="btn-row"><button type="button" class="btn" data-backup><svg class="i"><use href="#i-download"/></svg>${esc(T('Exporter'))}</button><label class="btn"><svg class="i"><use href="#i-upload"/></svg>${esc(T('Restaurer'))}<input type="file" accept=".json,application/json" data-restore hidden></label></div>
+    <label class="switch"><input type="checkbox" data-warm${p.warm === false ? '' : ' checked'}><span>${esc(T('Précharger les images en Wi-Fi'))}<br><small class="muted">${esc(T('Les vignettes de ta collection restent visibles hors ligne.'))}</small></span></label>
     ${inst === 'ready' || inst === 'ios' ? `<div class="da-rule"><span>${esc(T('Appli'))}</span></div><button type="button" class="btn btn-primary" data-install>${esc(T('Installer Ink Orbit'))}</button>${inst === 'ios' ? `<p class="muted small">${esc(T('Sur iPhone : bouton Partager, puis « Sur l\'écran d\'accueil ».'))}</p>` : ''}` : ''}
     <div class="list"><button type="button" class="row" data-act="about"><svg class="i"><use href="#i-info"/></svg><span class="row-main"><span class="row-title">${esc(T('À propos et mentions'))}</span><span class="row-sub">${esc(T('Version {v}', { v: typeof IO_BUILD !== 'undefined' ? IO_BUILD : 'dev' }))}</span></span><svg class="i"><use href="#i-chev"/></svg></button></div>` });
   const repaint = () => { const h = $('.acct-host', el); if (h) h.innerHTML = cloudAccountHtml(); };
@@ -35,13 +36,14 @@ function openSettings() {
     if (e.target.closest('[data-install]')) PWA.install();
   });
   el.addEventListener('change', async e => {
+    if (e.target.matches('[data-warm]')) { setPref('warm', e.target.checked); return; }
     if (e.target.matches('[data-ui]')) { try { localStorage.setItem('inkorbit:lang', e.target.value); } catch (err) { /* ignore */ } location.reload(); }
     if (e.target.matches('[data-clang]')) { setPref('clang', e.target.value); location.reload(); }
     if (e.target.matches('[data-restore]')) {
       const f = e.target.files[0]; if (!f) return;
       try {
         const j = JSON.parse(await f.text()); if (j.app !== 'ink-orbit' || !j.data) throw new Error('format');
-        if (!confirm(T('Remplacer les données de cet appareil par cette sauvegarde du {d} ?', { d: new Date(j.at).toLocaleDateString(LOC()) }))) return;
+        if (!(await askSheet({ title: T('Restaurer la sauvegarde ?'), text: T('Remplacer les données de cet appareil par cette sauvegarde du {d} ?', { d: new Date(j.at).toLocaleDateString(LOC()) }), ok: T('Restaurer'), danger: true }))) return;
         for (const k of BACKUP_KEYS) if (k in j.data) save(k, j.data[k]);
         location.reload();
       } catch (err) { toast(T('Ce fichier n\'est pas une sauvegarde Ink Orbit.')); }

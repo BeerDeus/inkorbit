@@ -2,9 +2,12 @@
    Sans compte (ou hors ligne, ou SDK bloqué), l'appli reste entièrement utilisable : les données vivent dans localStorage (data.js › load / save).
    Connecté : un seul document par compte, users/{uid}/data/main = { v, coll, wants, hold, decks, prefs, at, dev } (≈ 40 Ko pour 3 000 lignes,
    loin de la limite de 1 Mo), écouté en temps réel. Une écriture locale (save d'une clé de SYNC_KEYS) le réécrit 2 s plus tard.
-   Conflits : document plus récent que la dernière synchro ET modifications locales pas encore envoyées (deux appareils hors ligne, ou premier
+   Document reçu : appliqué dès que ce n'est pas l'écho de notre propre écriture (même appareil ET même date d'écriture), jamais en comparant les
+   horloges de deux appareils (l'une peut avancer). Conflits : modifications locales pas encore envoyées (deux appareils hors ligne, ou premier
    branchement d'un appareil qui avait déjà des cartes) → fusion : quantité la plus haute par ligne, souhaits et cartes gardées réunis, decks par
-   identifiant (le plus récent gagne). ponytail: fusion au maximum, une carte retirée sur un appareil revient si l'autre l'avait encore ; journal par ligne si ça gêne. */
+   identifiant (le plus récent gagne). ponytail: fusion au maximum, une carte retirée sur un appareil revient si l'autre l'avait encore ; journal par ligne si ça gêne.
+   Propriétaire des données de l'appareil (sync.owner) : le dernier compte synchronisé. Un autre compte qui se connecte sur un appareil plein de cartes
+   choisit : les ajouter à son compte, ou non (elles sont mises de côté, save('aside'), récupérables une fois depuis Mon compte). */
 const FIREBASE_CONFIG = {
   apiKey: 'AIzaSyAku2ruPpaR5YQu44gUX0dBKzJ2vhqc91g',
   authDomain: 'ink-orbit.firebaseapp.com',
@@ -18,8 +21,9 @@ const SYNC_KEYS = ['coll', 'wants', 'hold', 'decks', 'prefs'];
 const SYNC_PREFS = ['cur', 'keep', 'name', 'clang'];      // réglages suivis d'un appareil à l'autre (le thème reste propre à l'appareil)
 const CLOUD = { m: null, auth: null, db: null, user: null, state: 'off', unsub: null, t: 0, applying: false, subs: new Set(), wait: null,
   dev: load('dev', '') || (() => { const d = Math.random().toString(36).slice(2, 10); save('dev', d); return d; })() };
-/** Synchro : { uid, at (date du document appliqué ou envoyé), dirty (modifications locales à envoyer) }, gardée sur l'appareil. */
-const syncMeta = () => load('sync', {});
+/** Synchro : { uid (compte connecté), owner (compte à qui sont les données de l'appareil), at (date d'écriture du dernier document appliqué ou envoyé),
+ *  dirty (modifications locales à envoyer) }, gardée sur l'appareil. owner absent (version d'avant) : uid. */
+const syncMeta = () => { const s = load('sync', {}); return { ...s, owner: s.owner ?? s.uid ?? '' }; };
 const setSync = o => save('sync', { ...syncMeta(), ...o });
 const cloudEmit = () => { for (const f of CLOUD.subs) { try { f(); } catch (e) { console.error(e); } } };
 const onCloud = f => CLOUD.subs.add(f);
@@ -67,14 +71,34 @@ async function signEmail(mode, email, pass) {
   if (mode === 'new') { const r = await auth.createUserWithEmailAndPassword(CLOUD.auth, email, pass); auth.sendEmailVerification(r.user).catch(() => {}); return; }
   await auth.signInWithEmailAndPassword(CLOUD.auth, email, pass);
 }
-async function signOut() { if (CLOUD.dirtyT) await cloudPush(); if (CLOUD.m) await CLOUD.m.auth.signOut(CLOUD.auth); setSync({ uid: '', at: 0, dirty: false }); }
-/** Supprimer le compte : le document de synchro puis le compte ; les données restent sur cet appareil. */
-async function deleteAccount() {
+/** Coupe l'écoute du document et l'envoi prévu (avant une déconnexion ou une suppression : rien ne doit le réécrire). */
+function cloudStop() { if (CLOUD.unsub) { CLOUD.unsub(); CLOUD.unsub = null; } clearTimeout(CLOUD.dirtyT); CLOUD.dirtyT = 0; }
+const EMPTY_DOC = { coll: {}, wants: {}, hold: {}, decks: [] };
+/** Déconnexion. wipe : effacer aussi cartes, souhaits et decks de cet appareil (appareil prêté ou partagé ; ils restent dans le compte). */
+async function signOut(wipe = false) {
+  if (CLOUD.dirtyT) await cloudPush();
+  cloudStop();
+  if (CLOUD.m) await CLOUD.m.auth.signOut(CLOUD.auth);
+  setSync({ uid: '', at: 0, dirty: false, ...(wipe ? { owner: '' } : {}) });
+  if (wipe) applyDoc(EMPTY_DOC);
+}
+/** Firebase n'accepte la suppression qu'après une connexion récente (≈ 5 min) : on la refait d'abord (mot de passe, ou fenêtre Google). */
+async function reauth(u, pass) {
+  const { auth } = CLOUD.m;
+  if (u.providerData.some(p => p.providerId === 'password')) { await auth.reauthenticateWithCredential(u, auth.EmailAuthProvider.credential(u.email, pass || '')); return; }
+  if (Date.now() - Date.parse(u.metadata.lastSignInTime || 0) > 4 * 60e3) await auth.reauthenticateWithPopup(u, new auth.GoogleAuthProvider());
+}
+/** Supprimer le compte : reconnexion, écoute coupée, document puis compte ; si le compte résiste, le document est remis (rien de perdu).
+ *  Les données restent sur cet appareil, sans propriétaire. */
+async function deleteAccount(pass) {
   const u = CLOUD.user; if (!u) return;
-  const { fs } = CLOUD.m;
-  await fs.deleteDoc(fs.doc(CLOUD.db, 'users', u.uid, 'data', 'main'));
-  await u.delete();
-  setSync({ uid: '', at: 0, dirty: false });
+  const { fs } = CLOUD.m, ref = fs.doc(CLOUD.db, 'users', u.uid, 'data', 'main');
+  await reauth(u, pass);
+  cloudStop();
+  await fs.deleteDoc(ref);
+  try { await u.delete(); }
+  catch (e) { await fs.setDoc(ref, { ...localDoc(), at: Date.now(), dev: CLOUD.dev }).catch(() => {}); cloudUser(u); throw e; }
+  setSync({ uid: '', owner: '', at: 0, dirty: false });
 }
 
 /* ── Synchro ─────────────────────────────────────────────────────────────────────────────────── */
@@ -84,6 +108,7 @@ function localDoc() {
 }
 /** Applique un document à l'appareil sans le renvoyer (clés locales, mémoire des modules, écrans). */
 function applyDoc(d) {
+  const clang = load('prefs', {}).clang;
   CLOUD.applying = true;
   try {
     save('coll', d.coll || {}); save('wants', d.wants || {}); save('hold', d.hold || {}); save('decks', d.decks || []);
@@ -93,6 +118,8 @@ function applyDoc(d) {
     collSave();
     if (typeof dkListPaint === 'function' && curView() === 'decks') dkListPaint();
   } finally { CLOUD.applying = false; }
+  const nl = load('prefs', {}).clang;      // langue des cartes changée sur un autre appareil : le catalogue chargé est encore dans l'ancienne
+  if (nl && nl !== clang && typeof CARDS !== 'undefined' && CARDS.ready && CARDS.lang !== nl) toast(T('Langue des cartes changée sur un autre appareil.'), { action: T('Recharger'), onAction: () => location.reload() });
 }
 /** Appelée par data.js › save : une clé suivie a changé sur cet appareil. */
 function cloudTouch(k) {
@@ -103,28 +130,66 @@ function cloudTouch(k) {
 async function cloudPush() {
   clearTimeout(CLOUD.dirtyT); CLOUD.dirtyT = 0;
   const u = CLOUD.user; if (!u || !CLOUD.m) return;
-  const { fs } = CLOUD.m, at = Date.now();
+  const { fs } = CLOUD.m, at = Date.now(); CLOUD.wrote = at;      // écho reconnu même si le serveur répond avant la fin de setDoc
   CLOUD.state = 'saving'; cloudEmit();
-  try { await fs.setDoc(fs.doc(CLOUD.db, 'users', u.uid, 'data', 'main'), { ...localDoc(), at, dev: CLOUD.dev }); setSync({ uid: u.uid, at, dirty: false }); CLOUD.state = 'ok'; }
+  try { await fs.setDoc(fs.doc(CLOUD.db, 'users', u.uid, 'data', 'main'), { ...localDoc(), at, dev: CLOUD.dev }); setSync({ uid: u.uid, owner: u.uid, at, dirty: false }); CLOUD.state = 'ok'; }
   catch (e) { CLOUD.state = 'error'; console.warn('Synchro :', e && e.code); }
   cloudEmit();
 }
-/** Document reçu (ouverture de la session, ou changement venu d'un autre appareil). */
+/** Document reçu (ouverture de la session, ou changement venu d'un autre appareil) ; d : null pour un compte sans document. */
 async function cloudRemote(d, uid) {
+  if (CLOUD.asking) { CLOUD.pending = [d, uid]; return; }                                    // question en cours : on reprendra avec le dernier document
   const s = syncMeta(), local = localDoc();
-  if (!d) { await cloudPush(); return; }                                                     // compte neuf : l'appareil l'initialise
-  if (d.dev === CLOUD.dev && d.at <= (s.at || 0)) return;                                    // écho de notre propre écriture
+  if (d && d.dev === CLOUD.dev && (d.at === s.at || d.at === CLOUD.wrote) && s.uid === uid) { CLOUD.state = 'ok'; cloudEmit(); return; }      // écho de notre propre écriture
   const fresh = s.uid !== uid;                                                                // premier branchement de cet appareil sur ce compte
-  if ((fresh || s.dirty) && hasData(local)) {
-    const m = mergeDocs(local, d); applyDoc(m); setSync({ uid, at: d.at, dirty: true }); await cloudPush();
-    if (fresh) toast(T('Les cartes de cet appareil ont été ajoutées à ton compte.'));
-    return;
-  }
-  if (d.at > (s.at || 0) || fresh) { applyDoc(d); setSync({ uid, at: d.at, dirty: false }); }
+  if (fresh && hasData(local) && s.owner && s.owner !== uid) {                                // cartes d'un autre compte sur cet appareil
+    CLOUD.asking = true;
+    let add = false;
+    try { add = await askAddLocal(); } finally { CLOUD.asking = false; }
+    if (add) await cloudMerge(d, uid, true);
+    else {
+      save('aside', { at: Date.now(), owner: s.owner, ...local });
+      applyDoc(d || EMPTY_DOC); setSync({ uid, owner: uid, at: d ? d.at : 0, dirty: !d });
+      if (!d) await cloudPush();
+    }
+  } else if (!d && !fresh && s.at) {                                                          // document effacé : compte supprimé depuis un autre appareil
+    cloudStop(); setSync({ uid: '', owner: '', at: 0, dirty: false }); await CLOUD.m.auth.signOut(CLOUD.auth);
+    toast(T('Ce compte a été supprimé depuis un autre appareil. Tes cartes restent sur celui-ci.')); return;
+  } else if (!d) { setSync({ uid, owner: uid, dirty: true }); await cloudPush(); }        // compte neuf : l'appareil l'initialise
+  else if ((fresh || s.dirty) && hasData(local)) await cloudMerge(d, uid, fresh);
+  else { applyDoc(d); setSync({ uid, owner: uid, at: d.at, dirty: false }); }
   CLOUD.state = 'ok'; cloudEmit();
+  if (CLOUD.pending) { const [pd, pu] = CLOUD.pending; CLOUD.pending = null; if (CLOUD.user && pu === CLOUD.user.uid) await cloudRemote(pd, pu); }
+}
+/** Fusion du document reçu et de l'appareil, renvoyée au compte. */
+async function cloudMerge(d, uid, fresh) {
+  applyDoc(d ? mergeDocs(localDoc(), d) : localDoc()); setSync({ uid, owner: uid, at: d ? d.at : 0, dirty: true }); await cloudPush();
+  if (fresh) toast(T('Les cartes de cet appareil ont été ajoutées à ton compte.'));
+}
+/** Feuille de choix ; se ferme sur le choix ; fermée sans choisir : null. actions : [[clé, libellé, classe]]. */
+function choiceSheet({ title, text, actions }) {
+  return new Promise(res => {
+    let done = false;
+    const el = openSheet({ title, cls: 'choice-sheet', onClose: () => { if (!done) res(null); },
+      html: `<p>${esc(text)}</p><div class="btn-row">${actions.map(([k, l, cls]) => `<button type="button" class="btn ${cls || ''}" data-c="${k}">${esc(l)}</button>`).join('')}</div>` });
+    el.addEventListener('click', e => { const b = e.target.closest('[data-c]'); if (!b) return; done = true; res(b.dataset.c); el.close(); });
+  });
+}
+/** Un autre compte se connecte sur un appareil qui a des cartes : les ajouter à ce compte ? Fermée sans choisir = non (mises de côté, rien de perdu). */
+async function askAddLocal() {
+  const n = Object.values(load('coll', {})).reduce((a, b) => a + b, 0);
+  return (await choiceSheet({ title: T('Ajouter les cartes de cet appareil à ce compte ?'),
+    text: TN(n, 'Cet appareil a {n} carte d\'un autre compte. Non : elle est mise de côté, tu pourras la récupérer depuis Mon compte.', 'Cet appareil a {n} cartes d\'un autre compte. Non : elles sont mises de côté, tu pourras les récupérer depuis Mon compte.'),
+    actions: [['add', T('Ajouter'), 'btn-primary'], ['no', T('Non')]] })) === 'add';
+}
+/** Récupère une fois les cartes mises de côté (askAddLocal) dans le compte connecté. */
+async function takeAside() {
+  const a = load('aside', null); if (!a) return;
+  applyDoc(mergeDocs(localDoc(), a)); save('aside', null);
+  if (CLOUD.user) { setSync({ dirty: true }); await cloudPush(); }
 }
 function cloudUser(u) {
-  if (CLOUD.unsub) { CLOUD.unsub(); CLOUD.unsub = null; }
+  cloudStop();
   CLOUD.user = u || null; CLOUD.state = u ? 'loading' : 'off'; save('authRedirect', 0); cloudEmit();
   if (!u) return;
   const { fs } = CLOUD.m;
@@ -186,7 +251,8 @@ function openAccount() {
     ${u.email && !u.emailVerified && u.providerData.some(p => p.providerId === 'password') ? `<p class="muted small">${esc(T('Adresse pas encore confirmée.'))} <button type="button" class="link" data-a="verify">${esc(T('Renvoyer l\'e-mail'))}</button></p>` : ''}
     <div class="list">
       <button type="button" class="row" data-a="sync"><svg class="i"><use href="#i-refresh"/></svg><span class="row-main"><span class="row-title">${esc(T('Synchroniser maintenant'))}</span></span></button>
-      <button type="button" class="row" data-a="out"><svg class="i"><use href="#i-back"/></svg><span class="row-main"><span class="row-title">${esc(T('Se déconnecter'))}</span><span class="row-sub">${esc(T('Tes cartes restent aussi sur cet appareil'))}</span></span></button>
+      ${load('aside', null) ? `<button type="button" class="row" data-a="aside"><svg class="i"><use href="#i-download"/></svg><span class="row-main"><span class="row-title">${esc(T('Récupérer les cartes mises de côté'))}</span><span class="row-sub">${esc(T('Celles d\'un autre compte, gardées sur cet appareil'))}</span></span></button>` : ''}
+      <button type="button" class="row" data-a="out"><svg class="i"><use href="#i-back"/></svg><span class="row-main"><span class="row-title">${esc(T('Se déconnecter'))}</span><span class="row-sub">${esc(T('Tu choisis de garder tes cartes ici ou de les effacer'))}</span></span></button>
       <button type="button" class="row" data-a="del"><svg class="i"><use href="#i-trash"/></svg><span class="row-main"><span class="row-title bad">${esc(T('Supprimer mon compte'))}</span><span class="row-sub">${esc(T('Efface le compte et sa copie en ligne'))}</span></span></button>
     </div>` });
   el.addEventListener('click', async e => {
@@ -194,8 +260,28 @@ function openAccount() {
     try {
       if (a.dataset.a === 'sync') { await cloudPush(); toast(T('Synchronisé')); }
       else if (a.dataset.a === 'verify') { await CLOUD.m.auth.sendEmailVerification(u); toast(T('E-mail envoyé')); }
-      else if (a.dataset.a === 'out') { await signOut(); el.close(); toast(T('Déconnecté')); }
-      else if (a.dataset.a === 'del' && confirm(T('Supprimer définitivement ton compte et sa copie en ligne ? Les données de cet appareil sont gardées.'))) { await deleteAccount(); el.close(); toast(T('Compte supprimé')); }
+      else if (a.dataset.a === 'aside') { await takeAside(); el.close(); toast(T('Cartes récupérées')); }
+      else if (a.dataset.a === 'out') {
+        const c = await choiceSheet({ title: T('Se déconnecter'), text: T('Tes cartes restent dans ton compte. Sur cet appareil :'), actions: [['keep', T('Garder mes cartes sur cet appareil'), 'btn-primary'], ['wipe', T('Effacer de cet appareil'), 'btn-danger']] });
+        if (!c) return;
+        await signOut(c === 'wipe'); el.close(); toast(c === 'wipe' ? T('Déconnecté, cartes effacées de cet appareil') : T('Déconnecté'));
+      }
+      else if (a.dataset.a === 'del') { el.close(); openDeleteAccount(); }
     } catch (x) { const m = authMessage(x); if (m) toast(m); }
+  });
+}
+/** Suppression du compte : feuille de confirmation (mot de passe redemandé pour un compte e-mail). */
+function openDeleteAccount() {
+  const u = CLOUD.user; if (!u) return;
+  const pw = u.providerData.some(p => p.providerId === 'password');
+  const el = openSheet({ title: T('Supprimer mon compte'), cls: 'del-sheet', html: `<p>${esc(T('Supprimer définitivement ton compte et sa copie en ligne ? Les données de cet appareil sont gardées.'))}</p>
+    ${pw ? `<div class="field"><label for="delPass">${esc(T('Mot de passe'))}</label><input id="delPass" class="input" type="password" autocomplete="current-password" autofocus></div>` : ''}
+    <p class="bad small" data-err role="alert"></p>
+    <div class="btn-row"><button type="button" class="btn btn-danger" data-go>${esc(T('Supprimer mon compte'))}</button><button type="button" class="btn btn-ghost" data-close>${esc(T('Annuler'))}</button></div>` });
+  const go = $('[data-go]', el), err = $('[data-err]', el);
+  go.addEventListener('click', async () => {
+    go.disabled = true; err.textContent = '';
+    try { await deleteAccount(pw ? $('#delPass', el).value : ''); el.close(); toast(T('Compte supprimé')); }
+    catch (x) { err.textContent = authMessage(x) || ''; go.disabled = false; }
   });
 }

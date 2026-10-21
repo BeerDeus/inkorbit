@@ -63,7 +63,7 @@ function dkListPaint() {
   if (!CARDS.ready) { el.innerHTML = `<div class="sk" style="height:120px"></div><div class="sk" style="height:120px"></div>`; return; }
   const list = dkList(), cur = dkCur();
   const cardsHtml = list.map(d => {
-    const chk = deckCheck(d.cards, CARDS.byId), v = deckValue(d.cards, CARDS.byId, PRICES.p, cur, COLL.map), cover = deckCover(d.cards, CARDS.byId, PRICES.p, cur);
+    const chk = deckCheck(d.cards, CARDS.byId, d.fmt), v = deckValue(d.cards, CARDS.byId, PRICES.p, cur, COLL.map), cover = deckCover(d.cards, CARDS.byId, PRICES.p, cur);
     const img = cover && cardImg(cover, 'normal');
     return `<article class="dk-card" data-deck="${esc(d.id)}">
       <button type="button" class="dk-card-open" data-dk-open="${esc(d.id)}" aria-label="${esc(T('Ouvrir le deck {name}', { name: d.name }))}">
@@ -203,13 +203,14 @@ function dkOpen(id) {
 }
 /** Bandeau : total, encres, valeur, règles. */
 function dkHeadPaint(st) {
-  const d = st.d, chk = deckCheck(d.cards, CARDS.byId), cur = dkCur(), v = deckValue(d.cards, CARDS.byId, PRICES.p, cur, COLL.map);
+  const d = st.d, chk = deckCheck(d.cards, CARDS.byId, d.fmt), cur = dkCur(), v = deckValue(d.cards, CARDS.byId, PRICES.p, cur, COLL.map);
   $('.dk-head', st.el).innerHTML = `<div class="dk-head-row">
       <div class="dk-count${chk.total >= DECK_MIN ? ' ok' : ''}"><b class="num">${chk.total}</b><span>/60</span></div>
       <div class="dk-inks">${dkInkPips(chk.inks) || `<span class="muted small">${esc(T('Aucune encre'))}</span>`}</div>
       <div class="dk-val"><b class="num">${fmtMoney(v.value, cur)}</b>${v.missing ? `<span class="muted small">${esc(T('manque {v}', { v: fmtMoney(v.missingValue, cur) }))}</span>` : ''}</div>
     </div>
-    ${chk.ok ? `<p class="dk-ok"><svg class="i"><use href="#i-check"/></svg>${esc(T('Deck valide (format Core)'))}</p>` : `<ul class="dk-problems">${chk.problems.map(p => `<li>${esc(p)}</li>`).join('')}</ul>`}`;
+    <div class="seg dk-fmt" role="group" aria-label="${esc(T('Format'))}">${[['core', 'Core'], ['infinity', 'Infinity']].map(([k, l]) => `<button type="button" data-fmt="${k}" aria-pressed="${(d.fmt || 'core') === k}">${l}</button>`).join('')}</div>
+    ${chk.ok ? `<p class="dk-ok"><svg class="i"><use href="#i-check"/></svg>${esc(T('Deck valide (format {f})', { f: d.fmt === 'infinity' ? 'Infinity' : 'Core' }))}</p>` : `<ul class="dk-problems">${chk.problems.map(p => `<li>${esc(p)}</li>`).join('')}</ul>`}`;
 }
 /** Volet « Deck » : stats, cartes groupées, manquantes, actions. */
 function dkDeckPaint(st) {
@@ -242,7 +243,7 @@ function dkLine(c, n, have, cur, d) {
 }
 /** Volets « Ajouter » (tout le catalogue) et « Collection » (mes cartes) : filtres + grille. */
 function dkSearchPaint(st, kind) {
-  const pane = $(`[data-pane="${kind}"]`, st.el), d = st.d, chk = deckCheck(d.cards, CARDS.byId), lock = chk.inks.length === DECK_INKS ? chk.inks : null;
+  const pane = $(`[data-pane="${kind}"]`, st.el), d = st.d, chk = deckCheck(d.cards, CARDS.byId, d.fmt), lock = chk.inks.length === DECK_INKS ? chk.inks : null;
   const fBox = $('.dk-filters', pane);
   if (!fBox.dataset.ok) {
     fBox.dataset.ok = '1';
@@ -280,6 +281,7 @@ function dkEdClick(st, e) {
     if (st.tab !== 'deck') dkSearchPaint(st, st.tab); else if (matchMedia('(min-width:1024px)').matches) dkSearchPaint(st, 'add');
     return;
   }
+  const fmt = t.closest('.dk-fmt [data-fmt]'); if (fmt) { d.fmt = fmt.dataset.fmt === 'infinity' ? 'infinity' : 'core'; dkTouch(d); st.paint(); return; }
   const step = t.closest('[data-step]');
   if (step) {
     const c = CARDS.byId.get(+step.dataset.id), dir = +step.dataset.step; if (!c) return;

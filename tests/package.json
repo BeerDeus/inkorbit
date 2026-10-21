@@ -9,7 +9,10 @@
     "test:node": "bash run-tests.sh --node"
   },
   "devDependencies": {
+    "@tesseract.js-data/eng": "^1.0.0",
     "jsdom": "29.1.1",
-    "playwright-core": "1.56.0"
+    "playwright-core": "1.56.0",
+    "tesseract.js": "^5.1.1",
+    "tesseract.js-core": "^5.1.1"
   }
 }

@@ -39,7 +39,6 @@
  "Renvoyer l'e-mail": "E-Mail erneut senden",
  "Synchroniser maintenant": "Jetzt synchronisieren",
  "Se déconnecter": "Abmelden",
- "Tes cartes restent aussi sur cet appareil": "Deine Karten bleiben auch auf diesem Gerät",
  "Supprimer mon compte": "Mein Konto löschen",
  "Efface le compte et sa copie en ligne": "Löscht das Konto und seine Online-Kopie",
  "E-mail envoyé": "E-Mail gesendet",
@@ -47,5 +46,19 @@
  "Supprimer définitivement ton compte et sa copie en ligne ? Les données de cet appareil sont gardées.": "Dein Konto und seine Online-Kopie endgültig löschen? Die Daten auf diesem Gerät bleiben erhalten.",
  "Compte supprimé": "Konto gelöscht",
  "{n} carte à échanger": "{n} Karte zum Tauschen",
- "{n} cartes à échanger": "{n} Karten zum Tauschen"
+ "{n} cartes à échanger": "{n} Karten zum Tauschen",
+ "Langue des cartes changée sur un autre appareil.": "Kartensprache auf einem anderen Gerät geändert.",
+ "Ce compte a été supprimé depuis un autre appareil. Tes cartes restent sur celui-ci.": "Dieses Konto wurde auf einem anderen Gerät gelöscht. Deine Karten bleiben auf diesem.",
+ "Ajouter les cartes de cet appareil à ce compte ?": "Die Karten dieses Geräts diesem Konto hinzufügen?",
+ "Cet appareil a {n} carte d'un autre compte. Non : elle est mise de côté, tu pourras la récupérer depuis Mon compte.": "Dieses Gerät hat {n} Karte eines anderen Kontos. Nein: Sie wird beiseitegelegt, du kannst sie unter Mein Konto zurückholen.",
+ "Cet appareil a {n} cartes d'un autre compte. Non : elles sont mises de côté, tu pourras les récupérer depuis Mon compte.": "Dieses Gerät hat {n} Karten eines anderen Kontos. Nein: Sie werden beiseitegelegt, du kannst sie unter Mein Konto zurückholen.",
+ "Non": "Nein",
+ "Récupérer les cartes mises de côté": "Beiseitegelegte Karten zurückholen",
+ "Celles d'un autre compte, gardées sur cet appareil": "Die eines anderen Kontos, auf diesem Gerät aufbewahrt",
+ "Tu choisis de garder tes cartes ici ou de les effacer": "Du entscheidest, ob deine Karten hier bleiben oder gelöscht werden",
+ "Cartes récupérées": "Karten zurückgeholt",
+ "Tes cartes restent dans ton compte. Sur cet appareil :": "Deine Karten bleiben in deinem Konto. Auf diesem Gerät:",
+ "Garder mes cartes sur cet appareil": "Meine Karten auf diesem Gerät behalten",
+ "Effacer de cet appareil": "Von diesem Gerät löschen",
+ "Déconnecté, cartes effacées de cet appareil": "Abgemeldet, Karten von diesem Gerät gelöscht"
 }

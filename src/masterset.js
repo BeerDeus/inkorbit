@@ -5,14 +5,14 @@
 const setCards = code => CARDS.list.filter(c => c.set === code).sort((a, b) => parseInt(a.num, 10) - parseInt(b.num, 10) || String(a.num).localeCompare(String(b.num)));
 /** Progression d'une extension : { base, baseOwn, all, allOwn, miss (centimes de ce qui manque, normales) }. foil : ne compter que les foils. */
 function setProgress(code, foil = false) {
-  const own = collById(COLL.map), s = CARDS.setsByCode.get(code), base = (s && s.base) || 0, cur = prefs().cur;
-  let baseOwn = 0, all = 0, allOwn = 0, miss = 0;
+  const own = collById(COLL.map), s = CARDS.setsByCode.get(code), quest = !!s && s.type === 'quest', cur = prefs().cur;
+  let base = 0, baseOwn = 0, all = 0, allOwn = 0, miss = 0;
   for (const c of setCards(code)) {
-    const o = own.get(c.id), has = o && (foil ? o.foil : o.n) > 0, isBase = parseInt(c.num, 10) <= base && !/[a-z]$/.test(c.num);
-    all++; if (has) allOwn++; if (isBase && has) baseOwn++;
+    const o = own.get(c.id), has = o && (foil ? o.foil : o.n) > 0, isBase = quest || c.rar <= 4;      // base : Commune à Légendaire (variantes 4a… comprises) ; Épiques, Enchantées, Iconiques à part
+    all++; if (has) allOwn++; if (isBase) { base++; if (has) baseOwn++; }
     if (!has) miss += priceFor(PRICES.p, c.id, foil, cur);
   }
-  return { base: base || all, baseOwn, all, allOwn, miss };
+  return { base, baseOwn, all, allOwn, miss };
 }
 const ringSvg = p => `<svg class="ms-ring" viewBox="0 0 36 36" aria-hidden="true"><circle cx="18" cy="18" r="15.5" class="ms-ring-bg"/>${p > 0 ? `<circle cx="18" cy="18" r="15.5" class="ms-ring-fg" stroke-dasharray="${(p * 97.4).toFixed(1)} 97.4"/>` : ''}</svg>`;
 function msListHtml() {
@@ -29,8 +29,11 @@ function openSet(code) {
   const s = CARDS.setsByCode.get(code); if (!s) return;
   const el = openScreen({ title: s.name, cls: 'ms-screen', html: '<div class="ms-host"></div>' });
   const host = $('.ms-host', el);
+  let wasFull = null;
   const paint = () => {
-    const own = collById(COLL.map), p = setProgress(code, MS.foil), cur = prefs().cur;
+    const own = collById(COLL.map), p = setProgress(code, MS.foil), cur = prefs().cur, full = p.all > 0 && p.allOwn === p.all;
+    if (wasFull === false && full && typeof sparkle === 'function') { setTimeout(() => { sparkle($('.ms-head', host) || host, undefined, 32); haptic('success'); }, 50); }
+    wasFull = full;
     const has = c => { const o = own.get(c.id); return !!o && (MS.foil ? o.foil : o.n) > 0; };
     const cards = setCards(code).filter(c => (MS.rar === '' || c.rar === +MS.rar) && (MS.f === 'all' || (MS.f === 'own') === has(c)));
     const rars = [...new Set(setCards(code).map(c => c.rar))].sort((a, b) => a - b);

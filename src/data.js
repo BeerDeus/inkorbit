@@ -8,7 +8,8 @@ const IO_LANGS = ['en', 'fr', 'de', 'it'];
 
 /* ── Stockage (localStorage, préfixe inkorbit:) : jamais d'erreur si le navigateur le refuse ── */
 function load(k, def) { try { const v = localStorage.getItem('inkorbit:' + k); return v == null ? def : JSON.parse(v); } catch (e) { return def; } }
-function save(k, v) { try { localStorage.setItem('inkorbit:' + k, JSON.stringify(v)); } catch (e) { return false; } if (typeof cloudTouch === 'function') cloudTouch(k); return true; }      // cloudTouch : synchro du compte (cloud.js)
+let saveWarned = false;
+function save(k, v) { try { localStorage.setItem('inkorbit:' + k, JSON.stringify(v)); } catch (e) { if (!saveWarned && typeof toast === 'function') { saveWarned = true; toast(T('Stockage plein ou bloqué : tes derniers changements ne sont pas gardés. Exporte une sauvegarde (Réglages) ou connecte-toi.'), { ms: 9000 }); } return false; } if (typeof cloudTouch === 'function') cloudTouch(k); return true; }      // cloudTouch : synchro du compte (cloud.js)
 /** Réglages : cur (EUR | USD), clang (langue des cartes), keep (exemplaires gardés avant d'échanger), theme, name (pseudo de la liste publique). */
 function prefs() { return { cur: ['fr', 'de', 'it'].includes(I18N.lang) ? 'EUR' : 'USD', clang: IO_LANGS.includes(I18N.lang) ? I18N.lang : 'en', keep: 4, theme: '', name: '', ...load('prefs', {}) }; }
 function setPref(k, v) { save('prefs', { ...load('prefs', {}), [k]: v }); }
@@ -42,7 +43,7 @@ function dataLoad() {
     CARDS.sets = cat.sets.map(s => ({ code: s.c, type: s.t, date: s.d, base: s.b, name: s.n[lang] || s.n.en, nameEn: s.n.en }));
     CARDS.setsByCode = new Map(CARDS.sets.map(s => [s.code, s]));
     CARDS.v = cat.v; CARDS.lang = lang;
-    if (lang === 'en') enApply(tx); else setTimeout(() => dataEn().catch(() => {}), 1500);
+    if (lang === 'en') enApply(tx); else setTimeout(() => dataEn().catch(() => {}), 300);
     for (const c of CARDS.list) c.key = searchKey(c);
     CARDS.ix = cardIndex(CARDS.list);
     if (pr) { PRICES.p = pr.p || {}; PRICES.v = pr.v || ''; PRICES.src = pr.src || {}; }
@@ -73,6 +74,7 @@ function dataEn() {
 function cardSearch(q, f = {}, limit = 200) {
   const words = normName(q).split(' ').filter(Boolean), out = [];
   const numQ = /^(\d{1,3}[a-e]?)(?:\s*\/\s*(\w+))?$/.exec(String(q || '').trim());
+  if (!numQ && words.length && words.join('').length < 2) return [];      // une seule lettre : trop de cartes, rien à montrer
   for (const c of CARDS.list) {
     if (f.ink != null && f.ink !== '' && !((c.ink >> f.ink) & 1)) continue;
     if (f.set && c.set !== f.set && c.pset !== f.set) continue;

@@ -39,7 +39,6 @@
  "Renvoyer l'e-mail": "Resend the email",
  "Synchroniser maintenant": "Sync now",
  "Se déconnecter": "Sign out",
- "Tes cartes restent aussi sur cet appareil": "Your cards also stay on this device",
  "Supprimer mon compte": "Delete my account",
  "Efface le compte et sa copie en ligne": "Deletes the account and its online copy",
  "E-mail envoyé": "Email sent",
@@ -47,5 +46,19 @@
  "Supprimer définitivement ton compte et sa copie en ligne ? Les données de cet appareil sont gardées.": "Permanently delete your account and its online copy? The data on this device is kept.",
  "Compte supprimé": "Account deleted",
  "{n} carte à échanger": "{n} card to trade",
- "{n} cartes à échanger": "{n} cards to trade"
+ "{n} cartes à échanger": "{n} cards to trade",
+ "Langue des cartes changée sur un autre appareil.": "Card language changed on another device.",
+ "Ce compte a été supprimé depuis un autre appareil. Tes cartes restent sur celui-ci.": "This account was deleted from another device. Your cards stay on this one.",
+ "Ajouter les cartes de cet appareil à ce compte ?": "Add this device's cards to this account?",
+ "Cet appareil a {n} carte d'un autre compte. Non : elle est mise de côté, tu pourras la récupérer depuis Mon compte.": "This device has {n} card from another account. No: it is set aside, you can get it back from My account.",
+ "Cet appareil a {n} cartes d'un autre compte. Non : elles sont mises de côté, tu pourras les récupérer depuis Mon compte.": "This device has {n} cards from another account. No: they are set aside, you can get them back from My account.",
+ "Non": "No",
+ "Récupérer les cartes mises de côté": "Get back the cards set aside",
+ "Celles d'un autre compte, gardées sur cet appareil": "From another account, kept on this device",
+ "Tu choisis de garder tes cartes ici ou de les effacer": "You choose to keep your cards here or erase them",
+ "Cartes récupérées": "Cards recovered",
+ "Tes cartes restent dans ton compte. Sur cet appareil :": "Your cards stay in your account. On this device:",
+ "Garder mes cartes sur cet appareil": "Keep my cards on this device",
+ "Effacer de cet appareil": "Erase from this device",
+ "Déconnecté, cartes effacées de cet appareil": "Signed out, cards erased from this device"
 }

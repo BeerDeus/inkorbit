@@ -29,6 +29,7 @@ document.addEventListener('click', e => {
 function collAddCard(c, n = 1, { foil = false, lang = '', quiet = false } = {}) {
   const k = collKey(c.id, foil, lang), before = COLL.map[k] || 0;
   collAdd(COLL.map, k, n); collSave();
+  if (n > 0) { const r = pressOrigin('.card-thumb'); if (r) sparkle(r, foil ? 22 : 14); haptic('success'); } else haptic('warn');      // la vignette touchée scintille (motion.js)
   if (!quiet) toast(n > 0 ? T('{name} ajoutée', { name: c.name }) + (foil ? ' ✦' : '') : T('{name} retirée', { name: c.name }), { action: T('Annuler'), onAction: () => { if (before) COLL.map[k] = before; else delete COLL.map[k]; collSave(); } });
 }
 /** Exemplaires d'une carte par finition (toutes langues) : { n, f }. */
@@ -49,7 +50,7 @@ function cardBodyHtml(c) {
   const px = (n, f) => `<div class="cv-px"><span>${esc(n)}</span><b class="num">${f ? fmtMoney(f, cur) : '—'}</b></div>`;
   const canN = c.foil & 1 || !c.foil, canF = c.foil & 2;
   return `<div class="cv">
-    <div class="cv-img">${cardImg(c, 'large') ? `<img src="${esc(cardImg(c, 'large'))}" alt="${esc(fullName(c))}" width="488" height="681">` : ''}</div>
+    <div class="cv-img tilt${own.f > 0 || (c.foil && !(c.foil & 1)) ? ' is-foil' : ''}">${cardImg(c, 'large') ? `<img src="${esc(cardImg(c, 'large'))}" alt="${esc(fullName(c))}" width="488" height="681">` : ''}</div>
     <div class="cv-info">
       <div class="cv-head"><div><h3 class="cv-name">${esc(c.name)}</h3>${c.ver ? `<p class="cv-ver">${esc(c.ver)}</p>` : ''}</div><div class="cv-inks">${inkPips(c)}</div></div>
       <p class="cv-set muted small">${esc(setName(c.set))} · ${esc(T('n° {n}', { n: c.num }))} · ${rarLabel(c)} · ${esc(TYPE_NAMES()[c.type])}</p>
@@ -68,7 +69,13 @@ function openCard(id, ids) {
   const list = ids && ids.length ? ids : [id];
   let i = Math.max(0, list.indexOf(id));
   const c0 = CARDS.byId.get(id); if (!c0) return;
-  const el = openScreen({ title: c0.name, html: '<div class="cv-host"></div>', cls: 'card-screen' });
+  // La carte part de la vignette touchée et y revient à la fermeture (celle de la carte affichée, si elle est encore à l'écran).
+  const from = pressOrigin('.card-thumb'), box = from && MO.press.closest('[data-cards]');
+  const back = () => {
+    const t = box && box.isConnected && box.querySelector(`.card-thumb[data-card="${list[i]}"]`), r = t && t.getBoundingClientRect();
+    if (r && r.width && r.bottom > 0 && r.top < innerHeight) flipTo($('.cv-img', el), r);
+  };
+  const el = openScreen({ title: c0.name, html: '<div class="cv-host"></div>', cls: 'card-screen', onClose: back });
   const host = $('.cv-host', el), title = $('.screen-head h2', el);
   if (list.length > 1) $('.screen-head', el).insertAdjacentHTML('beforeend', `<button type="button" class="btn-icon" data-nav="-1" aria-label="${esc(T('Carte précédente'))}"><svg class="i flip"><use href="#i-chev"/></svg></button><button type="button" class="btn-icon" data-nav="1" aria-label="${esc(T('Carte suivante'))}"><svg class="i"><use href="#i-chev"/></svg></button>`);
   const paint = () => { const c = CARDS.byId.get(list[i]); host.innerHTML = cardBodyHtml(c); if (title) title.textContent = c.name; };
@@ -77,14 +84,17 @@ function openCard(id, ids) {
     const c = CARDS.byId.get(list[i]);
     const nav = e.target.closest('[data-nav]'); if (nav) { go(+nav.dataset.nav); return; }
     const st = e.target.closest('.stepper[data-own] [data-d]');
-    if (st) { const foil = st.closest('[data-own]').dataset.own === '1', d = +st.dataset.d; if (d < 0 && !(foil ? ownSplit(c.id).f : ownSplit(c.id).n)) return; collRemoveOrAdd(c, d, foil); paint(); return; }
-    if (e.target.closest('[data-want]')) { if (COLL.wants[c.id]) delete COLL.wants[c.id]; else COLL.wants[c.id] = 1; collSave(); paint(); }
+    if (st) { const foil = st.closest('[data-own]').dataset.own === '1', d = +st.dataset.d; if (d < 0 && !(foil ? ownSplit(c.id).f : ownSplit(c.id).n)) return; collRemoveOrAdd(c, d, foil); paint(); haptic(d > 0 ? 'success' : 'tap');
+      if (d > 0) { const b = $(`[data-own="${foil ? 1 : 0}"] [data-d="1"]`, host); if (b) sparkle(b, foil ? 18 : 10); }
+      return; }
+    if (e.target.closest('[data-want]')) { const on = !COLL.wants[c.id]; if (on) COLL.wants[c.id] = 1; else delete COLL.wants[c.id]; collSave(); paint(); haptic('tap'); if (on) sparkle($('[data-want]', host), 10); }
   });
   el.addEventListener('keydown', e => { if (e.key === 'ArrowLeft') go(-1); else if (e.key === 'ArrowRight') go(1); });
   let x0 = null;      // glisser à gauche / à droite sur l'image : carte suivante / précédente
   host.addEventListener('pointerdown', e => { if (e.target.closest('.cv-img')) x0 = e.clientX; });
   host.addEventListener('pointerup', e => { if (x0 != null && list.length > 1 && Math.abs(e.clientX - x0) > 60) go(e.clientX < x0 ? 1 : -1); x0 = null; });
   paint();
+  flipFrom($('.cv-img', host), from);
 }
 /** Retirer prend d'abord un exemplaire sans langue, puis n'importe quelle langue de la même finition. */
 function collRemoveOrAdd(c, d, foil) {

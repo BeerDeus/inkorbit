@@ -1,0 +1,55 @@
+/* Niveau et trophées (progress.js) : anneau du niveau, encart de l'accueil, ligne des Réglages, fiche, médaillons (badgeart.css). */
+.prg-lvring{--p:0;position:relative;flex:none;display:grid;place-items:center;width:52px;height:52px;border-radius:50%;
+  background:conic-gradient(var(--gold) calc(var(--p) * 1%),color-mix(in srgb,var(--ink) 14%,transparent) 0)}
+.prg-lvring::before{content:'';position:absolute;inset:4px;border-radius:50%;background:var(--surface)}
+.prg-lvring b{position:relative;font-family:var(--font-display);font-variation-settings:'SOFT' 100,'WONK' 1;font-weight:800;font-size:19px;color:var(--gold)}
+.prg-lvring.sm{width:40px;height:40px}.prg-lvring.sm b{font-size:15px}
+.prg-lvring.lg{width:76px;height:76px}.prg-lvring.lg::before{inset:5px}.prg-lvring.lg b{font-size:30px}
+.prg-ic{display:grid;place-items:center;flex:none}
+.prg-ic .bdg-svg{width:48px;height:48px}
+
+.prg-home{flex-direction:row;align-items:center;gap:14px;padding:12px 14px;text-align:left;width:100%;color:inherit;transition:transform .15s var(--out)}
+.prg-home:active{transform:scale(.98)}
+.prg-home-t{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
+.prg-home-t small{font:700 11px/1.2 var(--font-body);letter-spacing:.16em;text-transform:uppercase;color:var(--gold)}
+.prg-home-t b{font-family:var(--font-display);font-size:16.5px;line-height:1.2;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.prg-row .prg-lvring::before{background:var(--surface)}
+
+.prg-head{display:flex;align-items:center;gap:16px;padding:16px}
+.prg-head .prg-lvring::before{background:var(--surface)}
+.prg-xp{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px}
+.prg-xp>small:first-child{font:700 11px/1 var(--font-body);letter-spacing:.16em;text-transform:uppercase;color:var(--gold)}
+.prg-bar,.prg-mini{display:block;height:8px;border-radius:99px;background:color-mix(in srgb,var(--ink) 12%,transparent);overflow:hidden}
+.prg-bar i,.prg-mini i{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,var(--gold-2),var(--gold))}
+.prg-mini{height:5px;width:80%;margin:4px auto 0}
+
+.prg-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.prg-b{display:flex;flex-direction:column;align-items:center;gap:3px;padding:12px 6px 10px;border-radius:var(--r-md);background:var(--surface-2);border:1px solid var(--line);text-align:center;color:inherit;min-height:44px;transition:transform .15s var(--out),border-color .2s}
+.prg-b:active{transform:scale(.97)}
+.prg-b b{font-size:12.5px;line-height:1.2;font-weight:800}
+.prg-b small{font-size:11px;line-height:1.25;color:var(--ink-3)}
+.prg-b .prg-nx,.prg-b .prg-ok{color:var(--ink-2);font-weight:700}
+.prg-b.off .prg-ic{filter:grayscale(1);opacity:.55}
+.prg-b.off b{color:var(--ink-2)}
+.prg-b.t0{border-color:color-mix(in srgb,#c27b3c 45%,var(--line))}
+.prg-b.t1{border-color:color-mix(in srgb,#a3afbf 55%,var(--line))}
+.prg-b.t2{border-color:color-mix(in srgb,var(--gold) 70%,var(--line));background:linear-gradient(170deg,var(--gold-soft),var(--surface-2) 70%)}
+.prg-b.t3{border-color:color-mix(in srgb,#3dbde6 60%,var(--line));background:linear-gradient(170deg,rgba(61,189,230,.14),var(--surface-2) 70%)}
+.prg-b.tu{border-color:color-mix(in srgb,#a06cf0 55%,var(--line))}
+.prg-b.hl{animation:prgHl 1.6s var(--out) 2}
+@keyframes prgHl{30%{box-shadow:0 0 0 3px var(--gold),0 0 24px var(--gold-soft)}}
+.prg-more{display:none;width:100%}
+.prg-b.open{grid-column:1/-1;flex-direction:column}
+.prg-b.open .prg-more{display:block}
+.prg-steps{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-direction:column;gap:4px;text-align:left}
+.prg-steps li{display:flex;flex-direction:column;padding:6px 10px;border-radius:var(--r-sm);background:var(--surface);opacity:.6}
+.prg-steps li.on{opacity:1;box-shadow:inset 3px 0 0 var(--gold)}
+.prg-steps li span{display:block;font-size:12.5px;font-weight:700}
+.prg-steps li span::first-letter{text-transform:uppercase}
+.prg-how summary{cursor:pointer;min-height:44px;display:flex;align-items:center;font-weight:700;color:var(--ink-2)}
+@media (prefers-reduced-motion:reduce){.prg-b.hl{animation:none;box-shadow:0 0 0 3px var(--gold)}}
+
+@media (min-width:1024px){
+  .prg-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .prg-b:hover,.prg-home:hover{border-color:var(--gold)}
+}

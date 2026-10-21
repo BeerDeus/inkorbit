@@ -9,7 +9,9 @@ const MYS_TRIES = 6;
 /** Largeur (en pixels de l'image tirée) de chaque étape ; 0 : l'image nette. */
 const MYS_PIX = [7, 11, 17, 26, 40, 64];
 const mysPool = cards => cards.filter(c => c.img && !c.img.startsWith('r:') && c.rar !== 8);
-function mysCard(cards, day) { const pool = mysPool(cards); return pool.length ? pool[seedPick('io-' + day, pool.length)] : null; }
+/** Carte du jour : parmi les cartes de la réserve sorties avant ce jour (date de l'extension, setDate) dans l'ordre des identifiants : un catalogue
+ *  plus récent (nouvelle extension, même le jour même) ne change pas la carte. setDate(c) → « AAAA-MM-JJ » ou '' (inconnue : gardée). */
+function mysCard(cards, day, setDate) { const pool = mysPool(cards).filter(c => { const d = setDate ? setDate(c) : ''; return !d || d < day; }).sort((x, y) => x.id - y.id); return pool.length ? pool[seedPick('io-' + day, pool.length)] : null; }
 const mysNew = day => ({ day, tries: [], done: false, won: false });
 /** Une réponse : ok si c'est la carte (même nom complet, quelle que soit l'impression). */
 function mysGuess(st, guessId, ok) {
@@ -62,7 +64,7 @@ function openMystery() {
   MYS.el = openScreen({ title: T('Carte mystère'), cls: 'mys-screen', html: `<div class="mys"><p class="muted">${esc(T('Chargement…'))}</p></div>`, onClose: () => { clearInterval(MYS.tick); MYS.el = null; } });
   MYS.el.addEventListener('click', mysClick);
   dataLoad().then(() => {
-    MYS.card = mysCard(CARDS.list, dayKey());
+    MYS.card = mysCard(CARDS.list, dayKey(), c => (CARDS.setsByCode.get(c.pset) || {}).date || '');
     if (!MYS.card || !MYS.el) return;
     MYS.img = new Image(); MYS.img.decoding = 'async';
     MYS.img.onload = () => mysDraw();
@@ -120,6 +122,7 @@ function mysTry(id) {
   const g = CARDS.byId.get(id), st = mysteryState(); if (!g || st.done || st.tries.includes(id)) return;
   const n = mysGuess(st, id, mysKey(g) === mysKey(MYS.card));
   mysSave(n); mysPaint();
+  if (n.won && typeof sparkle === 'function') { const c = MYS.el && $('.mys-card, canvas', MYS.el); sparkle(c || innerWidth / 2, c ? undefined : innerHeight / 3, 26); }
   try { navigator.vibrate && navigator.vibrate(n.won ? [30, 50, 90] : 20); } catch (e) { /* ignore */ }
   if (!n.done) { const inp = MYS.el && $('.mys-in input', MYS.el); if (inp) inp.focus(); toast(T('Ce n\'est pas elle')); }
 }

@@ -72,3 +72,12 @@ test('mystère : série de jours, minuit à Paris', () => {
   assert.equal(M.mysUntilMidnight(new Date('2026-10-21T21:59:00Z')), 60, '23:59 à Paris (heure d\'été)');
   assert.equal(M.mysUntilMidnight(new Date('2026-12-21T22:59:30Z')), 30, '23:59:30 à Paris (heure d\'hiver)');
 });
+
+test('carte mystère : une extension qui sort aujourd\'hui ne change pas la carte du jour', () => {
+  const base = Array.from({ length: 40 }, (_, i) => ({ id: i + 1, img: 'x' + i, rar: 0, name: 'C' + i, ver: '', pset: 'A' }));
+  const fresh = Array.from({ length: 30 }, (_, i) => ({ id: 1000 + i, img: 'y' + i, rar: 0, name: 'N' + i, ver: '', pset: 'B' }));
+  const date = c => ({ A: '2026-01-01', B: '2026-10-21' })[c.pset];
+  const day = '2026-10-21';
+  assert.equal(M.mysCard([...fresh, ...base], day, date).id, M.mysCard(base, day, date).id);
+  assert.ok(M.mysCard([...fresh, ...base], '2026-10-22', date), 'le lendemain, la nouvelle extension entre dans le tirage');
+});

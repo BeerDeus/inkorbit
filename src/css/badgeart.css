@@ -1,0 +1,45 @@
+/* Icônes des badges (badgeart.js, repris de Mana Orbit). Cadre : --bq-l métal clair, --bq-m métal, --bq-d bord foncé, --bq-w reflet, --bq-f fond du médaillon.
+   Glyphe : --bq-i encre, --bq-p volume clair, --bq-q volume moyen et ombres, --bq-a touche de couleur. */
+.bdg-svg{display:block;width:44px;height:44px;overflow:visible;--bq-f:#fff4ea;--bq-l:#f3c493;--bq-m:#c27b3c;--bq-d:#87481b;--bq-w:#fff7ef;--bq-i:#5c2f0f;--bq-p:#f6d6b4;--bq-q:#dda06a;--bq-a:#cf7630}
+.bdg-svg.t1{--bq-f:#f6f8fb;--bq-l:#f2f5f9;--bq-m:#a3afbf;--bq-d:#5f6c7f;--bq-w:#fff;--bq-i:#343f50;--bq-p:#dfe5ed;--bq-q:#b3bfcd;--bq-a:#7c8ca3}
+.bdg-svg.t2{--bq-f:#fffbe8;--bq-l:#ffe796;--bq-m:#dcaa25;--bq-d:#94690a;--bq-w:#fffbe6;--bq-i:#5e4100;--bq-p:#fbe7a6;--bq-q:#e9c25a;--bq-a:#e3a21c}
+.bdg-svg.t3{--bq-f:#f0fbff;--bq-l:#b6efff;--bq-m:#3dbde6;--bq-d:#1f78a6;--bq-w:#fff;--bq-i:#3a2392;--bq-p:#e4dcff;--bq-q:#b9a5f5;--bq-a:#8a5cf6}
+.bdg-svg.tu{--bq-f:#f8f3ff;--bq-l:#e3d0ff;--bq-m:#a06cf0;--bq-d:#6532bf;--bq-w:#fff;--bq-i:#431d86;--bq-p:#e9dcff;--bq-q:#c6a8f7;--bq-a:#b57cff}
+.bdg-svg.t-1{--bq-f:var(--surface,#fff);--bq-l:#eef0f4;--bq-m:#d3d8e0;--bq-d:#b3bbc8;--bq-w:#fff;--bq-i:#a6aebd;--bq-p:#eef0f4;--bq-q:#dfe3e9;--bq-a:#b3bbc8}
+.bdg-svg .bq-s1{stop-color:var(--bq-l)}.bdg-svg .bq-s2{stop-color:var(--bq-m)}
+.bdg-svg .bq-rm{stroke:var(--bq-d);stroke-width:1.2;stroke-linejoin:round}
+.bdg-svg .bq-bv{fill:none;stroke:var(--bq-w);stroke-width:.8;opacity:.6}
+.bdg-svg .bq-fc{fill:var(--bq-f);stroke:var(--bq-d);stroke-width:1.2}
+.bdg-svg .bq-sh{fill:none;stroke:var(--bq-w);stroke-width:1.4;stroke-linecap:round;opacity:.85}
+.bdg-svg .bq-rb{fill:var(--bq-m);stroke:var(--bq-d);stroke-width:1;stroke-linejoin:round}
+.bdg-svg .bq-rs{fill:none;stroke:var(--bq-l);stroke-width:1.1;stroke-linecap:round}
+.bdg-svg .bq-lf{stroke:var(--bq-d);stroke-width:.6}
+.bdg-svg .bq-br{fill:none;stroke:var(--bq-d);stroke-width:1.1;stroke-linecap:round}
+.bdg-svg .bq-fa{fill:var(--bq-l);stroke:var(--bq-d);stroke-width:.6;stroke-linejoin:round}
+.bdg-svg .bq-fb{fill:var(--bq-m);stroke:var(--bq-d);stroke-width:.6;stroke-linejoin:round}
+.bdg-svg .bq-rv{fill:var(--bq-l);stroke:var(--bq-d);stroke-width:.5}
+.bdg-svg .bq-sp{fill:var(--bq-a)}.bdg-svg .bq-sc{fill:var(--bq-w)}
+.bdg-svg .bq-p{stroke:var(--bq-i);stroke-width:2.2}
+.bdg-svg .bq-k{fill:var(--bq-p);stroke:var(--bq-i)}
+.bdg-svg .bq-f{fill:var(--bq-q);stroke:var(--bq-i)}
+.bdg-svg .bq-b{fill:var(--bq-f);stroke:var(--bq-i)}
+.bdg-svg .bq-i{fill:var(--bq-i);stroke:var(--bq-i)}
+.bdg-svg .bq-n{fill:var(--bq-i);stroke:none}
+.bdg-svg .bq-z{fill:var(--bq-q);stroke:none}
+.bdg-svg .bq-y{fill:var(--bq-p);stroke:none}
+.bdg-svg .bq-x{stroke:var(--bq-w);stroke-width:1.3;opacity:.9}
+.bdg-svg .bq-t{stroke:var(--bq-i);stroke-width:1.3}
+.bdg-svg .bq-w{stroke:var(--bq-i);stroke-width:3.2}
+.bdg-svg .bq-h{stroke:var(--bq-a);stroke-width:2.2}
+.bdg-svg .bq-j{fill:var(--bq-ink,var(--bq-a));stroke:var(--bq-i)}      /* encres : teinte de l'encre du badge (--bq-ink, posée par progress.js) */
+.bdg-svg .bq-a{fill:var(--bq-a);stroke:none}
+.bdg-svg .bq-u{stroke-width:1.1}
+.bdg-svg.t-1 .bq-gl{opacity:.8}
+.bdg-svg.t-1 .bq-j{fill:var(--bq-q)}
+/* Nuit (thème par défaut) : métaux sombres ; Parchemin (html[data-theme="light"]) : les valeurs ci-dessus. */
+:root:not([data-theme="light"]) .bdg-svg{--bq-f:#33241a;--bq-l:#e7aa6e;--bq-m:#b56f33;--bq-d:#6e3a15;--bq-w:#ffe2c4;--bq-i:#f6d2ae;--bq-p:#4d3423;--bq-q:#74502f;--bq-a:#e08d4a}
+:root:not([data-theme="light"]) .bdg-svg.t1{--bq-f:#232b38;--bq-l:#dfe6ef;--bq-m:#95a2b4;--bq-d:#4c586a;--bq-w:#fff;--bq-i:#eef2f7;--bq-p:#354153;--bq-q:#56647a;--bq-a:#b8c4d4}
+:root:not([data-theme="light"]) .bdg-svg.t2{--bq-f:#2f2711;--bq-l:#ffe28a;--bq-m:#d1a01c;--bq-d:#7a5606;--bq-w:#fff6d0;--bq-i:#ffe9a8;--bq-p:#4a3d15;--bq-q:#7a6220;--bq-a:#f1c03a}
+:root:not([data-theme="light"]) .bdg-svg.t3{--bq-f:#102a3d;--bq-l:#a6ecff;--bq-m:#33b3dd;--bq-d:#17607f;--bq-w:#e9fbff;--bq-i:#e3dbff;--bq-p:#2b2f5c;--bq-q:#4b3f8f;--bq-a:#b597ff}
+:root:not([data-theme="light"]) .bdg-svg.tu{--bq-f:#261b3d;--bq-l:#d9c2ff;--bq-m:#9a66ea;--bq-d:#4f2799;--bq-w:#f4ecff;--bq-i:#f0e6ff;--bq-p:#3a2a5c;--bq-q:#5a4290;--bq-a:#cfa8ff}
+:root:not([data-theme="light"]) .bdg-svg.t-1{--bq-f:var(--surface,#131a2b);--bq-l:#3a4458;--bq-m:#2c3446;--bq-d:#3d4760;--bq-w:#4a5570;--bq-i:#6b7691;--bq-p:#222a3b;--bq-q:#2e3749;--bq-a:#59647e}

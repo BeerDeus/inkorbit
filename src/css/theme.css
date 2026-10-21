@@ -36,7 +36,7 @@
   --scrim:rgba(42,27,70,.42);
   --shadow:0 1px 2px rgba(60,40,20,.08),0 10px 26px -14px rgba(60,40,20,.28);
   --shadow-lg:0 2px 6px rgba(60,40,20,.1),0 26px 56px -22px rgba(60,40,20,.35);
-  --amber:#d98a12; --amethyst:#7f4fd6; --emerald:#1f9461; --ruby:#cf3550; --sapphire:#2479c9; --steel:#6f7d91;
+  --amber:#ad6a00; --amethyst:#7f4fd6; --emerald:#157a4f; --ruby:#cf3550; --sapphire:#1d64a8; --steel:#566376;      /* ≥ 3:1 sur --surface et --surface-2 (symboles, barres) */
   --r-common:#8d84a6; --r-uncommon:#3f9a74; --r-rare:#3f74cf; --r-super:#8a55d6; --r-legendary:#b98114;
   --r-epic:#cc3f84; --r-enchanted:#1f93b3; --r-iconic:#a98a1c; --r-special:#c4602b;
   --sky:radial-gradient(110% 70% at 85% -10%,#f3e3bf 0%,transparent 55%),radial-gradient(80% 60% at -10% 40%,#efe0f0 0%,transparent 60%),linear-gradient(180deg,var(--bg-2) 0%,var(--bg) 60%);

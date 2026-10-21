@@ -111,3 +111,60 @@ test('inversion imposée (nom blanc sur une illustration claire) ; barre lue V',
   assert.equal(S.prepPixels(d, true), true); assert.equal(d[0], 0);
   assert.equal(S.footCard(parseFootLine(S.footClean('1V204.FR.7')), cardIndex([{ id: 1434, set: '7', num: '1', name: 'Rhino', ver: '' }])).id, 1434);
 });
+
+/** Image en gris w × h remplie de v, avec rect(x, y, w, h, v) pour y poser des zones. */
+const img = (w, h, v = 230) => { const g = new Uint8Array(w * h).fill(v); g.rect = (x, y, rw, rh, c) => { for (let j = y; j < y + rh; j++) for (let i = x; i < x + rw; i++) g[j * w + i] = c; return g; }; return g; };
+
+test('redressement : angle des lignes de texte', () => {
+  for (const deg of [0, 3, -4.5, 6]) {
+    const w = 260, h = 120, g = img(w, h), t = Math.tan(deg * Math.PI / 180);
+    for (const y0 of [30, 55, 80]) for (let x = 10; x < 250; x++) if ((x >> 2) % 3) { const y = Math.round(y0 + x * t); for (let d = 0; d < 3; d++) if (y + d >= 0 && y + d < h) g[(y + d) * w + x] = 20; }      // trois « lignes de texte » inclinées
+    assert.ok(Math.abs(S.skewAngle(g, w, h) - deg) <= 0.5, `${deg}° → ${S.skewAngle(g, w, h)}`);
+  }
+});
+
+test('bande noire du bas : haut, bas, bord gauche ; tapis sombre', () => {
+  const w = 200, h = 100, g = img(w, h).rect(30, 60, 170, 20, 10);      // table claire, carte dont la bande noire va de y = 60 à 80, à partir de x = 30
+  for (let i = 40; i < 190; i += 9) g.rect(i, 66, 4, 6, 240);      // texte blanc dans la bande
+  const top = S.darkBand(g, w, h, 40, 160, 6);
+  assert.equal(top, 60);
+  assert.deepEqual(S.bandEdges(g, w, h, 40, 160, top, 6), { end: 80, left: 30 });
+  assert.equal(S.darkBand(img(w, h), w, h, 40, 160, 6), -1, 'pas de bande');
+  const mat = img(w, h, 15).rect(30, 0, 170, 60, 230);      // tapis sombre : la bande se confond avec la table
+  assert.deepEqual(S.bandEdges(mat, w, h, 40, 160, S.darkBand(mat, w, h, 40, 160, 6), 6), { end: -1, left: -1 });
+  const c = S.cardOnBand({ x: 100, y: 100, w: 716, h: 1000 }, { y: 1000, h: 800, x: 150 });
+  assert.ok(Math.abs(c.y - (1000 - S.BAND_TOP * 800)) < 1e-9 && c.x === 150 && Math.abs(c.w / c.h - 63 / 88) < 1e-9, 'carte recalée sur sa bande');
+  assert.equal(S.cardOnBand({ x: 1, y: 2, w: 3, h: 4 }, null).y, 2);
+});
+
+test('seuil d\'Otsu entre deux nuages', () => {
+  const g = new Uint8Array(1000); for (let i = 0; i < 1000; i++) g[i] = i < 700 ? 20 + (i % 15) : 200 + (i % 20);
+  const t = S.otsu(g); assert.ok(t >= 34 && t < 200, String(t));
+});
+
+test('cohérence de la ligne du bas : taille d\'extension, langue ; « IT » lu « 17 »', () => {
+  const c = cards[0];
+  assert.ok(S.footOk({ lang: 'fr', of: '204' }, c, 204));
+  assert.ok(S.footOk({ lang: 'fr', of: '204' }, c, 208), 'base du catalogue avec variantes (208)');
+  assert.ok(!S.footOk({ lang: 'fr', of: '24' }, c, 204), 'chiffre perdu dans la taille');
+  assert.ok(!S.footOk({ lang: 'xx', of: '204' }, c, 204), 'langue inconnue');
+  assert.ok(S.footOk({ lang: 'en', of: 'P1' }, c, 0), 'promo');
+  for (const t of ['69/204 17.9 EN', '69/204IT.9 /N', '69/204 -1T-9 AN', '69/204. 17.9 a !']) assert.deepEqual(parseFootLine(S.footClean(t)), { num: '69', of: '204', lang: 'it', set: '9' }, t);
+});
+
+test('le nom dément une ligne du bas mal lue ; versions à choisir', () => {
+  const cs = [...cards, { id: 50, set: '1', num: '19', name: 'Yen Sid', ver: 'Sorcier', rar: 2 }, { id: 51, set: '1', num: '209', name: 'Yen Sid', ver: 'Sorcier', rar: 6 }, { id: 60, set: '1', num: '20', name: 'Pedro', ver: 'Grand-père', rar: 0 }];
+  const ariel = cs[0], pedro = cs.find(c => c.id === 60);
+  assert.equal(S.footVerify(ariel, 'ARIEL\nSur des jambes humaines', cs), ariel, 'le nom confirme');
+  assert.equal(S.footVerify(ariel, '~~ ;', cs), ariel, 'nom illisible : la ligne du bas fait foi');
+  assert.equal(S.footVerify(pedro, 'HADES\nRoi de l\'Olympe', cs), null, 'Hadès a deux versions dans l\'extension : on ne devine pas');
+  assert.equal(S.footVerify(pedro, 'MICKEY MOUSE', cs), null, 'le nom dément et aucun Mickey dans cette extension : rien plutôt qu\'une fausse carte');
+  assert.equal(S.footVerify(cs.find(c => c.id === 205), 'ARIEL\n', cs), null, 'Ariel : deux versions dans l\'extension');
+  const one = [...cs, { id: 70, set: '1', num: '33', name: 'Zazu', ver: 'Conseiller', rar: 0 }];
+  assert.equal(S.footVerify(pedro, 'ZAZU\nConseiller', one).id, 70, 'une seule carte de ce nom dans l\'extension : c\'est elle');
+  const ys = cs.find(c => c.id === 50);
+  assert.deepEqual(S.printChoices(ys, { lang: 'en', set: '1', digits: '204' }, cs).map(c => c.id), [50, 51], 'numéro illisible : les deux versions');
+  assert.deepEqual(S.printChoices(ys, { lang: 'en', set: '1', digits: '209204' }, cs).map(c => c.id), [51]);
+  assert.deepEqual(S.printChoices(ariel, { lang: '', set: '', digits: '' }, cards).map(c => c.id), [1], 'nom complet unique');
+  assert.ok(S.bestName('ELSA', [{ id: 1, name: 'Elsa', ver: 'A', rar: 0 }, { id: 2, name: 'Elsa', ver: 'B', rar: 0 }]).gap < 0.06, 'nom seul : aucune avance entre deux versions');
+});

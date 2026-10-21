@@ -1,0 +1,28 @@
+/* Premier lancement (onboard.js) : trois écrans plein cadre sur le ciel de nuit, points de progression, choix en cartes. */
+.ob .screen-head{display:none}
+.ob{background:var(--sky,var(--bg))}
+.ob .screen-in{min-height:100%;padding-top:calc(20px + env(safe-area-inset-top,0px));justify-content:space-between}
+.ob-track{position:relative;flex:1;display:grid}
+.ob-s{grid-area:1/1;display:flex;flex-direction:column;gap:16px;opacity:0;transform:translateX(24px);pointer-events:none;transition:opacity .35s var(--out),transform .45s var(--out)}
+.ob-s.on{opacity:1;transform:none;pointer-events:auto}
+.ob-lang{justify-content:center}
+.ob-logo{width:120px;height:120px;align-self:center;margin:8px 0 -4px;animation:obFloat 6s ease-in-out infinite;filter:drop-shadow(0 12px 32px rgba(185,162,255,.3))}
+@keyframes obFloat{50%{transform:translateY(-6px) rotate(-2deg)}}
+.ob h1,.ob h2{text-align:center}
+.ob-lead{text-align:center;color:var(--ink-2);text-wrap:pretty}
+.ob-pts{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px}
+.ob-pts li{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border-radius:var(--r-md);background:color-mix(in srgb,var(--surface) 80%,transparent);border:1px solid var(--line)}
+.ob-pts .ink-sym{width:22px;height:22px;margin-top:1px}
+.ob-fan{text-align:center}
+.ob-opts{display:flex;flex-direction:column;gap:10px}
+.ob-opt{display:flex;align-items:center;gap:14px;min-height:64px;padding:12px 16px;border-radius:var(--r-lg);background:var(--surface);border:1px solid var(--line);text-align:left;box-shadow:var(--shadow);transition:transform .15s,border-color .2s}
+.ob-opt:active{transform:scale(.98)}
+.ob-opt svg.i{width:28px;height:28px;color:var(--gold);flex:none}
+.ob-opt span{display:flex;flex-direction:column;gap:2px}
+.ob-opt small{color:var(--ink-3);font-size:13px}
+.ob-foot{display:flex;align-items:center;justify-content:space-between;padding-top:12px}
+.ob-dots{display:flex;gap:8px}
+.ob-dots i{width:8px;height:8px;border-radius:99px;background:color-mix(in srgb,var(--ink) 22%,transparent);transition:width .3s var(--out),background .3s}
+.ob-dots i.on{width:22px;background:var(--gold)}
+@media (prefers-reduced-motion:reduce){.ob-s{transition:none}.ob-logo{animation:none}}
+@media (min-width:1024px){.ob .screen-in{max-width:520px}.ob-opt:hover{border-color:var(--gold)}}

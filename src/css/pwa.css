@@ -1,0 +1,24 @@
+/* Appli installée (pwa.js) : écran de lancement, bandeau hors ligne, invitation et guide d'installation. */
+#splash{position:fixed;inset:0;z-index:200;display:grid;place-items:center;background:var(--sky,var(--bg));transition:opacity .28s ease,visibility .28s}
+#splash.out{opacity:0;visibility:hidden}
+#splash svg{width:132px;height:132px;animation:spIn .5s var(--out) both;filter:drop-shadow(0 10px 40px rgba(185,162,255,.35))}
+#splash p{position:absolute;bottom:calc(48px + env(safe-area-inset-bottom,0px));left:0;right:0;text-align:center;font:700 22px/1 var(--font-display);letter-spacing:-.01em;color:var(--ink);animation:spIn .5s .08s var(--out) both}
+@keyframes spIn{from{opacity:0;transform:scale(.9) translateY(6px)}to{opacity:1;transform:none}}
+@media not all and (display-mode:standalone){#splash{display:none}}
+@media (prefers-reduced-motion:reduce){#splash svg,#splash p{animation:none}}
+
+.pw-offline{position:fixed;left:50%;top:calc(8px + env(safe-area-inset-top,0px));z-index:60;transform:translateX(-50%);display:flex;align-items:center;gap:6px;min-height:30px;padding:0 12px;border-radius:99px;
+  background:color-mix(in srgb,var(--surface) 92%,transparent);border:1px solid var(--line);box-shadow:var(--shadow);color:var(--ink-2);font-size:12.5px;font-weight:700;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);animation:spIn .3s var(--out) both;pointer-events:none}
+.pw-offline svg.i{width:16px;height:16px;color:var(--warn)}
+
+.pw-hero{display:grid;place-items:center;padding:4px 0 2px}
+.pw-hero-logo{width:96px;height:96px}
+.pw-pts{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px}
+.pw-pts li{position:relative;padding-left:22px}
+.pw-pts li::before{content:'';position:absolute;left:2px;top:.45em;width:10px;height:10px;background:var(--gold);clip-path:polygon(50% 0,61% 39%,100% 50%,61% 61%,50% 100%,39% 61%,0 50%,39% 39%)}
+.pw-steps{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:12px}
+.pw-step{display:grid;grid-template-columns:28px 48px 1fr;align-items:center;gap:10px}
+.pw-n{display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--gold-soft);color:var(--gold);font-weight:800}
+.pw-ic{display:grid;place-items:center;width:48px;height:48px;border-radius:14px;background:var(--surface-2);border:1px solid var(--line);color:#3f97e6}
+.pw-ic svg{width:26px;height:26px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.pw-ic svg.pw-logo{width:34px;height:34px}

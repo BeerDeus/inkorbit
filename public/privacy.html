@@ -27,33 +27,50 @@ hr{border:0;border-top:1px solid var(--line);margin:40px 0}
 <h1>Confidentialité</h1>
 <p>Dernière mise à jour : 21 octobre 2026.</p>
 
-<div class="box"><p>Ink Orbit n'a ni compte, ni serveur, ni traceur. Votre collection, vos decks et vos réglages restent sur votre appareil.</p></div>
+<div class="box"><p>Ink Orbit marche sans compte : vos cartes, decks et réglages restent alors sur votre appareil. Le compte est facultatif ; il sert seulement à synchroniser vos données entre vos appareils. Aucun traceur, aucune publicité, aucune revente.</p></div>
 
-<h2>Ce qui reste sur votre appareil</h2>
+<h2>Sans compte : sur votre appareil</h2>
 <ul>
-<li>Collection, souhaits, liste d'échange, decks, historique de valeur, réglages, parties du compteur de lore et de la carte mystère : ils sont enregistrés dans le stockage local du navigateur.</li>
-<li>Copie hors ligne de l'appli, du catalogue et des images déjà vues : elle est gardée dans le cache du navigateur.</li>
+<li>Collection, souhaits, liste d'échange, decks, historique de valeur, réglages, parties du compteur de lore et de la carte mystère, trophées : enregistrés dans le stockage local du navigateur.</li>
+<li>Copie hors ligne de l'appli, du catalogue, des prix et des images déjà vues : gardée dans le cache du navigateur.</li>
 <li>Effacer les données du site les supprime toutes. Réglages › Sauvegarde permet d'en garder une copie dans un fichier.</li>
 </ul>
 
-<h2>Ce qui sort de votre appareil</h2>
+<h2>Avec un compte (facultatif)</h2>
 <ul>
-<li><strong>Images des cartes</strong> : elles sont chargées depuis <code>cards.lorcast.io</code> (Lorcast) et, pour quelques cartes, depuis <code>api.lorcana.ravensburger.com</code>. Comme pour toute image d'un site, ces serveurs voient votre adresse IP.</li>
-<li><strong>Polices</strong> : elles viennent de Google Fonts (<code>fonts.googleapis.com</code>, <code>fonts.gstatic.com</code>).</li>
-<li><strong>Scan</strong> : la lecture des cartes se fait sur votre appareil. Les photos ne sont jamais envoyées. Le moteur de lecture (Tesseract) est téléchargé une fois depuis <code>cdn.jsdelivr.net</code>.</li>
-<li><strong>Lien de partage</strong> : votre liste d'échange est entièrement contenue dans le lien que vous choisissez de partager. Elle n'est stockée nulle part ailleurs.</li>
+<li><strong>Connexion</strong> : Firebase Authentication (Google). Selon le mode choisi : votre adresse e-mail (et un mot de passe, que nous ne voyons jamais), ou, avec Google, votre adresse e-mail, votre nom et votre photo de profil Google.</li>
+<li><strong>Copie en ligne</strong> : Cloud Firestore (Google) garde un seul document par compte : votre collection, vos souhaits, les cartes gardées hors échange, vos decks et quelques réglages (devise, langue des cartes, nombre d'exemplaires gardés, pseudo de la liste d'échange), avec la date de la dernière modification et un identifiant aléatoire de l'appareil. Seul votre compte peut le lire ou le modifier.</li>
+<li><strong>Où</strong> : serveurs de Google, dans l'Union européenne ou aux États-Unis selon la configuration du projet Firebase. Google Ireland Ltd et Google LLC agissent comme sous-traitants (conditions de traitement des données de Google Cloud et de Firebase).</li>
+<li><strong>Combien de temps</strong> : jusqu'à la suppression du compte, possible à tout moment dans Réglages › Mon compte › Supprimer mon compte : le compte et sa copie en ligne sont effacés.</li>
+<li><strong>Cookies</strong> : la connexion garde une session dans le stockage du navigateur (et, avec Google, les cookies propres à la fenêtre de connexion Google). Aucun cookie de mesure d'audience ni de publicité.</li>
+<li>À la déconnexion, vous choisissez de garder vos cartes sur l'appareil ou de les en effacer.</li>
 </ul>
-<p>Pas de cookie, pas de mesure d'audience, pas de publicité, pas de revente de données.</p>
 
-<h2>Contact</h2>
-<p>Voir les <a href="legal.html">mentions légales</a>.</p>
+<h2>Ce qui sort aussi de votre appareil</h2>
+<ul>
+<li><strong>Images des cartes</strong> : chargées depuis <code>cards.lorcast.io</code> (Lorcast) et, pour quelques cartes, depuis <code>api.lorcana.ravensburger.com</code>. Comme pour toute image d'un site, ces serveurs voient votre adresse IP.</li>
+<li><strong>Polices</strong> : Google Fonts (<code>fonts.googleapis.com</code>, <code>fonts.gstatic.com</code>).</li>
+<li><strong>Compte</strong> : le code de Firebase est téléchargé depuis <code>www.gstatic.com</code>, seulement si vous vous connectez (ou si un compte a déjà été connecté sur l'appareil).</li>
+<li><strong>Scan</strong> : la lecture des cartes se fait sur votre appareil, les photos ne sont jamais envoyées. Le moteur de lecture (Tesseract) est téléchargé une fois depuis <code>cdn.jsdelivr.net</code>.</li>
+<li><strong>Lien de partage</strong> : votre liste d'échange est entièrement contenue dans le lien que vous choisissez de partager.</li>
+</ul>
+
+<h2>Vos droits</h2>
+<p>Vous pouvez accéder à vos données (elles sont affichées dans l'appli, et Réglages › Sauvegarde les exporte), les corriger, les effacer (suppression du compte) et vous opposer à leur traitement (ne pas créer de compte). Pour toute question ou réclamation, écrivez au contact des <a href="legal.html">mentions légales</a> ; vous pouvez aussi saisir la CNIL (<a href="https://www.cnil.fr/">cnil.fr</a>).</p>
 
 <hr>
 
 <h1 lang="en">Privacy</h1>
 <div lang="en">
-<div class="box"><p>Ink Orbit has no accounts, no server and no trackers. Your collection, decks and settings stay on your device (browser storage); clearing the site's data removes them, and Settings › Backup lets you keep a copy in a file.</p></div>
-<p>What leaves your device: card images are loaded from cards.lorcast.io (and, for a few cards, api.lorcana.ravensburger.com); fonts come from Google Fonts; the scan engine (Tesseract) is downloaded once from cdn.jsdelivr.net, but photos are read on your device and never uploaded; a share link contains your trade list itself and is stored nowhere else. No cookies, no analytics, no ads.</p>
+<div class="box"><p>Ink Orbit works without an account: your cards, decks and settings then stay on your device. The account is optional and only used to sync your data between your devices. No trackers, no ads, no data selling.</p></div>
+<h2>Without an account</h2>
+<p>Collection, wants, trade list, decks, value history, settings, lore counter and mystery card games and trophies are stored in the browser's local storage; an offline copy of the app, catalogue, prices and images you have seen is kept in the browser cache. Clearing the site's data removes everything; Settings › Backup lets you keep a copy in a file.</p>
+<h2>With an account (optional)</h2>
+<p>Sign-in uses Firebase Authentication (Google): your email address (and a password we never see) or, with Google, your email address, name and profile picture. Cloud Firestore (Google) keeps one document per account: your collection, wants, cards kept out of trades, decks and a few settings (currency, card language, copies kept, trade-list nickname), with the last change date and a random device identifier; only your account can read or change it. Data is stored on Google servers in the European Union or the United States depending on the Firebase project configuration; Google Ireland Ltd and Google LLC act as processors. It is kept until you delete your account (Settings › My account › Delete my account), which erases the account and its online copy. Sign-in keeps a session in browser storage (and Google's own cookies for its sign-in window); no analytics or advertising cookies. When signing out, you choose to keep your cards on the device or erase them.</p>
+<h2>What else leaves your device</h2>
+<p>Card images from cards.lorcast.io (and, for a few cards, api.lorcana.ravensburger.com); fonts from Google Fonts; the Firebase code from www.gstatic.com, only if you sign in; the scan engine (Tesseract) from cdn.jsdelivr.net — photos are read on your device and never uploaded; a share link contains your trade list itself.</p>
+<h2>Your rights</h2>
+<p>You can access (shown in the app, exported by Settings › Backup), correct and erase your data (account deletion) and object to its processing (do not create an account). Contact: see the <a href="legal.html">legal notice</a>. You may also lodge a complaint with your data protection authority (in France, the CNIL).</p>
 </div>
 </main>
 </body>

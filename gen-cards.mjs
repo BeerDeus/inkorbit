@@ -51,13 +51,21 @@ export function row(c, img) {
 /** Une carte dans une langue → [id, nom, version, texte, sous-types, histoire]. */
 export const textRow = c => [c.id, c.name || '', c.version || '', c.fullText || '', c.subtypesText || '', c.story || ''];
 
-export function build(lj, lcCards) {
+/** Noms des groupes de promos absents de Lorcast (ou sous un autre code) : codes LorcanaJSON (promoGrouping). */
+const PROMO_NAMES = { C1: 'Challenge Promo' };
+export function build(lj, lcCards, lcSets = []) {
   const en = lj.en.cards, imgs = new Map();
   for (const x of lcCards) { const t = lcToken(x.image_uris && x.image_uris.digital && x.image_uris.digital.small); if (t) imgs.set(joinKey(x.set.code, x.collector_number), t); }
   const sets = Object.entries(lj.en.sets).filter(([, s]) => s.hasAllCards || (s.cardCounts && s.cardCounts.total)).map(([code, s]) => ({
     c: code, t: s.type, d: s.releaseDate || s.prereleaseDate || '', b: (s.cardCounts && s.cardCounts.base) || 0,
     n: Object.fromEntries(LANGS.map(l => [l, (lj[l] && lj[l].sets[code] && lj[l].sets[code].name) || s.name])),
   }));
+  const lcName = new Map(lcSets.map(x => [String(x.code).toLowerCase(), x]));
+  for (const code of [...new Set(en.filter(c => c.promoGrouping).map(c => c.promoGrouping))]) {      // promos : leur vrai nom (Promo Set 1, D23 Collection…), pas « Promos P1 »
+    if (sets.some(x => x.c === code)) continue;
+    const x = lcName.get(code.toLowerCase()), name = (x && x.name) || PROMO_NAMES[code];
+    if (name) sets.push({ c: code, t: 'promo', d: (x && x.released_at) || '', b: 0, n: Object.fromEntries(LANGS.map(l => [l, name])) });
+  }
   let withImg = 0;
   const cards = en.map(c => { const img = imgs.get(joinKey(c.promoGrouping || c.setCode, printedNum(c))) || rbImg(c); if (img && img[1] !== ':') withImg++; return row(c, img); }).sort((a, b) => a[0] - b[0]);
   const texts = {};
@@ -74,12 +82,12 @@ async function main() {
     try { lj[l] = await get(`${LJ}/${l}/allCards.json`, `lj-${l}.json`); }
     catch (e) { if (l === 'en') throw e; console.warn(`LorcanaJSON ${l} indisponible (${e.message}) : anglais à la place`); }
   }
-  let lcCards = [];
+  let lcCards = [], lcSets = [];
   try {
-    const sets = (await get(`${LC}/sets`, 'lc-sets.json')).results || [];
+    const sets = lcSets = (await get(`${LC}/sets`, 'lc-sets.json')).results || [];
     for (const s of sets) { lcCards.push(...(await get(`${LC}/sets/${encodeURIComponent(s.code)}/cards`, `lc-set-${s.code}.json`)).map(x => ({ ...x, set: x.set || { code: s.code } }))); if (!CACHE) await sleep(150); }
   } catch (e) { console.warn('Lorcast indisponible : images de secours', e.message); lcCards = []; }
-  const { cat, texts, withImg } = build(lj, lcCards);
+  const { cat, texts, withImg } = build(lj, lcCards, lcSets);
   if (cat.cards.length < 1000) throw new Error('catalogue trop petit : ' + cat.cards.length);
   mkdirSync(OUT, { recursive: true });
   writeFileSync(join(OUT, 'cards.json'), JSON.stringify(cat));

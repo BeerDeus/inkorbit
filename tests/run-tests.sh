@@ -9,8 +9,8 @@ if [ -z "$CHROMIUM" ]; then
 fi
 export CHROMIUM
 mkdir -p tests/logs; : > tests/run-tests.out
-NODE=(test-gen.mjs test-qr.mjs test-core.mjs test-decks.mjs test-games.mjs test-scan.mjs test-i18n.mjs)
-BROWSER=(app-e2e.mjs rules-test.mjs sync-e2e.mjs)
+NODE=(test-gen.mjs test-qr.mjs test-core.mjs test-decks.mjs test-games.mjs test-scan.mjs test-progress.mjs test-i18n.mjs)
+BROWSER=(app-e2e.mjs back-e2e.mjs pwa-e2e.mjs scan-e2e.mjs rules-test.mjs sync-e2e.mjs)
 T=("$@")
 if [ ${#T[@]} -eq 0 ]; then T=("${NODE[@]}" "${BROWSER[@]}"); elif [ "$1" = --node ]; then T=("${NODE[@]}"); fi
 fail=0

@@ -3,13 +3,26 @@
 .sc-top{display:flex;flex-direction:column;gap:10px}
 .sc-top .seg{max-width:360px}
 .sc-main,.sc-left,.sc-right{display:flex;flex-direction:column;gap:12px}
-.sc-cam{position:relative;aspect-ratio:3/4;max-height:52vh;max-height:52dvh;width:100%;border-radius:var(--r-lg);overflow:hidden;background:radial-gradient(120% 80% at 50% 0%,var(--surface-2),var(--surface-3));border:1px solid var(--line)}
+.sc-cam{position:relative;aspect-ratio:3/4;max-height:46vh;max-height:46dvh;width:100%;border-radius:var(--r-lg);overflow:hidden;background:radial-gradient(120% 80% at 50% 0%,var(--surface-2),var(--surface-3));border:1px solid var(--line)}
 .sc-cam video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .3s}
 .sc-on .sc-cam video{opacity:1}
 /* Gabarit : le reste de l'image assombri, coins dorés ; la bande dorée en bas à gauche montre où doit tomber la ligne « 12/204 • FR • 7 » */
 .sc-guide{position:absolute;border-radius:4.5%/3.2%;box-shadow:0 0 0 2px var(--gold),0 0 0 100vmax rgba(8,6,20,.45);pointer-events:none;opacity:0;transition:opacity .3s}
 .sc-on .sc-guide{opacity:1}
-.sc-foot{position:absolute;left:2%;top:92.5%;width:44%;height:7%;border-radius:4px;border:1.5px dashed var(--gold);opacity:.75}
+.sc-foot{position:absolute;left:2%;top:92.5%;width:44%;height:7%;border-radius:4px;border:1.5px dashed var(--gold);opacity:.8;display:flex;align-items:center;justify-content:center}
+.sc-foot b{font:700 clamp(8px,2.4vw,11px)/1 var(--font-body);letter-spacing:.04em;color:var(--gold);text-shadow:0 1px 2px rgba(0,0,0,.8);white-space:nowrap}
+/* Coins du gabarit (équerres dorées), éclat quand une carte est lue */
+.sc-corner,.sc-guide::before,.sc-guide::after{position:absolute;width:22px;height:22px;border:3px solid var(--gold);content:'';pointer-events:none}
+.sc-guide::before{left:-3px;top:-3px;border-right:0;border-bottom:0;border-radius:10px 0 0 0}
+.sc-guide::after{right:-3px;top:-3px;border-left:0;border-bottom:0;border-radius:0 10px 0 0}
+.sc-corner{left:-3px;bottom:-3px;border-right:0;border-top:0;border-radius:0 0 0 10px}
+.sc-corner.r{left:auto;right:-3px;border-left:0;border-right:3px solid var(--gold);border-radius:0 0 10px 0}
+.sc-guide.hit{animation:scHit .7s var(--out)}
+@keyframes scHit{0%{box-shadow:0 0 0 2px var(--gold),0 0 0 100vmax rgba(8,6,20,.45),0 0 0 0 var(--gold)}30%{box-shadow:0 0 0 4px var(--gold),0 0 0 100vmax rgba(8,6,20,.3),0 0 36px 10px var(--gold)}100%{box-shadow:0 0 0 2px var(--gold),0 0 0 100vmax rgba(8,6,20,.45),0 0 0 0 transparent}}
+.sc-fly{position:fixed;z-index:80;border-radius:5%/3.6%;pointer-events:none;transform-origin:0 0;box-shadow:var(--shadow-lg);object-fit:cover}
+.sc-tips{text-align:center;margin-top:-4px;font-size:12.5px;text-wrap:balance}
+.sc-line{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:6px 10px;min-height:22px}
+.sc-sess{min-height:28px;padding:0 10px;color:var(--gold);border-color:color-mix(in srgb,var(--gold) 40%,var(--line))}
 .sc-idle{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:24px;text-align:center;color:var(--ink-2)}
 .sc-idle svg.i{width:48px;height:48px;color:var(--gold);stroke-width:1.4}
 .sc-idle p{max-width:30ch}
@@ -38,7 +51,7 @@
 @keyframes scNew{from{background:var(--gold-soft)}to{background:transparent}}
 .sc-empty{padding:16px}
 .sc-add{min-height:52px;position:sticky;bottom:calc(84px + env(safe-area-inset-bottom,0px));box-shadow:var(--shadow-lg)}
-@media (prefers-reduced-motion:reduce){.sc-new{animation:none}.sc-cam video,.sc-guide{transition:none}}
+@media (prefers-reduced-motion:reduce){.sc-new,.sc-guide.hit{animation:none}.sc-cam video,.sc-guide{transition:none}}
 
 @media (min-width:1024px){
   .sc-main{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:28px;align-items:start}

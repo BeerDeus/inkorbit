@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
 const C = createRequire(import.meta.url)('../src/core.js');
 
-const card = (id, set, num, name, ver, o = {}) => ({ id, set, num: String(num), name, ver, nameEn: o.en || name, verEn: o.ven ?? ver, ink: o.ink ?? 1, rar: o.rar ?? 0, max: o.max || 0, foil: 3, ...o });
+const card = (id, set, num, name, ver, o = {}) => ({ core: true, id, set, num: String(num), name, ver, nameEn: o.en || name, verEn: o.ven ?? ver, ink: o.ink ?? 1, rar: o.rar ?? 0, max: o.max || 0, foil: 3, ...o });
 const CARDS = [card(1, '1', 1, 'Ariel', 'Sur des jambes humaines', { en: 'Ariel', ven: 'On Human Legs' }), card(42, '1', 42, 'Elsa', 'Esprit de l\'hiver', { en: 'Elsa', ven: 'Spirit of Winter', ink: 2 }),
   card(207, '1', 207, 'Elsa', 'Esprit de l\'hiver', { en: 'Elsa', ven: 'Spirit of Winter', ink: 2, rar: 6 }), card(436, '3', '4a', 'Dalmatien', 'Puppy', { ink: 1, max: 99 }),
   card(700, 'P3', 57, 'Stitch', 'Promo', { ink: 8 }), card(9, '2', 9, 'Maléfique', 'Sorcière', { ink: 16 })];
@@ -47,17 +47,21 @@ test('règles des decks : 60 cartes, 2 encres, 4 exemplaires par nom complet', (
   assert.ok(r.problems.some(p => /encres : 2 au plus/.test(p))); assert.deepEqual(r.over, [], 'exception imprimée : 99 exemplaires');
   r = C.deckCheck({ 1: 4, 42: 4, 436: 52 }, byId);
   assert.ok(r.ok, r.problems.join());
+  const old = new Map([...byId].map(([k, c]) => [k, { ...c, core: k !== 1 }]));
+  assert.ok(C.deckCheck({ 1: 4, 42: 4, 436: 52 }, old).problems.some(p => /4 cartes hors format Core/.test(p)), 'rotation : cartes hors Core signalées');
+  assert.ok(C.deckCheck({ 1: 4, 42: 4, 436: 52 }, old, 'infinity').ok, 'Infinity : toutes les extensions');
   assert.deepEqual(C.deckMissing({ 42: 4, 1: 1 }, { 42: 1, '42*': 1, 1: 3 }), [{ id: 42, need: 2 }]);
 });
 
 test('échange : listes, texte compact, correspondances, base64url', () => {
   const m = { 42: 5, '42*': 1, 1: 2, 9: 6 };
   const L = C.tradeLists(m, 4, { 9: 1 }, { 1: 3, 700: 1 });
-  assert.deepEqual(L.have, [{ id: 42, n: 2, foil: 1 }]);
+  assert.deepEqual(L.have, [{ id: 42, n: 2, foil: 0 }], 'les normales partent d’abord : le foil est gardé');
   assert.deepEqual(L.want, [{ id: 1, n: 1 }, { id: 700, n: 1 }]);
   const s = C.tradePack({ name: 'Mar|tin', cur: 'USD', ...L });
-  assert.equal(s, 'v1|Mar tin|USD|42.2*|1,700');
-  assert.deepEqual(C.tradeUnpack(s), { name: 'Mar tin', cur: 'USD', have: [{ id: 42, n: 2, foil: 1 }], want: [{ id: 1, n: 1, foil: 0 }, { id: 700, n: 1, foil: 0 }] });
+  assert.equal(s, 'v1|Mar tin|USD|42.2|1,700');
+  assert.deepEqual(C.tradeUnpack(s), { name: 'Mar tin', cur: 'USD', have: [{ id: 42, n: 2, foil: 0 }], want: [{ id: 1, n: 1, foil: 0 }, { id: 700, n: 1, foil: 0 }] });
+  assert.deepEqual(C.tradeLists({ 42: 1, '42*': 3 }, 1, {}, {}).have, [{ id: 42, n: 3, foil: 2 }], 'la normale part d’abord, puis 2 foils');
   assert.equal(C.tradeUnpack('v2|x'), null);
   const mt = C.tradeMatch({ have: [{ id: 700, n: 3 }], want: [{ id: 42, n: 1 }] }, { have: [{ id: 42, n: 1 }], want: [{ id: 700, n: 1 }] });
   assert.deepEqual(mt, { forMe: [{ id: 42, n: 1 }], forThem: [{ id: 700, n: 1 }] });

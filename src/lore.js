@@ -8,10 +8,10 @@
 const LORE_MAX = 99, LORE_LOG = 300;
 /** Nouvelle partie ; prev : partie d'avant (noms, encres, objectif gardés : « Revanche »). */
 function loreNew(n = 2, goal = 20, prev) {
-  const inks = [4, 3, 1, 2], names = ['Joueur 1', 'Joueur 2', 'Joueur 3', 'Joueur 4'];
+  const inks = [4, 3, 1, 2];
   const players = Array.from({ length: Math.min(4, Math.max(2, n)) }, (_, i) => {
     const p = prev && prev.players[i];
-    return { name: p ? p.name : (typeof T === 'function' ? T(names[i]) : names[i]), ink: p ? p.ink : inks[i], lore: 0 };
+    return { name: p ? p.name : (typeof T === 'function' ? T('Joueur {n}', { n: i + 1 }) : 'Joueur ' + (i + 1)), ink: p ? p.ink : inks[i], lore: 0 };
   });
   return { goal: Math.min(LORE_MAX, Math.max(1, goal | 0 || 20)), players, turn: 1, cur: 0, log: [], winner: -1 };
 }
@@ -49,6 +49,7 @@ function loreSet(s, buzz) {
   if (s === LORE.s) return;
   const won = LORE.s && LORE.s.winner < 0 && s.winner >= 0;
   LORE.s = s; loreSave(); lorePaint();
+  if (won && typeof prgLore === 'function') prgLore(s.winner === 0);      // trophées (progress.js) : le joueur 1 est le propriétaire du téléphone
   if (buzz) try { navigator.vibrate && navigator.vibrate(won ? [40, 60, 120] : 12); } catch (e) { /* ignore */ }
 }
 async function loreWake() {
@@ -93,9 +94,9 @@ function lorePaint() {
     </div>`;
   }).join('');
   $('.lore-bar', el).innerHTML = `
-    <button type="button" class="btn-icon" data-lore="undo" aria-label="${esc(T('Annuler'))}" ${s.log.length ? '' : 'disabled'}><svg class="i flip"><use href="#i-refresh"/></svg></button>
+    <button type="button" class="btn-icon" data-lore="undo" aria-label="${esc(T('Annuler'))}" ${s.log.length ? '' : 'disabled'}><svg class="i"><use href="#i-undo"/></svg></button>
     <button type="button" class="btn lore-turn" data-lore="next"><span>${esc(T('Tour {n}', { n: s.turn }))}</span><b>${esc(T('À {name}', { name: s.players[s.cur].name }))}</b><svg class="i"><use href="#i-chev"/></svg></button>
-    <button type="button" class="btn-icon" data-lore="reset" aria-label="${esc(T('Nouvelle partie'))}"><svg class="i"><use href="#i-plus"/></svg></button>`;
+    <button type="button" class="btn-icon" data-lore="reset" aria-label="${esc(T('Nouvelle partie'))}"><svg class="i"><use href="#i-refresh"/></svg></button>`;
 }
 /** Appui sur une zone − / + : toucher = ±1 au relâchement ; appui long (450 ms) = ±5 tout de suite, puis toutes les 350 ms. */
 function loreHold(board) {
@@ -138,7 +139,7 @@ function loreSettings() {
   const upd = f => { const o = loreCopy(LORE.s); f(o); LORE.s = o; loreSave(); lorePaint(); };
   el.addEventListener('click', e => {
     const n = e.target.closest('[data-n]');
-    if (n) { const k = +n.dataset.n; if (k !== LORE.s.players.length) { el.close(); loreSet(loreNew(k, LORE.s.goal, LORE.s)); loreSettings(); } return; }
+    if (n) { const k = +n.dataset.n; if (k !== LORE.s.players.length) { const before = LORE.s; el.close(); loreSet(loreNew(k, LORE.s.goal, LORE.s)); loreSettings(); if (before.log.length) toast(T('Nouvelle partie à {n} joueurs', { n: k }), { action: T('Annuler'), onAction: () => loreSet(before) }); } return; }
     const ink = e.target.closest('[data-pl]');
     if (ink) { upd(o => { o.players[+ink.dataset.pl].ink = +ink.dataset.ink; }); $$(`[data-pl="${ink.dataset.pl}"]`, el).forEach(x => x.setAttribute('aria-pressed', x === ink)); }
   });

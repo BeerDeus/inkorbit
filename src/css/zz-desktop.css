@@ -24,7 +24,10 @@
   a.card-thumb:hover,button.card-thumb:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg)}
 
   .ov{align-items:center;padding:32px}
-  .sheet{max-width:560px;max-height:min(86vh,820px);border-bottom:1px solid var(--line);border-radius:var(--r-lg);animation:popIn .25s var(--out) both}
+  .ov-sheet{top:0;height:100%}
+  .nav-ind{display:none}
+  .bar.scrolled{box-shadow:none}
+  .sheet{max-width:560px;max-height:min(86vh,820px);border:1px solid var(--line);padding-top:0;border-radius:var(--r-lg);animation:popIn .25s var(--out) both}
   .ov.closing .sheet{animation:popOut .16s ease-in both}
   .sheet-grip{display:none}
   .sheet-head{padding:18px 14px 8px 24px}

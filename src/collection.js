@@ -3,7 +3,7 @@
 const CV = { tab: 'cards', q: '', ink: '', sort: 'set', show: 300, el: null };
 const SORTS = () => [['set', T('Extension')], ['name', T('Nom')], ['price', T('Prix')], ['cost', T('Coût')], ['qty', T('Quantité')]];
 
-onView('coll', el => { CV.el = el; dataLoad().then(collPaint, () => collFail(el)); if (!CARDS.ready) el.innerHTML = '<div class="sk" style="height:220px"></div>'; });
+onView('coll', el => { CV.el = el; dataLoad().then(collPaint, () => collFail(el)); if (!CARDS.ready) el.innerHTML = skeletonCards(6); });
 onColl(() => { if (curView() === 'coll' && CV.el) collPaint(); });
 function collFail(el) { el.innerHTML = `<div class="empty"><svg class="i"><use href="#i-offline"/></svg><h3>${esc(T('Catalogue indisponible'))}</h3><p>${esc(T('Connecte-toi une première fois pour télécharger les cartes.'))}</p></div>`; }
 
@@ -34,7 +34,7 @@ function collPaint() {
 }
 function collCardsTab(body, n) {
   body.innerHTML = `<div class="coll-tools">
-      <label class="search"><svg class="i"><use href="#i-search"/></svg><input class="input" type="search" placeholder="${esc(T('Chercher dans ma collection'))}" value="${esc(CV.q)}" data-q></label>
+      <label class="search"><svg class="i"><use href="#i-search"/></svg><input class="input" type="search" placeholder="${esc(T('Chercher dans ma collection'))}" aria-label="${esc(T('Chercher dans ma collection'))}" value="${esc(CV.q)}" data-q></label>
       <div class="chips" role="group" aria-label="${esc(T('Encre'))}"><button type="button" class="chip" data-ink="" aria-pressed="${CV.ink === ''}">${esc(T('Toutes'))}</button>${INK_KEYS.map((k, i) => `<button type="button" class="chip" data-ink="${i}" aria-pressed="${CV.ink === i}" aria-label="${esc(INK_NAMES()[i])}"><svg class="ink-sym" data-ink="${k}"><use href="#ink-${k}"/></svg></button>`).join('')}</div>
       <div class="coll-actions"><select class="select" data-sort aria-label="${esc(T('Trier'))}">${SORTS().map(([k, l]) => `<option value="${k}"${CV.sort === k ? ' selected' : ''}>${esc(l)}</option>`).join('')}</select>
       <button type="button" class="btn btn-primary" data-add><svg class="i"><use href="#i-plus"/></svg>${esc(T('Ajouter'))}</button>
@@ -65,12 +65,12 @@ function collCardsTab(body, n) {
 /* ── Ajouter des cartes une par une ─────────────────────────────────────────────────────────── */
 function openAddCards() {
   const el = pickCard({ title: T('Ajouter des cartes'), keep: true, onPick: c => {
-    const foil = !!$('[data-foil]', el).checked && !!(c.foil & 2);
+    const foil = c.foil === 2 || (!!$('[data-foil]', el).checked && !!(c.foil & 2));      // foil === 2 : n'existe qu'en foil (Enchantée…)
     collAddCard(c, 1, { foil, lang: $('[data-lang]', el).value });
     const b = $(`.card-thumb[data-card="${c.id}"]`, el); if (b) { b.classList.remove('pop'); void b.offsetWidth; b.classList.add('pop'); }
   } });
   $('.sheet-body', el).insertAdjacentHTML('afterbegin', `<div class="add-opts"><label class="switch"><input type="checkbox" data-foil><span>${esc(T('Foil'))} ✦</span></label>
-    <select class="select" data-lang aria-label="${esc(T('Langue des cartes'))}"><option value="">${esc(T('Langue : non précisée'))}</option>${IO_LANGS.map(l => `<option value="${l}">${l.toUpperCase()}</option>`).join('')}</select></div>
+    <select class="select" data-lang aria-label="${esc(T('Langue des cartes'))}"><option value="">${esc(T('Langue ?'))}</option>${IO_LANGS.map(l => `<option value="${l}">${l.toUpperCase()}</option>`).join('')}</select></div>
     <p class="muted small">${esc(T('Touche une carte pour en ajouter un exemplaire.'))}</p>`);
 }
 
@@ -83,8 +83,8 @@ function openCollMenu() {
   el.addEventListener('click', e => {
     const a = e.target.closest('[data-a]'); if (!a) return;
     if (a.dataset.a === 'import') { el.close(); openImport(); }
-    else if (a.dataset.a === 'csv') { downloadText(`ink-orbit-collection-${dayKey()}.csv`, collToCsv(COLL.map, CARDS.byId), 'text/csv'); }
-    else if (a.dataset.a === 'wipe' && confirm(T('Vider toute la collection ? Les decks et les recherches sont gardés.'))) { const before = COLL.map; COLL.map = {}; collSave(); el.close(); toast(T('Collection vidée'), { action: T('Annuler'), onAction: () => { COLL.map = before; collSave(); } }); }
+    else if (a.dataset.a === 'csv') { dataEn().catch(() => {}).then(() => downloadText(`ink-orbit-collection-${dayKey()}.csv`, collToCsv(COLL.map, CARDS.byId), 'text/csv')); }
+    else if (a.dataset.a === 'wipe') askSheet({ title: T('Vider la collection ?'), text: T('Toutes tes cartes sont retirées. Les decks et les recherches sont gardés.'), ok: T('Vider'), danger: true }).then(yes => { if (!yes) return; const before = COLL.map; COLL.map = {}; collSave(); el.close(); toast(T('Collection vidée'), { action: T('Annuler'), onAction: () => { COLL.map = before; collSave(); } }); });
   });
 }
 function downloadText(name, text, type = 'text/plain') {
@@ -110,7 +110,8 @@ function openImport() {
     if ($('[data-replace]', el).checked) COLL.map = {};
     let n = 0; for (const l of r.lines) { collAdd(COLL.map, collKey(l.card.id, l.foil, l.lang), l.qty); n += l.qty; }
     collSave();
-    out.innerHTML = `<p class="good">${esc(TN(n, '{n} carte importée', '{n} cartes importées'))}</p>` + (r.bad.length ? `<details><summary>${esc(TN(r.bad.length, '{n} ligne non reconnue', '{n} lignes non reconnues'))}</summary><pre class="imp-bad">${esc(r.bad.slice(0, 200).join('\n'))}</pre></details>` : '');
+    const capped = r.lines.filter(l => l.capped).length;
+    out.innerHTML = `<p class="good">${esc(TN(n, '{n} carte importée', '{n} cartes importées'))}</p>` + (capped ? `<p class="muted small">${esc(TN(capped, '{n} quantité ramenée à 999', '{n} quantités ramenées à 999'))}</p>` : '') + (r.bad.length ? `<details><summary>${esc(TN(r.bad.length, '{n} ligne non reconnue', '{n} lignes non reconnues'))}</summary><pre class="imp-bad">${esc(r.bad.slice(0, 200).join('\n'))}</pre></details>` : '');
     toast(TN(n, '{n} carte importée', '{n} cartes importées'), { action: T('Annuler'), onAction: () => { COLL.map = before; collSave(); } });
   });
 }

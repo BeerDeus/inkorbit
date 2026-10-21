@@ -4,7 +4,7 @@
    · Partager : aucun serveur. La liste est compressée (deflate) dans le lien lui-même : https://<site>/?p=<base64url> ; QR code (qr.js) tant qu'il tient.
    · Un lien ?p= ouvert : la liste de l'autre joueur, et ce qui correspond à ma collection (il a ce que je cherche, je peux lui donner ce qu'il cherche). */
 const TV = { tab: 'have', mode: load('tradeMode', 'grid'), el: null };
-onView('trade', el => { TV.el = el; dataLoad().then(tradePaint, () => collFail(el)); if (!CARDS.ready) el.innerHTML = '<div class="sk" style="height:220px"></div>'; });
+onView('trade', el => { TV.el = el; dataLoad().then(tradePaint, () => collFail(el)); if (!CARDS.ready) el.innerHTML = skeletonCards(6); });
 onColl(() => { if (curView() === 'trade' && TV.el) tradePaint(); });
 const myLists = () => tradeLists(COLL.map, prefs().keep, COLL.hold, COLL.wants);
 const listValue = (l, cur) => l.reduce((s, x) => s + x.n * priceFor(PRICES.p, x.id, x.foil >= x.n, cur), 0);
@@ -41,8 +41,8 @@ function tradeItemsHtml(items, kind, mode = TV.mode) {
   const cur = prefs().cur, cards = items.map(x => ({ x, c: CARDS.byId.get(x.id) })).filter(o => o.c);
   if (!cards.length) return `<div class="empty"><svg class="i"><use href="#i-${kind === 'want' ? 'heart' : 'trade'}"/></svg><p>${esc(kind === 'want' ? T('Aucune carte cherchée. Ajoute les manquantes d\'un deck ou d\'une extension, ou une carte à la main.') : kind === 'have' ? T('Rien à échanger pour l\'instant : tes doubles apparaîtront ici.') : T('Liste vide'))}</p></div>`;
   if (mode === 'binder' && typeof binderHtml === 'function') return binderHtml(cards.map(o => ({ c: o.c, n: o.x.n, foil: o.x.foil })));
-  if (mode === 'list') return `<div class="list" data-cards>${cards.map(({ x, c }) => `<div class="row">${thumbHtml(c, { size: 'small' })}<span class="row-main"><span class="row-title">${x.n > 1 ? `${x.n} × ` : ''}${esc(fullName(c))}${x.foil ? ' ✦' : ''}</span><span class="row-sub">${esc(setLabel(c))} · ${fmtMoney(priceFor(PRICES.p, c.id, !!x.foil, cur), cur)}</span></span>${kind === 'have' ? `<button type="button" class="btn btn-ghost" data-hold="${c.id}">${esc(T('Garder'))}</button>` : kind === 'want' ? `<button type="button" class="btn-icon" data-unwant="${c.id}" aria-label="${esc(T('Retirer'))}"><svg class="i"><use href="#i-close"/></svg></button>` : ''}</div>`).join('')}</div>`;
-  return `<div class="grid-cards" data-cards>${cards.map(({ x, c }) => thumbHtml(c, { qty: x.n, foil: x.foil > 0, cap: `<b class="num">${fmtMoney(priceFor(PRICES.p, c.id, !!x.foil, cur), cur)}</b>` })).join('')}</div>`;
+  if (mode === 'list') return `<div class="list" data-cards>${cards.map(({ x, c }) => `<div class="row">${thumbHtml(c, { size: 'small' })}<span class="row-main"><span class="row-title">${x.n > 1 ? `${x.n} × ` : ''}${esc(fullName(c))}${x.foil ? ' ✦' : ''}</span><span class="row-sub">${esc(setLabel(c))} · ${fmtMoney(priceFor(PRICES.p, c.id, x.foil >= x.n, cur), cur)}</span></span>${kind === 'have' ? `<button type="button" class="btn btn-ghost" data-hold="${c.id}">${esc(T('Garder'))}</button>` : kind === 'want' ? `<button type="button" class="btn-icon" data-unwant="${c.id}" aria-label="${esc(T('Retirer'))}"><svg class="i"><use href="#i-close"/></svg></button>` : ''}</div>`).join('')}</div>`;
+  return `<div class="grid-cards" data-cards>${cards.map(({ x, c }) => thumbHtml(c, { qty: x.n, foil: x.foil > 0, cap: `<b class="num">${fmtMoney(priceFor(PRICES.p, c.id, x.foil >= x.n, cur), cur)}</b>` })).join('')}</div>`;
 }
 
 /* ── Partager ───────────────────────────────────────────────────────────────────────────────── */
@@ -65,6 +65,7 @@ function tradeShareTab(body, L) {
   $('#trName', body).addEventListener('change', e => { setPref('name', e.target.value.trim()); make(); });
   body.addEventListener('click', async e => {
     if (!link) return;
+    if (e.target.closest('[data-copy],[data-share]') && typeof prgShared === 'function') prgShared();      // trophée « Vitrine » (progress.js)
     if (e.target.closest('[data-copy]')) { try { await navigator.clipboard.writeText(link); toast(T('Lien copié')); } catch (err) { prompt(T('Copie ce lien'), link); } }
     if (e.target.closest('[data-share]')) { try { await navigator.share({ title: T('Ma liste d\'échange Ink Orbit'), url: link }); } catch (err) { if (err && err.name !== 'AbortError') { try { await navigator.clipboard.writeText(link); toast(T('Lien copié')); } catch (e2) { /* ignore */ } } } }
   });
@@ -79,7 +80,7 @@ async function openPublicTrade(p) {
   await dataLoad();
   const m = tradeMatch(myLists(), L), mine = Object.keys(COLL.map).length > 0;
   let tab = m.forMe.length ? 'match' : 'have';
-  const el = openScreen({ title: L.name ? T('Liste de {name}', { name: L.name }) : T('Liste d\'échange'), cls: 'pub-screen', html: '<div class="pub-host"></div>' });
+  const el = openScreen({ title: L.name ? T('Liste d’échange · {name}', { name: L.name }) : T('Liste d\'échange'), cls: 'pub-screen', html: '<div class="pub-host"></div>' });
   const host = $('.pub-host', el);
   const paint = () => {
     host.innerHTML = `${mine ? `<div class="panel da-frame pub-match"><p><b>${esc(TN(m.forMe.length, '{n} carte que tu cherches', '{n} cartes que tu cherches'))}</b> · ${esc(TN(m.forThem.length, '{n} carte que tu peux lui proposer', '{n} cartes que tu peux lui proposer'))}</p></div>` : ''}

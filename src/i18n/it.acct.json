@@ -39,7 +39,6 @@
  "Renvoyer l'e-mail": "Invia di nuovo l'e-mail",
  "Synchroniser maintenant": "Sincronizza ora",
  "Se déconnecter": "Esci",
- "Tes cartes restent aussi sur cet appareil": "Le tue carte restano anche su questo dispositivo",
  "Supprimer mon compte": "Elimina il mio account",
  "Efface le compte et sa copie en ligne": "Elimina l'account e la sua copia online",
  "E-mail envoyé": "E-mail inviata",
@@ -47,5 +46,19 @@
  "Supprimer définitivement ton compte et sa copie en ligne ? Les données de cet appareil sont gardées.": "Eliminare definitivamente il tuo account e la sua copia online? I dati di questo dispositivo restano.",
  "Compte supprimé": "Account eliminato",
  "{n} carte à échanger": "{n} carta da scambiare",
- "{n} cartes à échanger": "{n} carte da scambiare"
+ "{n} cartes à échanger": "{n} carte da scambiare",
+ "Langue des cartes changée sur un autre appareil.": "Lingua delle carte cambiata su un altro dispositivo.",
+ "Ce compte a été supprimé depuis un autre appareil. Tes cartes restent sur celui-ci.": "Questo account è stato eliminato da un altro dispositivo. Le tue carte restano su questo.",
+ "Ajouter les cartes de cet appareil à ce compte ?": "Aggiungere le carte di questo dispositivo a questo account?",
+ "Cet appareil a {n} carte d'un autre compte. Non : elle est mise de côté, tu pourras la récupérer depuis Mon compte.": "Questo dispositivo ha {n} carta di un altro account. No: viene messa da parte, potrai recuperarla da Il mio account.",
+ "Cet appareil a {n} cartes d'un autre compte. Non : elles sont mises de côté, tu pourras les récupérer depuis Mon compte.": "Questo dispositivo ha {n} carte di un altro account. No: vengono messe da parte, potrai recuperarle da Il mio account.",
+ "Non": "No",
+ "Récupérer les cartes mises de côté": "Recupera le carte messe da parte",
+ "Celles d'un autre compte, gardées sur cet appareil": "Quelle di un altro account, conservate su questo dispositivo",
+ "Tu choisis de garder tes cartes ici ou de les effacer": "Scegli se tenere qui le tue carte o cancellarle",
+ "Cartes récupérées": "Carte recuperate",
+ "Tes cartes restent dans ton compte. Sur cet appareil :": "Le tue carte restano nel tuo account. Su questo dispositivo:",
+ "Garder mes cartes sur cet appareil": "Tieni le mie carte su questo dispositivo",
+ "Effacer de cet appareil": "Cancella da questo dispositivo",
+ "Déconnecté, cartes effacées de cet appareil": "Disconnesso, carte cancellate da questo dispositivo"
 }

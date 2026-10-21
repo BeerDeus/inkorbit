@@ -59,7 +59,7 @@ const INK_KEYS = ['amber', 'amethyst', 'emerald', 'ruby', 'sapphire', 'steel'];
 const INK_NAMES = () => [T('Ambre'), T('Améthyste'), T('Émeraude'), T('Rubis'), T('Saphir'), T('Acier')];
 const TYPE_NAMES = () => [T('Personnage'), T('Action'), T('Objet'), T('Lieu')];
 const RAR_KEYS = ['common', 'uncommon', 'rare', 'super', 'legendary', 'epic', 'enchanted', 'iconic', 'special'];
-const RAR_NAMES = () => [T('Commune'), T('Inhabituelle'), T('Rare'), T('Très rare'), T('Légendaire'), T('Épique'), T('Enchantée'), T('Iconique'), T('Promo')];
+const RAR_NAMES = () => [T('Commune'), T('Inhabituelle'), T('Rare'), T('Très rare'), T('Légendaire'), T('Épique'), T('Enchantée'), T('Iconique'), T('Spéciale')];
 const inksOf = mask => INK_KEYS.map((k, i) => (mask >> i) & 1 ? i : -1).filter(i => i >= 0);
 const DECK_MIN = 60, DECK_COPIES = 4, DECK_INKS = 2;
 
@@ -150,7 +150,7 @@ function parseCsv(text, ix) {
     const card = findCard(ix, { set: g('set'), num: g('num'), name: g('name'), ver: g('ver') });
     const qty = col.qty >= 0 ? parseInt(g('qty'), 10) : 1;
     if (!card || !(qty > 0)) { bad.push(r); continue; }
-    lines.push({ card, foil: isFoil(g('foil')), lang: LANG_IN[normName(g('lang')).replace(/ /g, '')] || '', qty: Math.min(qty, 999) });
+    lines.push({ card, foil: isFoil(g('foil')) || card.foil === 2, lang: LANG_IN[normName(g('lang')).replace(/ /g, '')] || '', qty: Math.min(qty, 999), capped: qty > 999 });      // foil === 2 : n'existe qu'en foil (Enchantée…)
   }
   return { lines, bad };
 }
@@ -158,7 +158,7 @@ function parseCsv(text, ix) {
 function collToCsv(map, byId) {
   const out = [['Set Number', 'Card Number', 'Variant', 'Count', 'Name', 'Version', 'Language'].join(',')];
   const keys = Object.keys(map).map(k => [k, collParse(k)]).filter(([, p]) => p && byId.get(p.id)).sort((a, b) => a[1].id - b[1].id || a[0].localeCompare(b[0]));
-  for (const [k, p] of keys) { const c = byId.get(p.id); out.push([c.set, c.num, p.foil ? 'foil' : 'normal', map[k], c.nameEn || c.name, c.verEn ?? c.ver, p.lang || ''].map(csvCell).join(',')); }
+  for (const [k, p] of keys) { const c = byId.get(p.id); out.push([c.set, c.num, p.foil ? 'foil' : 'normal', map[k], c.nameEn || c.name, c.nameEn ? c.verEn : c.ver, p.lang || ''].map(csvCell).join(',')); }
   return out.join('\n') + '\n';
 }
 /** Decklist texte : « 4 Elsa - Snow Queen », « 4x Elsa - Snow Queen », « Elsa - Snow Queen x4 », lignes vides et titres ignorés.
@@ -179,20 +179,22 @@ function parseDeck(text, ix) {
 const deckToText = (deck, byId) => Object.entries(deck).filter(([id]) => byId.get(+id)).map(([id, n]) => { const c = byId.get(+id); return `${n} ${c.nameEn ? (c.verEn ? `${c.nameEn} - ${c.verEn}` : c.nameEn) : fullName(c)}`; }).join('\n');
 
 /* ── Decks : { <id>: n } ─────────────────────────────────────────────────────────────────────── */
-/** Règles du format Core : 60 cartes au moins, 1 ou 2 encres, 4 exemplaires au plus d'un même nom complet (sauf exception imprimée : card.max).
- *  → { total, inks: [indices], over: [noms au-delà], ok, problems: [textes] }. */
-function deckCheck(deck, byId) {
-  let total = 0; const inks = new Set(), names = new Map();
+/** Règles d'un format : 60 cartes au moins, 1 ou 2 encres, 4 exemplaires au plus d'un même nom complet (sauf exception imprimée : card.max) ;
+ *  Core (fmt 'core', par défaut) : seulement les extensions encore en rotation (card.core) ; Infinity : toutes.
+ *  → { total, inks: [indices], over: [noms au-delà], off (cartes hors rotation), ok, problems: [textes] }. */
+function deckCheck(deck, byId, fmt = 'core') {
+  let total = 0, off = 0; const inks = new Set(), names = new Map();
   for (const [id, n] of Object.entries(deck)) {
     const c = byId.get(+id); if (!c || !(n > 0)) continue;
-    total += n; for (const i of inksOf(c.ink)) inks.add(i);
+    total += n; if (!c.core) off += n; for (const i of inksOf(c.ink)) inks.add(i);
     const k = normName(c.nameEn ? `${c.nameEn} ${c.verEn || ''}` : fullName(c)), o = names.get(k) || { n: 0, max: c.max || DECK_COPIES, name: fullName(c) }; o.n += n; names.set(k, o);
   }
   const over = [...names.values()].filter(o => o.n > o.max).map(o => o.name), problems = [];
   if (total < DECK_MIN) problems.push(TN(DECK_MIN - total, 'Encore {n} carte pour atteindre 60', 'Encore {n} cartes pour atteindre 60'));
   if (inks.size > DECK_INKS) problems.push(T('{n} encres : 2 au plus', { n: inks.size }));
   for (const name of over) problems.push(T('{name} : 4 exemplaires au plus', { name }));
-  return { total, inks: [...inks].sort(), over, ok: !problems.length, problems };
+  if (fmt === 'core' && off) problems.push(TN(off, '{n} carte hors format Core (rotation)', '{n} cartes hors format Core (rotation)'));
+  return { total, inks: [...inks].sort(), over, off, ok: !problems.length, problems };
 }
 /** Cartes du deck qui manquent dans la collection (par carte, toutes finitions) : [{ id, need }]. */
 function deckMissing(deck, map) {
@@ -206,7 +208,7 @@ function deckMissing(deck, map) {
  *  Les recherchées : souhaits (wants : { id: n }) moins ce qui est possédé. */
 function tradeLists(map, keep, hold, wants) {
   const own = collById(map), have = [], want = [];
-  for (const [id, o] of own) { if (hold && hold[id]) continue; const n = o.n - keep; if (n > 0) have.push({ id, n, foil: Math.min(n, o.foil) }); }
+  for (const [id, o] of own) { if (hold && hold[id]) continue; const n = o.n - keep; if (n > 0) have.push({ id, n, foil: Math.max(0, n - (o.n - o.foil)) }); }      // les normales partent d'abord : on garde ses foils
   for (const [id, n] of Object.entries(wants || {})) { const lack = n - ((own.get(+id) || { n: 0 }).n); if (lack > 0) want.push({ id: +id, n: lack }); }
   return { have: have.sort((a, b) => a.id - b.id), want: want.sort((a, b) => a.id - b.id) };
 }
