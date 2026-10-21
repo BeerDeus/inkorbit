@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#140f2e">
+<title>Confidentialité · Ink Orbit</title>
+<link rel="icon" type="image/svg+xml" href="icons/icon.svg">
+<style>
+:root{--bg:#120d2b;--surface:#1c1640;--line:#352b66;--ink:#efeaff;--ink-2:#c4bce6;--gold:#e8c26a}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(120% 80% at 50% 0%,#2a1650 0%,var(--bg) 60%) fixed;color:var(--ink);font:16px/1.6 system-ui,-apple-system,'Segoe UI',sans-serif}
+main{max-width:720px;margin:0 auto;padding:32px 16px 64px}
+h1,h2{font-family:Georgia,'Times New Roman',serif;font-weight:700;line-height:1.2}
+h1{font-size:30px;margin:8px 0 4px}h2{font-size:20px;margin:32px 0 8px;color:var(--gold)}
+p,li{color:var(--ink-2)}a{color:var(--gold)}
+.box{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin:16px 0}
+.box p{margin:0;color:var(--ink)}
+.back{display:inline-block;margin-bottom:8px;text-decoration:none}
+hr{border:0;border-top:1px solid var(--line);margin:40px 0}
+</style>
+</head>
+<body>
+<main>
+<a class="back" href="./">← Ink Orbit</a>
+<h1>Confidentialité</h1>
+<p>Dernière mise à jour : 21 octobre 2026.</p>
+
+<div class="box"><p>Ink Orbit n'a ni compte, ni serveur, ni traceur. Votre collection, vos decks et vos réglages restent sur votre appareil.</p></div>
+
+<h2>Ce qui reste sur votre appareil</h2>
+<ul>
+<li>Collection, souhaits, liste d'échange, decks, historique de valeur, réglages, parties du compteur de lore et de la carte mystère : ils sont enregistrés dans le stockage local du navigateur.</li>
+<li>Copie hors ligne de l'appli, du catalogue et des images déjà vues : elle est gardée dans le cache du navigateur.</li>
+<li>Effacer les données du site les supprime toutes. Réglages › Sauvegarde permet d'en garder une copie dans un fichier.</li>
+</ul>
+
+<h2>Ce qui sort de votre appareil</h2>
+<ul>
+<li><strong>Images des cartes</strong> : elles sont chargées depuis <code>cards.lorcast.io</code> (Lorcast) et, pour quelques cartes, depuis <code>api.lorcana.ravensburger.com</code>. Comme pour toute image d'un site, ces serveurs voient votre adresse IP.</li>
+<li><strong>Polices</strong> : elles viennent de Google Fonts (<code>fonts.googleapis.com</code>, <code>fonts.gstatic.com</code>).</li>
+<li><strong>Scan</strong> : la lecture des cartes se fait sur votre appareil. Les photos ne sont jamais envoyées. Le moteur de lecture (Tesseract) est téléchargé une fois depuis <code>cdn.jsdelivr.net</code>.</li>
+<li><strong>Lien de partage</strong> : votre liste d'échange est entièrement contenue dans le lien que vous choisissez de partager. Elle n'est stockée nulle part ailleurs.</li>
+</ul>
+<p>Pas de cookie, pas de mesure d'audience, pas de publicité, pas de revente de données.</p>
+
+<h2>Contact</h2>
+<p>Voir les <a href="legal.html">mentions légales</a>.</p>
+
+<hr>
+
+<h1 lang="en">Privacy</h1>
+<div lang="en">
+<div class="box"><p>Ink Orbit has no accounts, no server and no trackers. Your collection, decks and settings stay on your device (browser storage); clearing the site's data removes them, and Settings › Backup lets you keep a copy in a file.</p></div>
+<p>What leaves your device: card images are loaded from cards.lorcast.io (and, for a few cards, api.lorcana.ravensburger.com); fonts come from Google Fonts; the scan engine (Tesseract) is downloaded once from cdn.jsdelivr.net, but photos are read on your device and never uploaded; a share link contains your trade list itself and is stored nowhere else. No cookies, no analytics, no ads.</p>
+</div>
+</main>
+</body>
+</html>
