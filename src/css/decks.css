@@ -89,3 +89,31 @@
   .dk-card-open:hover{background:var(--surface-2)}
 }
 .dk-vtabs{margin-top:-4px}
+
+/* Vue « Cartes » du deck (dkTile) : grandes vignettes lisibles, quantité, manquantes, − n + */
+.dk-visual{display:flex;flex-direction:column;gap:8px}
+.dk-vh{display:flex;align-items:baseline;gap:8px;margin:10px 2px 2px;font:800 12.5px/1 var(--font-body);letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
+.dk-vgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px 8px}
+.dk-tile{position:relative;display:flex;flex-direction:column;gap:6px;min-width:0}
+.dk-tile .card-thumb .qty{min-width:34px;height:28px;font-size:15px;right:6px;bottom:6px;background:color-mix(in srgb,var(--bg) 78%,transparent);border:1px solid var(--gold);color:var(--ink)}
+.dk-tile.is-short .card-thumb img{filter:saturate(.35) brightness(.72)}
+.dk-tile-miss{position:absolute;left:8%;right:8%;top:24%;padding:4px 6px;border-radius:99px;background:var(--warn);color:#1b1200;font-size:12px;font-weight:800;text-align:center;box-shadow:var(--shadow);pointer-events:none}
+.dk-tile-step{display:flex;align-items:center;justify-content:space-between;height:40px;border-radius:99px;background:var(--surface-2);border:1px solid var(--line)}
+.dk-tile-step button{width:44px;height:40px;display:grid;place-items:center;color:var(--ink)}
+.dk-tile-step button:disabled{opacity:.35}
+.dk-tile-step svg.i{width:18px;height:18px}
+.dk-tile-step .n{font-weight:800}
+.dk-group-by{flex-wrap:wrap}
+/* En-tête du deck collé en haut pendant le défilement : total, encres, valeur et règles toujours visibles */
+.dk-screen .dk-head{position:sticky;top:0;z-index:4;margin:-16px -16px 0;padding:12px 16px 10px;background:color-mix(in srgb,var(--bg) 90%,transparent);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.dk-curve{height:84px}
+@media (min-width:600px){ .dk-vgrid{grid-template-columns:repeat(4,minmax(0,1fr))} }
+@media (min-width:1024px){
+  .dk-screen .dk-head{margin:-24px -32px 0;padding:14px 32px 12px}
+  .dk-vgrid{grid-template-columns:repeat(auto-fill,minmax(118px,1fr))}
+  .dk-curve{height:110px}
+}
+.dk-screen .dk-head{gap:6px}
+.dk-screen .dk-fmt{align-self:flex-start;width:auto}
+.dk-screen .dk-fmt>button{min-height:34px;padding:0 16px;font-size:12.5px}
+.dk-screen .dk-problems{margin:0;padding:6px 12px 6px 28px;font-size:13.5px}

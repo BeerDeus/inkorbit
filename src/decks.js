@@ -189,7 +189,7 @@ function dkPriceSheet() {
 /* ── Éditeur ──────────────────────────────────────────────────────────────────────────────────── */
 function dkOpen(id) {
   const d = dkFind(id); if (!d) return;
-  const st = { d, tab: 'deck', group: load('dkGroup', 'cost'), q: '', ink: '', cost: '', type: '' };
+  const st = { d, tab: 'deck', group: load('dkGroup', 'cost'), view: load('dkView', 'visual'), q: '', ink: '', cost: '', type: '' };
   const el = openScreen({ title: d.name, cls: 'dk-screen', onClose: () => { DK.ed = null; dkListPaint(); }, html: `<div class="dk-head"></div>
     <div class="tabs dk-tabs" role="tablist">
       <button type="button" role="tab" data-tab="deck" aria-selected="true">${esc(T('Deck'))}</button>
@@ -237,11 +237,20 @@ function dkDeckPaint(st) {
       <div class="dk-curve" role="img" aria-label="${esc(T('Courbe des coûts'))}">${s.curve.slice(1).map((n, i) => `<div class="dk-bar"><span class="dk-bar-n num">${n || ''}</span><i style="height:${Math.round(n / max * 100)}%"></i><span class="dk-bar-k">${i === 6 ? '7+' : i + 1}</span></div>`).join('')}</div>
       <div class="dk-facts"><span><svg class="i"><use href="#i-inkwell"/></svg>${esc(T('{n} encrables ({p} %)', { n: s.inkable, p: s.total ? Math.round(s.inkable / s.total * 100) : 0 }))}</span>
       ${s.types.map((n, i) => (n ? `<span>${esc(TYPE_NAMES()[i])} <b class="num">${n}</b></span>` : '')).join('')}</div></div>
-    <div class="dk-group-by"><span class="muted small">${esc(T('Grouper par'))}</span><div class="seg" role="radiogroup"><button type="button" data-group="cost" aria-pressed="${st.group === 'cost'}">${esc(T('Coût'))}</button><button type="button" data-group="type" aria-pressed="${st.group === 'type'}">${esc(T('Type'))}</button></div></div>
-    <div class="dk-lines" data-cards>${groups.map(g => `<h4 class="dk-gh">${esc(label(g.k))} <span class="muted num">${g.ids.reduce((a, id) => a + d.cards[id], 0)}</span></h4>${g.ids.map(id => dkLine(byId.get(id), d.cards[id], (own.get(id) || { n: 0 }).n, cur, d)).join('')}`).join('')}</div>
+    <div class="dk-group-by"><span class="muted small">${esc(T('Grouper par'))}</span><div class="seg" role="radiogroup"><button type="button" data-group="cost" aria-pressed="${st.group === 'cost'}">${esc(T('Coût'))}</button><button type="button" data-group="type" aria-pressed="${st.group === 'type'}">${esc(T('Type'))}</button></div>
+      <div class="seg seg-icons" role="group" aria-label="${esc(T('Affichage'))}"><button type="button" data-dkview="visual" aria-pressed="${st.view !== 'list'}" aria-label="${esc(T('Cartes'))}"><svg class="i"><use href="#i-grid"/></svg></button><button type="button" data-dkview="list" aria-pressed="${st.view === 'list'}" aria-label="${esc(T('Liste'))}"><svg class="i"><use href="#i-list"/></svg></button></div></div>
+    ${st.view === 'list'
+      ? `<div class="dk-lines" data-cards>${groups.map(g => `<h4 class="dk-gh">${esc(label(g.k))} <span class="muted num">${g.ids.reduce((a, id) => a + d.cards[id], 0)}</span></h4>${g.ids.map(id => dkLine(byId.get(id), d.cards[id], (own.get(id) || { n: 0 }).n, cur, d)).join('')}`).join('')}</div>`
+      : `<div class="dk-visual" data-cards>${groups.map(g => `<h4 class="dk-vh">${esc(label(g.k))} <span class="muted num">${g.ids.reduce((a, id) => a + d.cards[id], 0)}</span></h4><div class="dk-vgrid">${g.ids.map(id => dkTile(byId.get(id), d.cards[id], (own.get(id) || { n: 0 }).n, d)).join('')}</div>`).join('')}</div>`}
     ${missN ? `<div class="panel dk-miss"><p><b>${esc(TN(missN, '{n} carte manque à ta collection', '{n} cartes manquent à ta collection'))}</b></p>
       <button type="button" class="btn${wantsOk ? '' : ' btn-primary'}" data-wants ${wantsOk ? 'disabled' : ''}><svg class="i"><use href="#i-heart"/></svg>${esc(wantsOk ? T('Déjà dans mes recherches') : TN(missN, 'Ajouter la manquante à mes recherches', 'Ajouter les {n} manquantes à mes recherches'))}</button></div>` : ''}
     <div class="btn-row">${typeof pubDeckButtonHtml === 'function' ? pubDeckButtonHtml(d) : ''}<button type="button" class="btn" data-export><svg class="i"><use href="#i-share"/></svg>${esc(T('Exporter la liste'))}</button><button type="button" class="btn btn-ghost" data-rename><svg class="i"><use href="#i-edit"/></svg>${esc(T('Renommer'))}</button></div>`;
+}
+/** Vue « Cartes » du deck : la carte en grand format (lisible), quantité en badge, ce qui manque en bandeau, − n + dessous. */
+function dkTile(c, n, have, d) {
+  const short = Math.max(0, n - have), can = deckCanAdd(d.cards, CARDS.byId, c);
+  return `<div class="dk-tile${short ? ' is-short' : ''}">${thumbHtml(c, { qty: n, showOne: true })}${short ? `<span class="dk-tile-miss">${esc(T('manque {n}', { n: short }))}</span>` : ''}
+    <div class="dk-tile-step"><button type="button" data-step="-1" data-id="${c.id}" aria-label="${esc(T('Retirer {name}', { name: c.name }))}"><svg class="i"><use href="#i-minus"/></svg></button><span class="n num">${n}</span><button type="button" data-step="1" data-id="${c.id}" ${can ? '' : 'disabled'} aria-label="${esc(T('Ajouter {name}', { name: c.name }))}"><svg class="i"><use href="#i-plus"/></svg></button></div></div>`;
 }
 function dkLine(c, n, have, cur, d) {
   const short = Math.max(0, n - have), can = deckCanAdd(d.cards, CARDS.byId, c), p = cardPrice(c, false);
@@ -299,6 +308,7 @@ function dkEdClick(st, e) {
     dkTouch(d); st.paint(); return;
   }
   const ink = t.closest('.dk-ink-chips [data-ink]'); if (ink) { st.ink = st.ink === ink.dataset.ink ? '' : ink.dataset.ink; dkSearchPaint(st, st.tab === 'coll' ? 'coll' : 'add'); return; }
+  const vw = t.closest('[data-dkview]'); if (vw) { st.view = vw.dataset.dkview; save('dkView', st.view); dkDeckPaint(st); return; }
   const g = t.closest('[data-group]'); if (g) { st.group = g.dataset.group; save('dkGroup', st.group); dkDeckPaint(st); return; }
   if (t.closest('[data-wants]')) {
     const miss = deckMissing(d.cards, COLL.map);

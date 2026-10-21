@@ -56,12 +56,6 @@ Le workflow `.github/workflows/data.yml` tourne chaque jour à 04:00 UTC, et aus
 - Prix : [Cardmarket](https://www.cardmarket.com/) et TCGplayer, via [tcgcsv](https://tcgcsv.com/)
 - Polices : Fraunces et Nunito Sans (SIL Open Font License)
 
-## Mise en ligne automatique (Hostinger, par FTP)
+## Mise en ligne automatique
 
-Le déploiement Git automatique d'Hostinger ne réagit pas aux pushes (vérifié le 21/10/2026). Le workflow « Site » envoie donc `public/` par FTPS après chaque changement et chaque relevé des prix, dès que ces trois secrets existent :
-
-1. hPanel › Sites web › ink.manaorbit.app › Fichiers › Comptes FTP › Créer un compte FTP, avec pour dossier `domains/ink.manaorbit.app/public_html` (le compte ne voit que ce site). Note le serveur (ex. `ftp.manaorbit.app` ou l'adresse IP affichée), l'identifiant et le mot de passe.
-2. GitHub › BeerDeus/inkorbit › Settings › Secrets and variables › Actions › New repository secret : `FTP_SERVER`, `FTP_USERNAME`, `FTP_PASSWORD`.
-3. Actions › Site › Run workflow : le premier envoi copie tout, les suivants seulement les fichiers changés.
-
-Sans ces secrets, le workflow met à jour la branche `site` sans rien envoyer (déploiement à la main : hPanel › Git › Déployer, ou par l'API Hostinger).
+Chaque push sur `main` qui touche `public/` (et le relevé des prix de chaque matin) refait la branche `site` (workflow « Site ») ; Hostinger la déploie tout seul, 7 à 10 minutes plus tard (hPanel › Sites web › ink.manaorbit.app › Git › Déploiements). Pour aller plus vite : bouton « Redéployer ».
