@@ -1,0 +1,39 @@
+<!--icons-->
+<a class="skip" href="#app">Aller au contenu</a>
+<div class="sky" aria-hidden="true"></div>
+<header id="bar" class="bar">
+  <div class="bar-in">
+    <a class="brand" href="./" data-view="home" aria-label="Ink Orbit, accueil">
+      <svg class="brand-mark" aria-hidden="true"><use href="#i-mark"/></svg>
+      <span class="brand-word">Ink Orbit</span>
+    </a>
+    <div class="bar-right">
+      <button id="btnSettings" class="btn-icon" type="button" aria-label="Réglages" title="Réglages"><svg class="i"><use href="#i-gear"/></svg></button>
+    </div>
+  </div>
+</header>
+
+<main id="app" class="wrap" tabindex="-1">
+  <section class="view" id="v-home" aria-label="Accueil" hidden><div class="view-in"></div></section>
+  <section class="view" id="v-coll" aria-label="Collection" hidden><div class="view-in"></div></section>
+  <section class="view" id="v-scan" aria-label="Scanner" hidden><div class="view-in"></div></section>
+  <section class="view" id="v-trade" aria-label="Échange" hidden><div class="view-in"></div></section>
+  <section class="view" id="v-decks" aria-label="Decks" hidden><div class="view-in"></div></section>
+  <footer id="foot" class="foot">
+    <p>Ink Orbit est une application de fan gratuite et non officielle, non publiée, approuvée ni soutenue par Disney ou Ravensburger.</p>
+    <p><button type="button" class="link" data-act="about">À propos</button></p>
+  </footer>
+</main>
+
+<nav id="nav" class="nav" aria-label="Navigation principale">
+  <div class="nav-brand" aria-hidden="true"><svg class="brand-mark"><use href="#i-mark"/></svg><span class="brand-word">Ink Orbit</span></div>
+  <button type="button" data-view="home"><svg class="i"><use href="#i-home"/></svg><span>Accueil</span></button>
+  <button type="button" data-view="coll"><svg class="i"><use href="#i-cards"/></svg><span>Collection</span></button>
+  <button type="button" data-view="scan" class="nav-scan"><i class="nav-orb"><svg class="i"><use href="#i-scan"/></svg></i><span>Scanner</span></button>
+  <button type="button" data-view="trade"><svg class="i"><use href="#i-trade"/></svg><span>Échange</span></button>
+  <button type="button" data-view="decks"><svg class="i"><use href="#i-deck"/></svg><span>Decks</span></button>
+  <button type="button" data-act="settings" class="nav-settings"><svg class="i"><use href="#i-gear"/></svg><span>Réglages</span></button>
+</nav>
+
+<div id="layer"></div>
+<div id="toasts" aria-live="polite"></div>

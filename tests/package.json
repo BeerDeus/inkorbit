@@ -1,0 +1,15 @@
+{
+  "name": "ink-orbit-tests",
+  "private": true,
+  "type": "module",
+  "description": "Outils de développement d'Ink Orbit (tests). Jamais installé par l'hébergeur : le package.json de la racine n'a aucune dépendance.",
+  "scripts": {
+    "pretest": "node ../build.mjs",
+    "test": "bash run-tests.sh",
+    "test:node": "bash run-tests.sh --node"
+  },
+  "devDependencies": {
+    "jsdom": "29.1.1",
+    "playwright-core": "1.56.0"
+  }
+}

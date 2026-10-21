@@ -1,0 +1,13 @@
+{
+  "name": "ink-orbit",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Ink Orbit : collection, decks et prix pour le jeu de cartes Disney Lorcana (contenu de fan non officiel)",
+  "scripts": {
+    "build": "node build.mjs",
+    "start": "node serve.mjs",
+    "data": "node gen-cards.mjs && node gen-prices.mjs"
+  },
+  "engines": { "node": ">=20" }
+}

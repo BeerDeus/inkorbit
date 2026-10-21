@@ -1,0 +1,90 @@
+/* ── decks.css : Mes decks, éditeur, import, prix d'une liste (decks.js). Ordinateur : bloc @media à la fin. ── */
+.dk-top{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.dk-cards{display:flex;flex-direction:column;gap:12px}
+.dk-card{position:relative;display:flex;align-items:stretch;border-radius:var(--r-lg);background:var(--surface);border:1px solid var(--line);box-shadow:var(--shadow);overflow:hidden}
+.dk-card-open{flex:1;min-width:0;display:flex;align-items:stretch;text-align:left;color:inherit}
+.dk-card-open:active{background:var(--surface-2)}
+.dk-cover{flex:none;width:86px;min-height:104px;background:var(--surface-2) radial-gradient(circle at 40% 30%,var(--gold-soft),transparent 70%);overflow:hidden}
+.dk-cover img{width:100%;height:100%;object-fit:cover;object-position:50% 18%;transform:scale(1.35);transform-origin:50% 18%}
+.dk-card-main{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;gap:5px;padding:12px 6px 12px 14px}
+.dk-card-name{font-family:var(--font-display);font-weight:700;font-size:17px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dk-card-meta{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;font-size:13.5px;color:var(--ink-2)}
+.dk-card-meta .warn{color:var(--warn)}
+.dk-card-own{font-size:13px;color:var(--ink-3)}
+.dk-card-own.ok{color:var(--good)}
+.dk-more{align-self:center;margin-right:8px;border:0;background:transparent}
+.dk-inks{display:inline-flex;gap:3px;align-items:center}
+.dk-ideas{display:flex;flex-direction:column;gap:8px;margin-top:8px;text-align:center}
+.dk-danger{color:var(--bad)}
+.dk-form{display:flex;flex-direction:column;gap:14px}
+.dk-bad{padding:10px 12px;border-radius:var(--r-md);background:var(--warn-soft);color:var(--ink)}
+.dk-bad ul{margin:6px 0 0;padding-left:18px;font-size:13px;max-height:160px;overflow:auto}
+.dk-warn{color:var(--warn);font-weight:700}
+.dk-ok{display:flex;align-items:center;gap:8px;color:var(--good);font-weight:700}
+.dk-sum{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.dk-sum>div{display:flex;flex-direction:column;gap:2px;padding:12px;border-radius:var(--r-md);background:var(--surface-2)}
+.dk-sum b{font-size:20px}
+.dk-grid .card-cap{font-size:11.5px}
+
+/* Éditeur */
+.dk-head{display:flex;flex-direction:column;gap:8px}
+.dk-head-row{display:flex;align-items:center;gap:14px}
+.dk-count{display:flex;align-items:baseline;gap:2px;color:var(--warn)}
+.dk-count b{font-family:var(--font-display);font-size:30px;line-height:1}
+.dk-count.ok{color:var(--good)}
+.dk-count span{color:var(--ink-3);font-weight:700}
+.dk-val{margin-left:auto;display:flex;flex-direction:column;align-items:flex-end;line-height:1.2}
+.dk-val b{font-size:17px}
+.dk-problems{margin:0;padding:8px 12px 8px 28px;border-radius:var(--r-md);background:var(--warn-soft);font-size:13.5px;display:flex;flex-direction:column;gap:2px}
+.dk-tabs{position:sticky;top:0;z-index:2;background:var(--bg)}
+.dk-ed{display:grid;gap:16px}
+.dk-pane{display:flex;flex-direction:column;gap:14px;min-width:0}
+.dk-pane:not(.on){display:none}
+.dk-stats{gap:14px}
+.dk-curve{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;height:110px;align-items:end}
+.dk-bar{height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:3px}
+.dk-bar i{display:block;width:100%;min-height:2px;border-radius:6px 6px 2px 2px;background:linear-gradient(180deg,var(--gold),var(--gold-2))}
+.dk-bar-n{font-size:12px;color:var(--ink-2);min-height:16px}
+.dk-bar-k{font-size:12px;font-weight:800;color:var(--ink-3)}
+.dk-facts{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13.5px;color:var(--ink-2)}
+.dk-facts span{display:inline-flex;align-items:center;gap:5px}
+.dk-facts svg.i{width:18px;height:18px;color:var(--gold)}
+.dk-group-by{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.dk-group-by .seg{width:auto}
+.dk-lines{display:flex;flex-direction:column;border-radius:var(--r-lg);background:var(--surface);border:1px solid var(--line);overflow:hidden}
+.dk-gh{padding:10px 14px 4px;font-family:var(--font-body);font-size:12.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--gold);display:flex;gap:6px;align-items:baseline}
+.dk-line{display:flex;align-items:center;gap:10px;padding:6px 8px 6px 12px;border-bottom:1px solid var(--line)}
+.dk-line:last-child{border-bottom:0}
+.dk-line .ct-wrap{width:42px;flex:none}
+.dk-line .row-main{flex:1;min-width:0;display:flex;flex-direction:column}
+.dk-line.is-short .row-title{color:var(--ink-2)}
+.dk-line-meta{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:2px}
+.dk-line-meta .ink-sym{width:16px;height:16px}
+.dk-cost{display:inline-grid;place-items:center;min-width:20px;height:20px;padding:0 4px;border-radius:50%;background:var(--surface-3);border:1px solid var(--gold-soft);font-size:12px;font-weight:800;color:var(--gold)}
+.dk-short{font-size:12px;font-weight:800;color:var(--warn)}
+.dk-line .stepper button{width:40px;height:40px}
+.dk-line .stepper button:disabled{opacity:.35}
+.dk-miss{gap:10px}
+.dk-filters{display:flex;flex-direction:column;gap:10px}
+.dk-ink-chips .chip{padding:0 10px}
+.dk-ink-chips .chip:disabled{opacity:.3}
+.dk-selects{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.dk-lock:empty{display:none}
+.dk-pick{display:flex;flex-direction:column;gap:6px;min-width:0}
+.dk-pick-act{display:flex;justify-content:center;gap:6px}
+.dk-pick-act .btn-icon{width:40px;height:40px;border-radius:50%}
+.dk-pick-act .btn-icon:disabled{opacity:.3}
+.dk-plus{background:var(--gold-soft);border-color:var(--gold);color:var(--ink)}
+.dk-none{grid-column:1/-1;text-align:center;padding:12px}
+
+@media (min-width:1024px){
+  .dk-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+  .dk-tabs [data-tab="deck"]{display:none}
+  .dk-ed{grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:start}
+  .dk-pane[data-pane="deck"]{display:flex}
+  .dk-ed[data-cur="deck"] .dk-pane[data-pane="add"]{display:flex}
+  .dk-pane[data-pane="add"],.dk-pane[data-pane="coll"]{grid-column:2;grid-row:1;position:sticky;top:60px;max-height:calc(100vh - 140px);overflow-y:auto;padding-right:4px}
+  .dk-pane[data-pane="deck"]{grid-column:1;grid-row:1}
+  .dk-pane .dk-grid{grid-template-columns:repeat(auto-fill,minmax(130px,1fr))}
+  .dk-card-open:hover{background:var(--surface-2)}
+}

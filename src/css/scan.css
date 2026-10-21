@@ -1,0 +1,50 @@
+/* ── Scanner (scan.js) : téléphone d'abord, une colonne ; ordinateur : aperçu à gauche, lot à droite ── */
+.sc{display:flex;flex-direction:column;gap:14px}
+.sc-top{display:flex;flex-direction:column;gap:10px}
+.sc-top .seg{max-width:360px}
+.sc-main,.sc-left,.sc-right{display:flex;flex-direction:column;gap:12px}
+.sc-cam{position:relative;aspect-ratio:3/4;max-height:52vh;max-height:52dvh;width:100%;border-radius:var(--r-lg);overflow:hidden;background:radial-gradient(120% 80% at 50% 0%,var(--surface-2),var(--surface-3));border:1px solid var(--line)}
+.sc-cam video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .3s}
+.sc-on .sc-cam video{opacity:1}
+/* Gabarit : le reste de l'image assombri, coins dorés ; la bande dorée en bas à gauche montre où doit tomber la ligne « 12/204 • FR • 7 » */
+.sc-guide{position:absolute;border-radius:4.5%/3.2%;box-shadow:0 0 0 2px var(--gold),0 0 0 100vmax rgba(8,6,20,.45);pointer-events:none;opacity:0;transition:opacity .3s}
+.sc-on .sc-guide{opacity:1}
+.sc-foot{position:absolute;left:2%;top:92.5%;width:44%;height:7%;border-radius:4px;border:1.5px dashed var(--gold);opacity:.75}
+.sc-idle{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:24px;text-align:center;color:var(--ink-2)}
+.sc-idle svg.i{width:48px;height:48px;color:var(--gold);stroke-width:1.4}
+.sc-idle p{max-width:30ch}
+.sc-on .sc-idle{display:none}
+.sc-status{min-height:22px;text-align:center;font-weight:700;color:var(--ink-2)}
+.sc-status.bad{color:var(--warn)}
+.sc-ctl{display:flex;flex-direction:column;align-items:center;gap:10px}
+.sc-start{min-height:56px;padding:0 28px;font-size:16px}
+.sc-read{width:76px;height:76px;border-radius:50%;display:grid;place-items:center;border:3px solid var(--gold);background:transparent}
+.sc-read i{width:58px;height:58px;border-radius:50%;background:radial-gradient(circle at 35% 30%,var(--gold),var(--gold-2));box-shadow:0 0 18px var(--gold-soft);transition:transform .12s}
+.sc-read:active i{transform:scale(.9)}
+.sc-side{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:6px 14px}
+.sc-auto{min-height:44px;gap:10px}
+.sc-auto input{order:0}
+.sc-file{cursor:pointer}
+.sc-right .panel-head h2{font-size:19px}
+.sc-item{align-items:flex-start}
+.sc-item .ct-wrap{width:44px;flex:none}
+.sc-item .row-title,.sc-item .row-sub{white-space:normal}
+.sc-acts{display:flex;align-items:center;flex-wrap:wrap;gap:4px 14px;margin-top:2px;font-size:13px}
+.sc-foil{display:inline-flex;align-items:center;gap:6px;min-height:32px;color:var(--ink-2);cursor:pointer}
+.sc-foil input{width:18px;height:18px;accent-color:var(--gold)}
+.sc-item .row-end{align-self:center}
+.sc-item .stepper button{width:40px;height:40px}
+.sc-new{animation:scNew .9s var(--out)}
+@keyframes scNew{from{background:var(--gold-soft)}to{background:transparent}}
+.sc-empty{padding:16px}
+.sc-add{min-height:52px;position:sticky;bottom:calc(84px + env(safe-area-inset-bottom,0px));box-shadow:var(--shadow-lg)}
+@media (prefers-reduced-motion:reduce){.sc-new{animation:none}.sc-cam video,.sc-guide{transition:none}}
+
+@media (min-width:1024px){
+  .sc-main{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:28px;align-items:start}
+  .sc-cam{max-height:68vh}
+  .sc-right{position:sticky;top:24px}
+  .sc-lot{max-height:60vh;overflow-y:auto}
+  .sc-add{position:static;box-shadow:none}
+  body.locked .sc-ctl,body.locked .sc-add{visibility:hidden}      /* écran ouvert par-dessus (carte en grand) : sa marge du bas laisse voir la vue, pas ses boutons */
+}

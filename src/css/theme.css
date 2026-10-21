@@ -1,0 +1,100 @@
+/* ── theme.css : direction artistique d'Ink Orbit (docs/da/README.md) ─────────────────────────────────────────────
+   « Livre de contes, la nuit » : ciel indigo → violet, filigranes d'or chaud, encre et aquarelle. Jetons : docs/contrat.md (noms à respecter).
+   Nuit par défaut (:root) ; html[data-theme="light"] : Parchemin ; html[data-theme="dark"] : la nuit forcée (même valeurs que :root). */
+:root{
+  --bg:#120d2e; --bg-2:#2a1756; --surface:#1d1745; --surface-2:#282056; --surface-3:#171138; --line:#3b3074;
+  --ink:#f5f0fd; --ink-2:#cfc5ea; --ink-3:#a99dce;      /* ink-3 ≥ 4,5:1 sur --bg, --surface et --surface-2 */
+  --gold:#e9c47c; --gold-2:#c99a45; --gold-soft:rgba(233,196,124,.14);
+  --accent:#b9a2ff; --accent-ink:#150f33; --accent-soft:#2e2566; --ring:rgba(185,162,255,.42);
+  --good:#62d6a6; --good-soft:#15342e; --warn:#f2bb63; --warn-soft:#3a2b14; --bad:#ff8c9c; --bad-soft:#3d1a2a;
+  --scrim:rgba(6,3,20,.66);
+  --shadow:0 1px 2px rgba(4,2,16,.45),0 12px 30px -14px rgba(4,2,16,.8);
+  --shadow-lg:0 2px 6px rgba(4,2,16,.5),0 28px 60px -20px rgba(4,2,16,.9);
+  --r-lg:22px; --r-md:15px; --r-sm:10px;
+  --ease:cubic-bezier(.2,.8,.2,1); --out:cubic-bezier(.16,1,.3,1); --spring:cubic-bezier(.34,1.5,.5,1);
+  --font-display:'Fraunces','Iowan Old Style','Palatino Linotype',Georgia,serif;
+  --font-body:'Nunito Sans','Segoe UI',system-ui,-apple-system,sans-serif;
+  --font-num:'Nunito Sans','Segoe UI',system-ui,-apple-system,sans-serif;
+  /* Les six encres (nos teintes, nos symboles : src/icons.html › ink-*) */
+  --amber:#f3aa3c; --amethyst:#a274ee; --emerald:#33b27a; --ruby:#ea4c63; --sapphire:#3f97e6; --steel:#a3afc0;
+  --amber-soft:rgba(243,170,60,.16); --amethyst-soft:rgba(162,116,238,.18); --emerald-soft:rgba(51,178,122,.16);
+  --ruby-soft:rgba(234,76,99,.16); --sapphire-soft:rgba(63,151,230,.17); --steel-soft:rgba(163,175,192,.16);
+  /* Raretés : du plus discret au plus précieux */
+  --r-common:#bdb4d6; --r-uncommon:#8fd3b4; --r-rare:#7fb2ff; --r-super:#c595ff; --r-legendary:#ffd27a;
+  --r-epic:#ff86bd; --r-enchanted:#86ecff; --r-iconic:#fff0b8; --r-special:#ffa877;
+  --sky:radial-gradient(120% 80% at 80% -10%,#4a2a8c 0%,transparent 55%),radial-gradient(90% 70% at -10% 30%,#2a1f72 0%,transparent 60%),linear-gradient(180deg,var(--bg-2) 0%,var(--bg) 62%);
+  --foil:linear-gradient(115deg,#ffd27a 0%,#ff9ec9 26%,#b9a2ff 52%,#86ecff 76%,#ffd27a 100%);
+  color-scheme:dark;
+}
+:root[data-theme="dark"]{ color-scheme:dark; }
+:root[data-theme="light"]{
+  --bg:#f5eedf; --bg-2:#ece1c9; --surface:#fffaf0; --surface-2:#efe5d0; --surface-3:#f9f3e6; --line:#d8c9a8;
+  --ink:#2a1b46; --ink-2:#4b3b6d; --ink-3:#66567f;
+  --gold:#8a5d14; --gold-2:#6e4a10; --gold-soft:rgba(138,93,20,.12);      /* or bruni : ≥ 4,5:1 sur --bg et --surface */
+  --accent:#5a3db2; --accent-ink:#ffffff; --accent-soft:#e7def8; --ring:rgba(90,61,178,.3);
+  --good:#137a52; --good-soft:#dcf1e6; --warn:#97600a; --warn-soft:#f8ebcf; --bad:#b4334a; --bad-soft:#f8e0e4;
+  --scrim:rgba(42,27,70,.42);
+  --shadow:0 1px 2px rgba(60,40,20,.08),0 10px 26px -14px rgba(60,40,20,.28);
+  --shadow-lg:0 2px 6px rgba(60,40,20,.1),0 26px 56px -22px rgba(60,40,20,.35);
+  --amber:#d98a12; --amethyst:#7f4fd6; --emerald:#1f9461; --ruby:#cf3550; --sapphire:#2479c9; --steel:#6f7d91;
+  --r-common:#8d84a6; --r-uncommon:#3f9a74; --r-rare:#3f74cf; --r-super:#8a55d6; --r-legendary:#b98114;
+  --r-epic:#cc3f84; --r-enchanted:#1f93b3; --r-iconic:#a98a1c; --r-special:#c4602b;
+  --sky:radial-gradient(110% 70% at 85% -10%,#f3e3bf 0%,transparent 55%),radial-gradient(80% 60% at -10% 40%,#efe0f0 0%,transparent 60%),linear-gradient(180deg,var(--bg-2) 0%,var(--bg) 60%);
+  color-scheme:light;
+}
+
+/* ── Classes décoratives (préfixe da-) ──────────────────────────────────────────────────────────────────── */
+/* Ciel étoilé : à poser sur un conteneur positionné (body, en-tête d'accueil…). Deux couches d'étoiles en dégradés, une étincelle qui scintille. */
+.da-sky{position:relative;isolation:isolate;background:var(--sky)}
+.da-sky::before,.da-sky::after{content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;background-repeat:repeat}
+.da-sky::before{background-image:
+  radial-gradient(1px 1px at 12% 18%,#fff 60%,transparent),radial-gradient(1px 1px at 68% 9%,#fff 60%,transparent),
+  radial-gradient(1.2px 1.2px at 84% 34%,#ffe9b8 60%,transparent),radial-gradient(1px 1px at 31% 46%,#fff 60%,transparent),
+  radial-gradient(1px 1px at 52% 72%,#d9ccff 60%,transparent),radial-gradient(1.4px 1.4px at 7% 81%,#fff 60%,transparent),
+  radial-gradient(1px 1px at 91% 88%,#fff 60%,transparent),radial-gradient(1px 1px at 41% 24%,#ffe9b8 60%,transparent);
+  background-size:260px 260px;opacity:.55}
+.da-sky::after{background-image:
+  radial-gradient(1.6px 1.6px at 22% 30%,#fff 55%,transparent),radial-gradient(1.4px 1.4px at 76% 58%,#ffe2a0 55%,transparent),
+  radial-gradient(1.2px 1.2px at 58% 16%,#fff 55%,transparent),radial-gradient(1.8px 1.8px at 36% 84%,#e3d8ff 55%,transparent);
+  background-size:410px 410px;animation:da-twinkle 5.5s ease-in-out infinite alternate}
+:root[data-theme="light"] .da-sky::before,:root[data-theme="light"] .da-sky::after{opacity:.0}
+@keyframes da-twinkle{from{opacity:.25}to{opacity:.85}}
+
+/* Étincelle à quatre branches (élément vide : <i class="da-spark"></i>) */
+.da-spark{display:inline-block;width:12px;height:12px;background:var(--gold);clip-path:polygon(50% 0,61% 39%,100% 50%,61% 61%,50% 100%,39% 61%,0 50%,39% 39%);filter:drop-shadow(0 0 4px var(--gold-soft));animation:da-spark 3.2s ease-in-out infinite}
+@keyframes da-spark{0%,100%{transform:scale(.7) rotate(0);opacity:.6}50%{transform:scale(1) rotate(45deg);opacity:1}}
+
+/* Filet doré : <div class="da-rule"><i></i></div> (losange au centre) ou <div class="da-rule"><span>Titre</span></div> */
+.da-rule{display:flex;align-items:center;gap:10px;color:var(--gold);margin:0}
+.da-rule::before,.da-rule::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,transparent,var(--gold))}
+.da-rule::after{background:linear-gradient(270deg,transparent,var(--gold))}
+.da-rule>i{width:7px;height:7px;background:var(--gold);transform:rotate(45deg);box-shadow:0 0 8px var(--gold-soft)}
+.da-rule>span{font:700 11px/1 var(--font-body);letter-spacing:.18em;text-transform:uppercase}
+
+/* Cadre filigrane : double liseré doré et coins ornés (cartes mises en avant, valeur de la collection) */
+.da-frame{position:relative;border-radius:var(--r-lg);background:linear-gradient(var(--surface),var(--surface)) padding-box,linear-gradient(140deg,var(--gold),transparent 30%,transparent 70%,var(--gold)) border-box;border:1px solid transparent;box-shadow:var(--shadow)}
+.da-frame::before{content:'';position:absolute;inset:5px;border-radius:calc(var(--r-lg) - 5px);border:1px solid var(--gold-soft);pointer-events:none}
+.da-frame::after{content:'';position:absolute;inset:0;pointer-events:none;border-radius:inherit;background:
+  radial-gradient(circle at 12px 12px,var(--gold) 1.6px,transparent 2.4px),radial-gradient(circle at calc(100% - 12px) 12px,var(--gold) 1.6px,transparent 2.4px),
+  radial-gradient(circle at 12px calc(100% - 12px),var(--gold) 1.6px,transparent 2.4px),radial-gradient(circle at calc(100% - 12px) calc(100% - 12px),var(--gold) 1.6px,transparent 2.4px)}
+
+/* Tache d'encre / aquarelle : halo coloré derrière un contenu (data-ink pour la teinte, accent par défaut) */
+.da-ink{position:relative;isolation:isolate}
+.da-ink::before{content:'';position:absolute;inset:-18% -12%;z-index:-1;pointer-events:none;filter:blur(18px);opacity:.55;
+  background:radial-gradient(40% 46% at 34% 42%,var(--da-c,var(--accent)) 0%,transparent 70%),radial-gradient(30% 36% at 68% 62%,var(--da-c2,var(--sapphire)) 0%,transparent 72%),radial-gradient(18% 20% at 78% 26%,var(--gold) 0%,transparent 70%)}
+
+/* Pastille d'encre : petit disque teinté (filtres, listes) ; <i class="da-pip" data-ink="ruby"></i> */
+.da-pip{--c:var(--ink-3);display:inline-block;width:12px;height:12px;border-radius:50%;flex:none;background:radial-gradient(circle at 35% 30%,color-mix(in srgb,var(--c) 40%,#fff) 0 18%,var(--c) 55%,color-mix(in srgb,var(--c) 70%,#000) 100%);box-shadow:0 0 0 1.5px color-mix(in srgb,var(--c) 35%,transparent)}
+.da-pip[data-ink="amber"],.da-ink[data-ink="amber"]{--c:var(--amber);--da-c:var(--amber)}
+.da-pip[data-ink="amethyst"],.da-ink[data-ink="amethyst"]{--c:var(--amethyst);--da-c:var(--amethyst)}
+.da-pip[data-ink="emerald"],.da-ink[data-ink="emerald"]{--c:var(--emerald);--da-c:var(--emerald)}
+.da-pip[data-ink="ruby"],.da-ink[data-ink="ruby"]{--c:var(--ruby);--da-c:var(--ruby)}
+.da-pip[data-ink="sapphire"],.da-ink[data-ink="sapphire"]{--c:var(--sapphire);--da-c:var(--sapphire)}
+.da-pip[data-ink="steel"],.da-ink[data-ink="steel"]{--c:var(--steel);--da-c:var(--steel)}
+
+/* Titre façon livre de contes (Fraunces doux et « wonky ») */
+.da-title{font-family:var(--font-display);font-weight:700;font-variation-settings:'SOFT' 100,'WONK' 1;letter-spacing:-.01em;line-height:1.05}
+
+@media (prefers-reduced-motion: reduce){
+  .da-sky::after,.da-spark{animation:none}
+}

@@ -1,0 +1,42 @@
+/* Ordinateur (≥ 1024 px) seulement : rien ici ne touche au rendu du téléphone.
+   Navigation en colonne à gauche (logo en haut), contenu plus large, grilles plus denses, feuilles en fenêtres centrées, survols. */
+@media (min-width:1024px){
+  body{padding-left:232px}
+  .bar{display:none}
+  .wrap{max-width:1200px;padding:32px 40px 48px}
+  .view-in{gap:20px}
+
+  .nav{top:0;right:auto;width:232px;flex-direction:column;justify-content:flex-start;align-items:stretch;gap:4px;padding:20px 14px;border-top:0;border-right:1px solid var(--line);background:color-mix(in srgb,var(--surface) 70%,transparent)}
+  .nav .nav-brand{display:flex!important;align-items:center;gap:10px;padding:4px 10px 22px;color:var(--ink)}
+  .nav-brand .brand-mark{width:36px;height:36px}
+  .nav button{flex:none;max-width:none;min-height:46px;flex-direction:row;justify-content:flex-start;gap:12px;padding:0 14px;font-size:15px;border-radius:12px}
+  .nav button:hover{background:var(--surface-2);color:var(--ink)}
+  .nav button[aria-current="page"]{background:var(--gold-soft);color:var(--ink)}
+  .nav button[aria-current="page"] svg.i{color:var(--gold)}
+  .nav-brand{order:-2}
+  .nav .nav-settings{display:flex!important;margin-top:auto}
+  .nav-scan .nav-orb{width:auto;height:auto;margin:0;background:none;box-shadow:none!important;color:inherit}
+  .nav-scan svg.i{width:22px;height:22px}
+  .nav button:active{transform:none}
+
+  .grid-cards{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:16px}
+  .card-thumb{transition:transform .2s var(--out),box-shadow .2s}
+  a.card-thumb:hover,button.card-thumb:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg)}
+
+  .ov{align-items:center;padding:32px}
+  .sheet{max-width:560px;max-height:min(86vh,820px);border-bottom:1px solid var(--line);border-radius:var(--r-lg);animation:popIn .25s var(--out) both}
+  .ov.closing .sheet{animation:popOut .16s ease-in both}
+  .sheet-grip{display:none}
+  .sheet-head{padding:18px 14px 8px 24px}
+  .sheet-body{padding:4px 24px 24px}
+  .ov:has(>.screen)::before{content:'';position:absolute;inset:0;background:var(--scrim);animation:fade .25s ease both}
+  .screen{inset:24px;left:256px;border:1px solid var(--line);border-radius:var(--r-lg);box-shadow:var(--shadow-lg);overflow:hidden}
+  .screen-in{max-width:1040px;padding:24px 32px 32px}
+  @keyframes popIn{from{opacity:0;transform:translateY(10px) scale(.98)}to{opacity:1;transform:none}}
+  @keyframes popOut{to{opacity:0;transform:scale(.98)}}
+
+  #toasts{bottom:24px;left:232px}
+  .btn:hover,.btn-icon:hover,.chip:hover{border-color:var(--gold)}
+  .btn-primary:hover{filter:brightness(1.06)}
+  button.row:hover{background:var(--surface-2)}
+}

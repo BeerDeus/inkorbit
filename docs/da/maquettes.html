@@ -1,0 +1,484 @@
+<!doctype html>
+<!-- Généré par tools/make-icons.mjs --sheet depuis docs/da/planche.html (ne pas modifier à la main). Planche de DA : node tools/make-icons.mjs --sheet → docs/da/maquettes.html (autonome : thème et sprite intégrés) + docs/da/shots/*.png -->
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ink Orbit · Direction artistique</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT,WONK@9..144,500..800,100,1&family=Nunito+Sans:opsz,wght@6..12,400..800&display=swap">
+<style>
+/* ── theme.css : direction artistique d'Ink Orbit (docs/da/README.md) ─────────────────────────────────────────────
+   « Livre de contes, la nuit » : ciel indigo → violet, filigranes d'or chaud, encre et aquarelle. Jetons : docs/contrat.md (noms à respecter).
+   Nuit par défaut (:root) ; html[data-theme="light"] : Parchemin ; html[data-theme="dark"] : la nuit forcée (même valeurs que :root). */
+:root{
+  --bg:#120d2e; --bg-2:#2a1756; --surface:#1d1745; --surface-2:#282056; --surface-3:#171138; --line:#3b3074;
+  --ink:#f5f0fd; --ink-2:#cfc5ea; --ink-3:#a99dce;      /* ink-3 ≥ 4,5:1 sur --bg, --surface et --surface-2 */
+  --gold:#e9c47c; --gold-2:#c99a45; --gold-soft:rgba(233,196,124,.14);
+  --accent:#b9a2ff; --accent-ink:#150f33; --accent-soft:#2e2566; --ring:rgba(185,162,255,.42);
+  --good:#62d6a6; --good-soft:#15342e; --warn:#f2bb63; --warn-soft:#3a2b14; --bad:#ff8c9c; --bad-soft:#3d1a2a;
+  --scrim:rgba(6,3,20,.66);
+  --shadow:0 1px 2px rgba(4,2,16,.45),0 12px 30px -14px rgba(4,2,16,.8);
+  --shadow-lg:0 2px 6px rgba(4,2,16,.5),0 28px 60px -20px rgba(4,2,16,.9);
+  --r-lg:22px; --r-md:15px; --r-sm:10px;
+  --ease:cubic-bezier(.2,.8,.2,1); --out:cubic-bezier(.16,1,.3,1); --spring:cubic-bezier(.34,1.5,.5,1);
+  --font-display:'Fraunces','Iowan Old Style','Palatino Linotype',Georgia,serif;
+  --font-body:'Nunito Sans','Segoe UI',system-ui,-apple-system,sans-serif;
+  --font-num:'Nunito Sans','Segoe UI',system-ui,-apple-system,sans-serif;
+  /* Les six encres (nos teintes, nos symboles : src/icons.html › ink-*) */
+  --amber:#f3aa3c; --amethyst:#a274ee; --emerald:#33b27a; --ruby:#ea4c63; --sapphire:#3f97e6; --steel:#a3afc0;
+  --amber-soft:rgba(243,170,60,.16); --amethyst-soft:rgba(162,116,238,.18); --emerald-soft:rgba(51,178,122,.16);
+  --ruby-soft:rgba(234,76,99,.16); --sapphire-soft:rgba(63,151,230,.17); --steel-soft:rgba(163,175,192,.16);
+  /* Raretés : du plus discret au plus précieux */
+  --r-common:#bdb4d6; --r-uncommon:#8fd3b4; --r-rare:#7fb2ff; --r-super:#c595ff; --r-legendary:#ffd27a;
+  --r-epic:#ff86bd; --r-enchanted:#86ecff; --r-iconic:#fff0b8; --r-special:#ffa877;
+  --sky:radial-gradient(120% 80% at 80% -10%,#4a2a8c 0%,transparent 55%),radial-gradient(90% 70% at -10% 30%,#2a1f72 0%,transparent 60%),linear-gradient(180deg,var(--bg-2) 0%,var(--bg) 62%);
+  --foil:linear-gradient(115deg,#ffd27a 0%,#ff9ec9 26%,#b9a2ff 52%,#86ecff 76%,#ffd27a 100%);
+  color-scheme:dark;
+}
+:root[data-theme="dark"]{ color-scheme:dark; }
+:root[data-theme="light"]{
+  --bg:#f5eedf; --bg-2:#ece1c9; --surface:#fffaf0; --surface-2:#efe5d0; --surface-3:#f9f3e6; --line:#d8c9a8;
+  --ink:#2a1b46; --ink-2:#4b3b6d; --ink-3:#66567f;
+  --gold:#8a5d14; --gold-2:#6e4a10; --gold-soft:rgba(138,93,20,.12);      /* or bruni : ≥ 4,5:1 sur --bg et --surface */
+  --accent:#5a3db2; --accent-ink:#ffffff; --accent-soft:#e7def8; --ring:rgba(90,61,178,.3);
+  --good:#137a52; --good-soft:#dcf1e6; --warn:#97600a; --warn-soft:#f8ebcf; --bad:#b4334a; --bad-soft:#f8e0e4;
+  --scrim:rgba(42,27,70,.42);
+  --shadow:0 1px 2px rgba(60,40,20,.08),0 10px 26px -14px rgba(60,40,20,.28);
+  --shadow-lg:0 2px 6px rgba(60,40,20,.1),0 26px 56px -22px rgba(60,40,20,.35);
+  --amber:#d98a12; --amethyst:#7f4fd6; --emerald:#1f9461; --ruby:#cf3550; --sapphire:#2479c9; --steel:#6f7d91;
+  --r-common:#8d84a6; --r-uncommon:#3f9a74; --r-rare:#3f74cf; --r-super:#8a55d6; --r-legendary:#b98114;
+  --r-epic:#cc3f84; --r-enchanted:#1f93b3; --r-iconic:#a98a1c; --r-special:#c4602b;
+  --sky:radial-gradient(110% 70% at 85% -10%,#f3e3bf 0%,transparent 55%),radial-gradient(80% 60% at -10% 40%,#efe0f0 0%,transparent 60%),linear-gradient(180deg,var(--bg-2) 0%,var(--bg) 60%);
+  color-scheme:light;
+}
+
+/* ── Classes décoratives (préfixe da-) ──────────────────────────────────────────────────────────────────── */
+/* Ciel étoilé : à poser sur un conteneur positionné (body, en-tête d'accueil…). Deux couches d'étoiles en dégradés, une étincelle qui scintille. */
+.da-sky{position:relative;isolation:isolate;background:var(--sky)}
+.da-sky::before,.da-sky::after{content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;background-repeat:repeat}
+.da-sky::before{background-image:
+  radial-gradient(1px 1px at 12% 18%,#fff 60%,transparent),radial-gradient(1px 1px at 68% 9%,#fff 60%,transparent),
+  radial-gradient(1.2px 1.2px at 84% 34%,#ffe9b8 60%,transparent),radial-gradient(1px 1px at 31% 46%,#fff 60%,transparent),
+  radial-gradient(1px 1px at 52% 72%,#d9ccff 60%,transparent),radial-gradient(1.4px 1.4px at 7% 81%,#fff 60%,transparent),
+  radial-gradient(1px 1px at 91% 88%,#fff 60%,transparent),radial-gradient(1px 1px at 41% 24%,#ffe9b8 60%,transparent);
+  background-size:260px 260px;opacity:.55}
+.da-sky::after{background-image:
+  radial-gradient(1.6px 1.6px at 22% 30%,#fff 55%,transparent),radial-gradient(1.4px 1.4px at 76% 58%,#ffe2a0 55%,transparent),
+  radial-gradient(1.2px 1.2px at 58% 16%,#fff 55%,transparent),radial-gradient(1.8px 1.8px at 36% 84%,#e3d8ff 55%,transparent);
+  background-size:410px 410px;animation:da-twinkle 5.5s ease-in-out infinite alternate}
+:root[data-theme="light"] .da-sky::before,:root[data-theme="light"] .da-sky::after{opacity:.0}
+@keyframes da-twinkle{from{opacity:.25}to{opacity:.85}}
+
+/* Étincelle à quatre branches (élément vide : <i class="da-spark"></i>) */
+.da-spark{display:inline-block;width:12px;height:12px;background:var(--gold);clip-path:polygon(50% 0,61% 39%,100% 50%,61% 61%,50% 100%,39% 61%,0 50%,39% 39%);filter:drop-shadow(0 0 4px var(--gold-soft));animation:da-spark 3.2s ease-in-out infinite}
+@keyframes da-spark{0%,100%{transform:scale(.7) rotate(0);opacity:.6}50%{transform:scale(1) rotate(45deg);opacity:1}}
+
+/* Filet doré : <div class="da-rule"><i></i></div> (losange au centre) ou <div class="da-rule"><span>Titre</span></div> */
+.da-rule{display:flex;align-items:center;gap:10px;color:var(--gold);margin:0}
+.da-rule::before,.da-rule::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,transparent,var(--gold))}
+.da-rule::after{background:linear-gradient(270deg,transparent,var(--gold))}
+.da-rule>i{width:7px;height:7px;background:var(--gold);transform:rotate(45deg);box-shadow:0 0 8px var(--gold-soft)}
+.da-rule>span{font:700 11px/1 var(--font-body);letter-spacing:.18em;text-transform:uppercase}
+
+/* Cadre filigrane : double liseré doré et coins ornés (cartes mises en avant, valeur de la collection) */
+.da-frame{position:relative;border-radius:var(--r-lg);background:linear-gradient(var(--surface),var(--surface)) padding-box,linear-gradient(140deg,var(--gold),transparent 30%,transparent 70%,var(--gold)) border-box;border:1px solid transparent;box-shadow:var(--shadow)}
+.da-frame::before{content:'';position:absolute;inset:5px;border-radius:calc(var(--r-lg) - 5px);border:1px solid var(--gold-soft);pointer-events:none}
+.da-frame::after{content:'';position:absolute;inset:0;pointer-events:none;border-radius:inherit;background:
+  radial-gradient(circle at 12px 12px,var(--gold) 1.6px,transparent 2.4px),radial-gradient(circle at calc(100% - 12px) 12px,var(--gold) 1.6px,transparent 2.4px),
+  radial-gradient(circle at 12px calc(100% - 12px),var(--gold) 1.6px,transparent 2.4px),radial-gradient(circle at calc(100% - 12px) calc(100% - 12px),var(--gold) 1.6px,transparent 2.4px)}
+
+/* Tache d'encre / aquarelle : halo coloré derrière un contenu (data-ink pour la teinte, accent par défaut) */
+.da-ink{position:relative;isolation:isolate}
+.da-ink::before{content:'';position:absolute;inset:-18% -12%;z-index:-1;pointer-events:none;filter:blur(18px);opacity:.55;
+  background:radial-gradient(40% 46% at 34% 42%,var(--da-c,var(--accent)) 0%,transparent 70%),radial-gradient(30% 36% at 68% 62%,var(--da-c2,var(--sapphire)) 0%,transparent 72%),radial-gradient(18% 20% at 78% 26%,var(--gold) 0%,transparent 70%)}
+
+/* Pastille d'encre : petit disque teinté (filtres, listes) ; <i class="da-pip" data-ink="ruby"></i> */
+.da-pip{--c:var(--ink-3);display:inline-block;width:12px;height:12px;border-radius:50%;flex:none;background:radial-gradient(circle at 35% 30%,color-mix(in srgb,var(--c) 40%,#fff) 0 18%,var(--c) 55%,color-mix(in srgb,var(--c) 70%,#000) 100%);box-shadow:0 0 0 1.5px color-mix(in srgb,var(--c) 35%,transparent)}
+.da-pip[data-ink="amber"],.da-ink[data-ink="amber"]{--c:var(--amber);--da-c:var(--amber)}
+.da-pip[data-ink="amethyst"],.da-ink[data-ink="amethyst"]{--c:var(--amethyst);--da-c:var(--amethyst)}
+.da-pip[data-ink="emerald"],.da-ink[data-ink="emerald"]{--c:var(--emerald);--da-c:var(--emerald)}
+.da-pip[data-ink="ruby"],.da-ink[data-ink="ruby"]{--c:var(--ruby);--da-c:var(--ruby)}
+.da-pip[data-ink="sapphire"],.da-ink[data-ink="sapphire"]{--c:var(--sapphire);--da-c:var(--sapphire)}
+.da-pip[data-ink="steel"],.da-ink[data-ink="steel"]{--c:var(--steel);--da-c:var(--steel)}
+
+/* Titre façon livre de contes (Fraunces doux et « wonky ») */
+.da-title{font-family:var(--font-display);font-weight:700;font-variation-settings:'SOFT' 100,'WONK' 1;letter-spacing:-.01em;line-height:1.05}
+
+@media (prefers-reduced-motion: reduce){
+  .da-sky::after,.da-spark{animation:none}
+}
+
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:color-mix(in srgb,var(--bg) 70%,#000);color:var(--ink);font-family:var(--font-body);font-size:15px;line-height:1.45;-webkit-font-smoothing:antialiased}
+svg.i{width:22px;height:22px;flex:none}
+.sheet{max-width:1380px;margin:0 auto;padding:56px 48px 80px;display:flex;flex-direction:column;gap:64px}
+.sec{display:flex;flex-direction:column;gap:22px}
+.sec>h2{font:700 28px/1.1 var(--font-display);font-variation-settings:'SOFT' 100,'WONK' 1;margin:0;color:var(--ink)}
+.sec>h2 small{display:block;font:600 12px/1 var(--font-body);letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:10px}
+.row{display:flex;flex-wrap:wrap;gap:22px;align-items:stretch}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);padding:26px;display:flex;flex-direction:column;gap:14px}
+.lab{font:700 11px/1 var(--font-body);letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3)}
+/* Héros */
+.hero{border-radius:28px;overflow:hidden;padding:56px;display:flex;align-items:center;gap:48px;min-height:360px;border:1px solid var(--line)}
+.hero .big{width:240px;height:240px;filter:drop-shadow(0 18px 40px rgba(120,80,255,.45))}
+.hero h1{margin:0;font:800 84px/.95 var(--font-display);font-variation-settings:'SOFT' 100,'WONK' 1;letter-spacing:-.02em}
+.hero h1 b{font-weight:800;background:linear-gradient(100deg,#fff1c9,#e9c47c 45%,#b07f2a);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{margin:14px 0 0;color:var(--ink-2);font-size:19px;max-width:30ch}
+.hero .tag{margin-top:22px;font-size:12.5px;color:var(--ink-3);max-width:60ch}
+.lockups{display:flex;gap:22px;flex-wrap:wrap}
+.lock{flex:1;min-width:300px;border-radius:var(--r-lg);padding:28px;display:flex;align-items:center;gap:14px;border:1px solid var(--line)}
+.lock .word{font:700 30px/1 var(--font-display);font-variation-settings:'SOFT' 100,'WONK' 1}
+.lock.paper{background:#f5eedf;color:#2a1b46;border-color:#d8c9a8}
+.sizes{display:flex;align-items:flex-end;gap:26px}
+.sizes figure{margin:0;display:flex;flex-direction:column;align-items:center;gap:8px;font-size:11px;color:var(--ink-3)}
+.appicon{border-radius:22%;box-shadow:var(--shadow-lg)}
+/* Palette */
+.sw{display:grid;grid-template-columns:repeat(auto-fill,minmax(122px,1fr));gap:12px;flex:1}
+.sw div{border-radius:14px;padding:58px 12px 10px;font-size:11.5px;line-height:1.3;border:1px solid rgba(255,255,255,.08);color:#fff}
+.sw div b{display:block;font-size:12.5px}
+.sw.paper div{color:#2a1b46;border-color:rgba(42,27,70,.12)}
+.inks{display:grid;grid-template-columns:repeat(6,1fr);gap:14px}
+.inkc{border-radius:var(--r-lg);padding:20px 14px;display:flex;flex-direction:column;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--line);position:relative;overflow:hidden}
+.inkc svg{width:56px;height:56px;filter:drop-shadow(0 6px 16px var(--g))}
+.inkc b{font:700 16px/1 var(--font-display)}
+.inkc span{font-size:11.5px;color:var(--ink-3)}
+.inkc::before{content:'';position:absolute;inset:auto -30% -55% -30%;height:90%;background:radial-gradient(closest-side,var(--g),transparent);opacity:.5}
+.rar{display:flex;flex-wrap:wrap;gap:10px}
+.rar span{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:99px;background:var(--surface-2);font-weight:700;font-size:13px}
+.rar i{width:10px;height:10px;border-radius:50%;background:var(--c);box-shadow:0 0 10px var(--c)}
+.type .t1{font:800 54px/1 var(--font-display);font-variation-settings:'SOFT' 100,'WONK' 1}
+.type .t2{font:600 26px/1.15 var(--font-display);font-variation-settings:'SOFT' 50,'WONK' 0}
+.type .t3{font-size:16px;color:var(--ink-2);max-width:62ch}
+.ico{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:10px}
+.ico div{display:flex;flex-direction:column;align-items:center;gap:8px;padding:14px 6px;border-radius:14px;background:var(--surface-2);font-size:10.5px;color:var(--ink-3)}
+.ico svg{width:26px;height:26px;color:var(--ink)}
+/* Téléphones */
+.phones{display:flex;gap:40px;justify-content:center;flex-wrap:wrap}
+.phone{width:390px;height:844px;border-radius:48px;overflow:hidden;position:relative;box-shadow:0 0 0 10px #0a0718,0 0 0 11px #3b3074,0 40px 80px -20px rgba(0,0,0,.8);display:flex;flex-direction:column;flex:none}
+.ph-cap{text-align:center;color:var(--ink-3);font-size:13px;margin-top:22px}
+.status{height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 28px;font:700 14px var(--font-body);flex:none}
+.bar{display:flex;align-items:center;justify-content:space-between;padding:6px 18px 10px;flex:none}
+.brand{display:flex;align-items:center;gap:9px}
+.brand svg{width:30px;height:30px}
+.brand span{font:700 21px/1 var(--font-display);font-variation-settings:'SOFT' 100,'WONK' 1}
+.ib{width:38px;height:38px;border-radius:13px;display:grid;place-items:center;background:color-mix(in srgb,var(--surface) 80%,transparent);border:1px solid var(--line);color:var(--ink-2)}
+.body{flex:1;overflow:hidden;padding:4px 18px 0;display:flex;flex-direction:column;gap:16px}
+.body>*{flex:none}
+.hello{font:600 15px var(--font-body);color:var(--ink-2)}
+.hello b{display:block;font:700 27px/1.1 var(--font-display);font-variation-settings:'SOFT' 100,'WONK' 1;color:var(--ink);margin-top:3px}
+.val{padding:20px 20px 14px}
+.val .lab{color:var(--gold)}
+.val .amt{font:800 40px/1 var(--font-display);margin-top:10px;letter-spacing:-.01em}
+.val .amt small{font-size:22px;color:var(--ink-2);font-weight:600}
+.val .chg{display:inline-flex;gap:5px;align-items:center;margin-top:8px;padding:4px 10px;border-radius:99px;background:var(--good-soft);color:var(--good);font-weight:800;font-size:12.5px}
+.val svg.curve{width:100%;height:70px;margin-top:6px;display:block}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.stats div{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);padding:12px}
+.stats b{display:block;font:800 21px/1 var(--font-display)}
+.stats span{font-size:11.5px;color:var(--ink-3)}
+.acts{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.acts div{display:flex;flex-direction:column;align-items:center;gap:7px;font-size:11.5px;font-weight:700;color:var(--ink-2);text-align:center}
+.acts i{width:56px;height:56px;border-radius:18px;display:grid;place-items:center;background:var(--surface);border:1px solid var(--line);color:var(--gold)}
+.acts i svg{width:26px;height:26px}
+.setc{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);padding:14px 16px;display:flex;gap:14px;align-items:center}
+.setc .n{font:700 17px var(--font-display)}
+.setc .s{font-size:12px;color:var(--ink-3)}
+.prog{height:8px;border-radius:99px;background:var(--surface-3);overflow:hidden;margin-top:8px}
+.prog i{display:block;height:100%;width:70%;background:linear-gradient(90deg,var(--amber),var(--amethyst),var(--sapphire));border-radius:inherit}
+.num14{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;font:800 18px var(--font-display);color:var(--gold);background:var(--gold-soft);border:1px solid color-mix(in srgb,var(--gold) 40%,transparent)}
+.nav{flex:none;height:84px;padding:8px 10px 22px;display:grid;grid-template-columns:repeat(5,1fr);align-items:center;background:color-mix(in srgb,var(--bg) 86%,transparent);border-top:1px solid var(--line);backdrop-filter:blur(14px)}
+.nav div{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:10.5px;font-weight:700;color:var(--ink-3)}
+.nav div.on{color:var(--gold)}
+.nav .scan i{width:58px;height:58px;margin-top:-30px;border-radius:50%;display:grid;place-items:center;color:#2a1b08;background:radial-gradient(circle at 35% 30%,#fff1c9,#e9c47c 45%,#b07f2a);box-shadow:0 0 0 5px var(--bg),0 10px 24px -6px rgba(233,196,124,.6)}
+.nav .scan i svg{width:28px;height:28px}
+/* Collection */
+.srch{display:flex;align-items:center;gap:10px;height:46px;padding:0 14px;border-radius:15px;background:var(--surface);border:1px solid var(--line);color:var(--ink-3)}
+.pips{display:flex;gap:8px;align-items:center}
+.pips span{width:36px;height:36px;border-radius:12px;display:grid;place-items:center;background:var(--surface);border:1px solid var(--line)}
+.pips span.on{border-color:var(--gold);background:var(--gold-soft)}
+.pips svg{width:22px;height:22px}
+.chips{display:flex;gap:8px}
+.chips span{height:32px;padding:0 12px;border-radius:99px;display:inline-flex;align-items:center;gap:6px;background:var(--surface-2);font-size:12.5px;font-weight:700;color:var(--ink-2)}
+.cgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px 10px}
+.cc{display:flex;flex-direction:column;gap:5px}
+.cc .im{position:relative;aspect-ratio:488/681;border-radius:8px;overflow:hidden;background:var(--surface-2);box-shadow:0 8px 18px -8px rgba(0,0,0,.7)}
+.cc img{width:100%;height:100%;object-fit:cover;display:block}
+.cc .q{position:absolute;top:5px;right:5px;min-width:24px;height:22px;padding:0 6px;border-radius:99px;background:rgba(18,13,46,.86);color:var(--gold);font:800 12px/22px var(--font-body);text-align:center;border:1px solid rgba(233,196,124,.5)}
+.cc .fo{position:absolute;inset:0;background:var(--foil);mix-blend-mode:color-dodge;opacity:.35}
+.cc .p{font-size:12px;font-weight:800;display:flex;justify-content:space-between;color:var(--ink-2)}
+.cc .p b{color:var(--ink)}
+.ctitle{display:flex;align-items:baseline;justify-content:space-between}
+.ctitle h3{margin:0;font:700 26px var(--font-display);font-variation-settings:'SOFT' 100,'WONK' 1}
+.ctitle span{font-size:12.5px;color:var(--ink-3)}
+/* Lore */
+.lore{flex:1;display:flex;flex-direction:column;position:relative}
+.half{flex:1;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden}
+.half.top{transform:rotate(180deg)}
+.half::before{content:'';position:absolute;inset:-20%;background:radial-gradient(50% 45% at 50% 55%,var(--c) 0%,transparent 70%);opacity:.38;filter:blur(10px)}
+.half .who{position:relative;font:700 13px var(--font-body);letter-spacing:.16em;text-transform:uppercase;color:var(--ink-2);display:flex;gap:8px;align-items:center}
+.half .who svg{width:20px;height:20px}
+.half .pts{position:relative;font:800 150px/.9 var(--font-display);font-variation-settings:'SOFT' 100,'WONK' 1;color:var(--ink);text-shadow:0 0 40px var(--c)}
+.half .goal{position:relative;font-size:13px;color:var(--ink-3);font-weight:700}
+.half .pm{position:absolute;top:50%;transform:translateY(-50%);width:60px;height:60px;border-radius:50%;display:grid;place-items:center;background:color-mix(in srgb,var(--ink) 6%,transparent);border:1px solid color-mix(in srgb,var(--ink) 16%,transparent);color:var(--ink)}
+.half .pm.l{left:22px}.half .pm.r{right:22px}
+.dots{position:relative;display:flex;gap:5px;margin:14px 0 6px}
+.dots i{width:9px;height:9px;transform:rotate(45deg);background:color-mix(in srgb,var(--ink) 16%,transparent);border-radius:2px}
+.dots i.on{background:var(--gold);box-shadow:0 0 8px var(--gold)}
+.mid{height:58px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 22px;background:var(--surface-3);border-block:1px solid color-mix(in srgb,var(--gold) 35%,transparent);position:relative;z-index:1}
+.mid svg.m{width:34px;height:34px}
+.mid .ib{width:40px;height:40px}
+.turn{font:700 13px var(--font-body);color:var(--gold);letter-spacing:.08em;text-transform:uppercase}
+.foot{font-size:12.5px;color:var(--ink-3);border-top:1px solid var(--line);padding-top:22px}
+body[data-s] .sec,body[data-s] .hero{display:none}
+body[data-s="identite"] [data-p="identite"],body[data-s="ecrans"] [data-p="ecrans"]{display:flex}
+body[data-s] .sheet{gap:44px;padding-block:44px}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="ioDrop" x1=".3" y1="0" x2=".7" y2="1"><stop offset="0" stop-color="#d6c4ff"/><stop offset=".45" stop-color="#8a5ae6"/><stop offset="1" stop-color="#2b5fc4"/></linearGradient>
+    <radialGradient id="ioDropCore" cx=".42" cy=".62" r=".55"><stop offset="0" stop-color="#fff" stop-opacity=".55"/><stop offset=".5" stop-color="#b9a2ff" stop-opacity=".15"/><stop offset="1" stop-color="#2b5fc4" stop-opacity="0"/></radialGradient>
+    <linearGradient id="ioGold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff1c9"/><stop offset=".4" stop-color="#e9c47c"/><stop offset="1" stop-color="#b07f2a"/></linearGradient>
+    <clipPath id="ioFront" clipPathUnits="userSpaceOnUse"><rect x="-20" y="58" width="140" height="60"/></clipPath>
+    <clipPath id="ioFrontS" clipPathUnits="userSpaceOnUse"><rect x="-5" y="14.5" width="34" height="14"/></clipPath>
+
+    <!-- Logo : une goutte d'encre magique traversée par une orbite d'or, une étoile en satellite -->
+    <symbol id="i-logo" viewBox="0 0 100 100">
+      <g transform="rotate(-18 50 58)"><ellipse cx="50" cy="58" rx="43" ry="14" fill="none" stroke="url(#ioGold)" stroke-width="3.4"/></g>
+      <path d="M50 9C50 9 25 40 25 59.5a25 25 0 0 0 50 0C75 40 50 9 50 9Z" fill="url(#ioDrop)"/>
+      <path d="M50 9C50 9 25 40 25 59.5a25 25 0 0 0 50 0C75 40 50 9 50 9Z" fill="url(#ioDropCore)"/>
+      <path d="M50 9C50 9 25 40 25 59.5a25 25 0 0 0 50 0C75 40 50 9 50 9Z" fill="none" stroke="#fff1c9" stroke-opacity=".5" stroke-width="1.2"/>
+      <path d="M38.5 44c-3.6 5-6 10.4-6 15.2" fill="none" stroke="#fff" stroke-opacity=".7" stroke-width="3.2" stroke-linecap="round"/>
+      <path d="M53 50.5q1 6.5 7.5 7.5-6.5 1-7.5 7.5-1-6.5-7.5-7.5 6.5-1 7.5-7.5Z" fill="#fff8e2"/>
+      <g transform="rotate(-18 50 58)">
+        <ellipse cx="50" cy="58" rx="43" ry="14" fill="none" stroke="url(#ioGold)" stroke-width="3.4" clip-path="url(#ioFront)"/>
+        <path d="M89 55.5q1.3 6.2 7.5 7.5-6.2 1.3-7.5 7.5-1.3-6.2-7.5-7.5 6.2-1.3 7.5-7.5Z" fill="url(#ioGold)" transform="rotate(18 89 63)"/>
+      </g>
+      <circle cx="17" cy="28" r="1.6" fill="#e9c47c"/><circle cx="80" cy="18" r="1.2" fill="#e9c47c" opacity=".8"/><circle cx="86" cy="86" r="1.3" fill="#e9c47c" opacity=".7"/>
+    </symbol>
+    <!-- Logo simplifié (24 px et moins) -->
+    <symbol id="i-mark" viewBox="0 0 24 24">
+      <g transform="rotate(-18 12 14.5)"><ellipse cx="12" cy="14.5" rx="11" ry="3.6" fill="none" stroke="url(#ioGold)" stroke-width="1.6"/></g>
+      <path d="M12 2.2S5.8 9.8 5.8 14.6a6.2 6.2 0 0 0 12.4 0C18.2 9.8 12 2.2 12 2.2Z" fill="url(#ioDrop)"/>
+      <path d="M9.3 11c-.9 1.2-1.4 2.4-1.4 3.6" fill="none" stroke="#fff" stroke-opacity=".75" stroke-width="1.2" stroke-linecap="round"/>
+      <g transform="rotate(-18 12 14.5)"><ellipse cx="12" cy="14.5" rx="11" ry="3.6" fill="none" stroke="url(#ioGold)" stroke-width="1.6" clip-path="url(#ioFrontS)"/></g>
+      <path d="M21.6 12.2q.35 1.65 2 2-1.65.35-2 2-.35-1.65-2-2 1.65-.35 2-2Z" fill="#e9c47c"/>
+    </symbol>
+
+    <!-- Encres : symboles originaux en couleur pleine (teinte du thème : --amber…) -->
+    <symbol id="ink-amber" viewBox="0 0 24 24"><g style="fill:var(--amber,#f3aa3c)"><path d="M12 1.8l1.9 5.6 5.3-2.6-2.6 5.3 5.6 1.9-5.6 1.9 2.6 5.3-5.3-2.6L12 22.2l-1.9-5.6-5.3 2.6 2.6-5.3L1.8 12l5.6-1.9-2.6-5.3 5.3 2.6Z"/></g><circle cx="12" cy="12" r="3.6" fill="#fff4d6" opacity=".9"/></symbol>
+    <symbol id="ink-amethyst" viewBox="0 0 24 24"><path style="fill:var(--amethyst,#a274ee)" d="M15.8 2.6A9.6 9.6 0 1 0 21.4 17 7.6 7.6 0 1 1 15.8 2.6Z"/><path d="M17.6 7.2q.4 2 2.4 2.4-2 .4-2.4 2.4-.4-2-2.4-2.4 2-.4 2.4-2.4Z" fill="#efe4ff"/></symbol>
+    <symbol id="ink-emerald" viewBox="0 0 24 24"><path style="fill:var(--emerald,#33b27a)" d="M20.6 3.4C11 3 4 7.6 4 14.6c0 2 .6 3.6 1.6 4.8L3.4 21.6l1 1 2.2-2.2c1.2 1 2.8 1.6 4.8 1.6 7 0 11.6-7 9.2-18.6Z"/><path d="M6.6 20.4C9.4 15.2 12.6 11 17.2 7.4" fill="none" stroke="#e2fff1" stroke-opacity=".85" stroke-width="1.4" stroke-linecap="round"/></symbol>
+    <symbol id="ink-ruby" viewBox="0 0 24 24"><path style="fill:var(--ruby,#ea4c63)" d="M12.4 1.6c.6 4 4 6 5.6 8.6 1.2 2 1.6 3.8 1.2 5.8A7.4 7.4 0 0 1 4.8 15c0-2.6 1.4-4.4 2.6-5.6.2 1.6.8 2.8 2 3.6-.4-4.6 1.4-8.4 3-11.4Z"/><path d="M12 22a3.6 3.6 0 0 1-3.6-3.6c0-2 1.8-3.4 2.6-5 .8 2 4.6 2.8 4.6 5A3.6 3.6 0 0 1 12 22Z" fill="#ffe1d6" opacity=".9"/></symbol>
+    <symbol id="ink-sapphire" viewBox="0 0 24 24"><path style="fill:var(--sapphire,#3f97e6)" d="M12 1.8S4.6 10.4 4.6 15.2a7.4 7.4 0 0 0 14.8 0C19.4 10.4 12 1.8 12 1.8Z"/><path d="M6.4 15.6c1.4-1.3 2.8-1.3 4.2 0s2.8 1.3 4.2 0 2.8-1.3 3.4-.6" fill="none" stroke="#e1f1ff" stroke-width="1.5" stroke-linecap="round"/></symbol>
+    <symbol id="ink-steel" viewBox="0 0 24 24"><path style="fill:var(--steel,#a3afc0)" d="M12 1.8l8.4 3.3v6.3c0 5.4-3.6 9.3-8.4 10.9-4.8-1.6-8.4-5.5-8.4-10.9V5.1Z"/><path d="M12 5.2v13.6M7.4 10.6h9.2" fill="none" stroke="#f4f7fb" stroke-opacity=".9" stroke-width="1.6" stroke-linecap="round"/></symbol>
+    <!-- Encrable : un encrier rond et sa plume (pas l'hexagone du jeu) -->
+    <symbol id="i-inkwell" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 11.5h8l1.6 2.6a5.6 5.6 0 0 1-11.2 0Z" fill="currentColor" fill-opacity=".2"/><path d="M9 11.5V9.4h6v2.1"/><path d="M13.4 9.4 19.6 2.6M16.4 4.4l2 1.8"/></g></symbol>
+
+    <!-- Interface (trait 1,8 ; quelques aplats à 16 % pour le relief) -->
+    <symbol id="i-home" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5.6 10.3 12 5l6.4 5.3v8.4c0 .8-.7 1.5-1.5 1.5H7.1c-.8 0-1.5-.7-1.5-1.5Z" fill="currentColor" fill-opacity=".14" stroke="none"/><path d="M3 11.4 11 4.7a1.6 1.6 0 0 1 2 0l8 6.7"/><path d="M5.6 10.1v8.6c0 .8.7 1.5 1.5 1.5h9.8c.8 0 1.5-.7 1.5-1.5v-8.6"/><path d="M12 11.3q.45 2.75 3.2 3.2-2.75.45-3.2 3.2-.45-2.75-3.2-3.2 2.75-.45 3.2-3.2Z" fill="currentColor" stroke="none"/></g></symbol>
+    <symbol id="i-cards" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.6" y="4.4" width="10.4" height="14.8" rx="1.8" transform="rotate(-10 8.8 11.8)"/><rect x="9.6" y="4.8" width="10.4" height="14.8" rx="1.8" transform="rotate(8 14.8 12.2)" fill="currentColor" fill-opacity=".16"/><path d="M15.2 9.6q.4 2.2 2.6 2.6-2.2.4-2.6 2.6-.4-2.2-2.6-2.6 2.2-.4 2.6-2.6Z" fill="currentColor" stroke="none"/></g></symbol>
+    <symbol id="i-scan" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8V5.5A1.5 1.5 0 0 1 5.5 4H8M16 4h2.5A1.5 1.5 0 0 1 20 5.5V8M20 16v2.5a1.5 1.5 0 0 1-1.5 1.5H16M8 20H5.5A1.5 1.5 0 0 1 4 18.5V16"/><rect x="8.4" y="6.6" width="7.2" height="10.8" rx="1.3" fill="currentColor" fill-opacity=".16"/><path d="M3 12h18"/></g></symbol>
+    <symbol id="i-trade" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8.5h13.5M14 5l3.5 3.5L14 12"/><path d="M20 15.5H6.5M10 12l-3.5 3.5L10 19"/></g></symbol>
+    <symbol id="i-deck" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="3" width="12" height="16.5" rx="1.8" fill="currentColor" fill-opacity=".16"/><path d="M4 6.5v13A1.5 1.5 0 0 0 5.5 21h11"/><path d="M12 7.4l1.3 2.7 2.9.4-2.1 2 .5 2.9-2.6-1.4-2.6 1.4.5-2.9-2.1-2 2.9-.4Z"/></g></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6"/><path d="M20 20l-4.2-4.2"/></g></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></g></symbol>
+    <symbol id="i-minus" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M5 12h14"/></g></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></g></symbol>
+    <symbol id="i-back" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></g></symbol>
+    <symbol id="i-chev" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></g></symbol>
+    <symbol id="i-more" viewBox="0 0 24 24"><g fill="currentColor"><circle cx="5.5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="18.5" cy="12" r="1.5"/></g></symbol>
+    <symbol id="i-gear" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.2h3.4l.5 2.4 1.8 1 2.3-.8 1.7 2.9-1.8 1.6v2.1l1.8 1.6-1.7 2.9-2.3-.8-1.8 1-.5 2.4h-3.4l-.5-2.4-1.8-1-2.3.8-1.7-2.9 1.8-1.6v-2.1L4 8.7l1.7-2.9 2.3.8 1.8-1Z" fill="currentColor" fill-opacity=".14"/><circle cx="12" cy="12" r="2.8"/></g></symbol>
+    <symbol id="i-share" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3.5M7.5 8 12 3.5 16.5 8M8 11H6.5A1.5 1.5 0 0 0 5 12.5v7A1.5 1.5 0 0 0 6.5 21h11a1.5 1.5 0 0 0 1.5-1.5v-7a1.5 1.5 0 0 0-1.5-1.5H16"/></g></symbol>
+    <symbol id="i-qr" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="6.5" height="6.5" rx="1.2"/><rect x="14" y="3.5" width="6.5" height="6.5" rx="1.2"/><rect x="3.5" y="14" width="6.5" height="6.5" rx="1.2"/><path d="M14 14h2.5v2.5H14zM18 18h2.5v2.5H18zM14 18.5v2M18.5 14h2"/></g></symbol>
+    <symbol id="i-star" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 3.5l2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.8l-5.2 2.7 1-5.8-4.2-4.1 5.8-.8z"/></g></symbol>
+    <symbol id="i-heart" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 20s-7.5-4.6-7.5-10.2A4.3 4.3 0 0 1 12 7.2a4.3 4.3 0 0 1 7.5 2.6C19.5 15.4 12 20 12 20Z"/></g></symbol>
+    <symbol id="i-binder" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5.4" y="3" width="14" height="18" rx="1.9" fill="currentColor" fill-opacity=".14"/><path d="M8.6 3.4v17.2M3.4 7.2h3.4M3.4 12h3.4M3.4 16.8h3.4"/><rect x="11.4" y="7" width="5.2" height="7.4" rx="1"/></g></symbol>
+    <symbol id="i-chart" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4v15.5A.5.5 0 0 0 4.5 20H20"/><path d="M7 15.5l3.6-4.2 3 2.6L19 7.5"/><path d="M15.5 7.5H19V11"/></g></symbol>
+    <symbol id="i-filter" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5h16l-6 7.4v5.1l-4 2v-7.1Z"/></g></symbol>
+    <symbol id="i-sort" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4v16M3.5 16.5 7 20l3.5-3.5M17 20V4M13.5 7.5 17 4l3.5 3.5"/></g></symbol>
+    <symbol id="i-camera" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8.5A1.5 1.5 0 0 1 5.5 7H8l1.2-2h5.6L16 7h2.5A1.5 1.5 0 0 1 20 8.5v9a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 17.5z"/><circle cx="12" cy="12.5" r="3.4"/></g></symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6"/></g></symbol>
+    <symbol id="i-edit" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16v4zM13.5 6.5l4 4"/></g></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></g></symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></g></symbol>
+    <symbol id="i-link" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14a4 4 0 0 0 5.7 0l3.2-3.2a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3.2 3.2a4 4 0 0 0 5.7 5.7l1-1"/></g></symbol>
+    <symbol id="i-download" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11M7.5 10.5 12 15l4.5-4.5M5 15v3.5A1.5 1.5 0 0 0 6.5 20h11a1.5 1.5 0 0 0 1.5-1.5V15"/></g></symbol>
+    <symbol id="i-upload" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V5M7.5 9.5L12 5l4.5 4.5M5 15v3.5A1.5 1.5 0 0 0 6.5 20h11a1.5 1.5 0 0 0 1.5-1.5V15"/></g></symbol>
+    <symbol id="i-moon" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19.5 14.6A8 8 0 1 1 9.4 4.5a6.4 6.4 0 0 0 10.1 10.1Z" fill="currentColor" fill-opacity=".14"/><path d="M17 4.5q.3 1.7 2 2-1.7.3-2 2-.3-1.7-2-2 1.7-.3 2-2Z" fill="currentColor" stroke="none"/></g></symbol>
+    <symbol id="i-sun" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4" fill="currentColor" fill-opacity=".16"/><path d="M12 2.8v2M12 19.2v2M2.8 12h2M19.2 12h2M5.5 5.5l1.4 1.4M17.1 17.1l1.4 1.4M5.5 18.5l1.4-1.4M17.1 6.9l1.4-1.4"/></g></symbol>
+    <symbol id="i-sparkle" viewBox="0 0 24 24"><g fill="currentColor"><path d="M10 3q1 6 7 7-6 1-7 7-1-6-7-7 6-1 7-7Z"/><path d="M18.5 14q.5 2.5 3 3-2.5.5-3 3-.5-2.5-3-3 2.5-.5 3-3Z" opacity=".7"/></g></symbol>
+    <!-- Lore : une étoile dans un médaillon (compteur de lore) -->
+    <symbol id="i-lore" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.6" fill="currentColor" fill-opacity=".14"/><path d="M12 6.4q.9 4.7 5.6 5.6-4.7.9-5.6 5.6-.9-4.7-5.6-5.6 4.7-.9 5.6-5.6Z" fill="currentColor" stroke="none"/></g></symbol>
+    <!-- Carte mystère : une carte avec un point d'interrogation -->
+    <symbol id="i-mystery" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2.8" width="14" height="18.4" rx="2" fill="currentColor" fill-opacity=".14"/><path d="M9.6 9.4a2.5 2.5 0 0 1 4.8 1c0 1.7-2.4 2-2.4 3.6"/><circle cx="12" cy="16.9" r="1" fill="currentColor" stroke="none"/></g></symbol>
+    <symbol id="i-info" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9" fill="currentColor" fill-opacity=".14"/><path d="M12 11v6"/><circle cx="12" cy="7.7" r="1.1" fill="currentColor" stroke="none"/></g></symbol>
+    <symbol id="i-help" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9" fill="currentColor" fill-opacity=".14"/><path d="M9.3 9.4a2.8 2.8 0 0 1 5.4 1c0 1.9-2.7 2.2-2.7 4"/><circle cx="12" cy="17.3" r="1.1" fill="currentColor" stroke="none"/></g></symbol>
+    <symbol id="i-book" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6.5C10 5 7 4.6 3.5 5v13.5c3.5-.4 6.5 0 8.5 1.5 2-1.5 5-1.9 8.5-1.5V5C17 4.6 14 5 12 6.5Z" fill="currentColor" fill-opacity=".14"/><path d="M12 6.5V20"/></g></symbol>
+    <symbol id="i-grid" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><rect x="4" y="4" width="6.5" height="6.5" rx="1.4"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.4"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.4"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.4"/></g></symbol>
+    <symbol id="i-list" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M9 6.5h11M9 12h11M9 17.5h11"/><circle cx="4.8" cy="6.5" r="1" fill="currentColor"/><circle cx="4.8" cy="12" r="1" fill="currentColor"/><circle cx="4.8" cy="17.5" r="1" fill="currentColor"/></g></symbol>
+    <symbol id="i-refresh" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19.5 12a7.5 7.5 0 0 1-13 5.1M4.5 12a7.5 7.5 0 0 1 13-5.1"/><path d="M17.8 3.2v3.9h-3.9M6.2 20.8v-3.9h3.9"/></g></symbol>
+    <symbol id="i-offline" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 18.5h10.5a4 4 0 0 0 .6-8 6 6 0 0 0-10.8-2.2A5.2 5.2 0 0 0 7 18.5Z"/><path d="M4 4l16 16"/></g></symbol>
+  </defs>
+</svg>
+
+<div class="sheet">
+
+<header class="hero da-sky da-ink" data-p="identite">
+  <svg class="big" viewBox="0 0 100 100"><use href="#i-logo"/></svg>
+  <div>
+    <div class="da-rule" style="width:320px;margin-bottom:18px"><span>Direction artistique</span></div>
+    <h1>Ink <b>Orbit</b></h1>
+    <p>Un livre de contes ouvert la nuit : ta collection en orbite autour d'une goutte d'encre.</p>
+    <p class="tag">Appli de fan gratuite et non officielle. Non publiée, approuvée ni soutenue par Disney ou Ravensburger. Logo, symboles et icônes : dessins originaux.</p>
+  </div>
+</header>
+
+<section class="sec" data-p="identite">
+  <h2><small>Logo</small>La goutte et son orbite</h2>
+  <div class="lockups">
+    <div class="lock da-sky"><svg style="width:64px;height:64px"><use href="#i-logo"/></svg><span class="word">Ink Orbit</span></div>
+    <div class="lock paper"><svg style="width:64px;height:64px"><use href="#i-logo"/></svg><span class="word">Ink Orbit</span></div>
+    <div class="panel" style="flex:1;min-width:300px"><span class="lab">Icône de l'appli · repère 24 et 16 px</span>
+      <div class="sizes">
+        <figure><img class="appicon" src="../../public/icons/icon-512.png" width="112" height="112" alt=""><span>512 / 192</span></figure>
+        <figure><img class="appicon" src="../../public/icons/maskable-512.png" width="72" height="72" alt="" style="border-radius:50%"><span>maskable</span></figure>
+        <figure><svg style="width:24px;height:24px"><use href="#i-mark"/></svg><span>24 px</span></figure>
+        <figure><svg style="width:16px;height:16px"><use href="#i-mark"/></svg><span>16 px</span></figure>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" data-p="identite">
+  <h2><small>Couleurs</small>Nuit (par défaut) et Parchemin</h2>
+  <div class="row">
+    <div class="sw">
+      <div style="background:#120d2e"><b>--bg</b>#120d2e</div><div style="background:#2a1756"><b>--bg-2</b>#2a1756</div>
+      <div style="background:#1d1745"><b>--surface</b>#1d1745</div><div style="background:#282056"><b>--surface-2</b>#282056</div>
+      <div style="background:#e9c47c;color:#2a1b08"><b>--gold</b>#e9c47c</div><div style="background:#b9a2ff;color:#150f33"><b>--accent</b>#b9a2ff</div>
+      <div style="background:#f5f0fd;color:#120d2e"><b>--ink</b>#f5f0fd</div><div style="background:#a99dce;color:#120d2e"><b>--ink-3</b>#a99dce</div>
+    </div>
+    <div class="sw paper">
+      <div style="background:#f5eedf"><b>--bg</b>#f5eedf</div><div style="background:#fffaf0"><b>--surface</b>#fffaf0</div>
+      <div style="background:#efe5d0"><b>--surface-2</b>#efe5d0</div><div style="background:#8a5d14;color:#fff"><b>--gold</b>#8a5d14</div>
+      <div style="background:#5a3db2;color:#fff"><b>--accent</b>#5a3db2</div><div style="background:#2a1b46;color:#fff"><b>--ink</b>#2a1b46</div>
+      <div style="background:#66567f;color:#fff"><b>--ink-3</b>#66567f</div><div style="background:#d8c9a8"><b>--line</b>#d8c9a8</div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" data-p="identite">
+  <h2><small>Les six encres</small>Nos symboles, nos teintes</h2>
+  <div class="inks">
+    <div class="inkc" style="--g:var(--amber)"><svg><use href="#ink-amber"/></svg><b>Ambre</b><span>Éclat de soleil · #f3aa3c</span></div>
+    <div class="inkc" style="--g:var(--amethyst)"><svg><use href="#ink-amethyst"/></svg><b>Améthyste</b><span>Croissant de lune · #a274ee</span></div>
+    <div class="inkc" style="--g:var(--emerald)"><svg><use href="#ink-emerald"/></svg><b>Émeraude</b><span>Feuille · #33b27a</span></div>
+    <div class="inkc" style="--g:var(--ruby)"><svg><use href="#ink-ruby"/></svg><b>Rubis</b><span>Flamme · #ea4c63</span></div>
+    <div class="inkc" style="--g:var(--sapphire)"><svg><use href="#ink-sapphire"/></svg><b>Saphir</b><span>Goutte et vague · #3f97e6</span></div>
+    <div class="inkc" style="--g:var(--steel)"><svg><use href="#ink-steel"/></svg><b>Acier</b><span>Bouclier · #a3afc0</span></div>
+  </div>
+  <div class="rar">
+    <span style="--c:var(--r-common)"><i></i>Commune</span><span style="--c:var(--r-uncommon)"><i></i>Inhabituelle</span><span style="--c:var(--r-rare)"><i></i>Rare</span>
+    <span style="--c:var(--r-super)"><i></i>Très rare</span><span style="--c:var(--r-legendary)"><i></i>Légendaire</span><span style="--c:var(--r-epic)"><i></i>Épique</span>
+    <span style="--c:var(--r-enchanted)"><i></i>Enchantée</span><span style="--c:var(--r-iconic)"><i></i>Iconique</span><span style="--c:var(--r-special)"><i></i>Spéciale</span>
+  </div>
+</section>
+
+<section class="sec" data-p="identite">
+  <h2><small>Typographie et icônes</small>Fraunces et Nunito Sans (OFL)</h2>
+  <div class="row" style="align-items:flex-start">
+    <div class="panel type" style="flex:1.2;min-width:420px">
+      <span class="lab">Titres · Fraunces, axes SOFT 100 et WONK</span>
+      <div class="t1">Il était une fois…</div>
+      <div class="t2">Premier Chapitre · 142 / 204 cartes</div>
+      <div class="da-rule"><i></i></div>
+      <span class="lab">Texte · Nunito Sans</span>
+      <div class="t3">Ajoute tes cartes au scan, suis la valeur de ta collection jour après jour et partage ta liste d'échange par un QR code. Chiffres : 1 284,50 € · 60 cartes · ×4.</div>
+    </div>
+    <div class="panel" style="flex:1;min-width:420px"><span class="lab">Icônes de l'interface (trait 1,8)</span><div class="ico" id="icoGrid"></div></div>
+  </div>
+</section>
+
+<section class="sec" data-p="ecrans">
+  <h2><small>Maquettes · téléphone 390 × 844</small>Accueil · Collection · Compteur de lore</h2>
+  <div class="phones">
+    <div>
+      <div class="phone da-sky">
+        <div class="status"><span>21:04</span><span>●●● 5G</span></div>
+        <div class="bar"><div class="brand"><svg><use href="#i-mark"/></svg><span>Ink Orbit</span></div><div class="ib"><svg class="i"><use href="#i-gear"/></svg></div></div>
+        <div class="body">
+          <div class="hello">Bonsoir, Martin<b>Ta collection brille ce soir</b></div>
+          <div class="da-frame val">
+            <span class="lab">Valeur de ma collection</span>
+            <div class="amt">1 284<small>,50 €</small></div>
+            <span class="chg">▲ 3,2 % · 7 jours</span>
+            <svg class="curve" viewBox="0 0 300 70" preserveAspectRatio="none"><defs><linearGradient id="cf" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--gold)" stop-opacity=".35"/><stop offset="1" style="stop-color:var(--gold)" stop-opacity="0"/></linearGradient></defs><path d="M0 52 C20 50 32 56 50 48 S82 40 100 42 132 30 150 34 182 22 200 26 232 16 250 18 282 8 300 6 V70 H0Z" fill="url(#cf)"/><path d="M0 52 C20 50 32 56 50 48 S82 40 100 42 132 30 150 34 182 22 200 26 232 16 250 18 282 8 300 6" fill="none" style="stroke:var(--gold)" stroke-width="2.4" stroke-linecap="round"/><circle cx="300" cy="6" r="4" fill="#fff1c9"/></svg>
+          </div>
+          <div class="stats"><div><b>1 342</b><span>cartes</span></div><div><b>812</b><span>différentes</span></div><div><b>37</b><span>à échanger</span></div></div>
+          <div class="acts">
+            <div><i><svg class="i"><use href="#i-scan"/></svg></i>Scanner</div><div><i><svg class="i"><use href="#i-plus"/></svg></i>Ajouter</div>
+            <div><i><svg class="i"><use href="#i-lore"/></svg></i>Lore</div><div><i><svg class="i"><use href="#i-mystery"/></svg></i>Carte mystère</div>
+          </div>
+          <div class="setc"><span class="num14">14</span><div style="flex:1"><div class="n">Hyperia City</div><div class="s">143 / 204 · masterset 58 %</div><div class="prog"><i></i></div></div><svg class="i" style="color:var(--ink-3)"><use href="#i-chev"/></svg></div>
+        </div>
+        <div class="nav"><div class="on"><svg class="i"><use href="#i-home"/></svg>Accueil</div><div><svg class="i"><use href="#i-cards"/></svg>Collection</div><div class="scan"><i><svg class="i"><use href="#i-scan"/></svg></i></div><div><svg class="i"><use href="#i-trade"/></svg>Échange</div><div><svg class="i"><use href="#i-deck"/></svg>Decks</div></div>
+      </div>
+      <div class="ph-cap">Accueil</div>
+    </div>
+
+    <div>
+      <div class="phone" style="background:var(--bg)">
+        <div class="status"><span>21:06</span><span>●●● 5G</span></div>
+        <div class="bar"><div class="ctitle" style="flex:1"><h3>Ma collection</h3><span>812 cartes · 1 284 €</span></div></div>
+        <div class="body" style="gap:12px">
+          <div class="srch"><svg class="i"><use href="#i-search"/></svg>Chercher un nom, un trait…</div>
+          <div class="pips"><span class="on"><svg><use href="#ink-amber"/></svg></span><span><svg><use href="#ink-amethyst"/></svg></span><span><svg><use href="#ink-emerald"/></svg></span><span class="on"><svg><use href="#ink-ruby"/></svg></span><span><svg><use href="#ink-sapphire"/></svg></span><span><svg><use href="#ink-steel"/></svg></span><span style="margin-left:auto"><svg class="i"><use href="#i-grid"/></svg></span></div>
+          <div class="chips"><span><svg class="i" style="width:16px;height:16px"><use href="#i-filter"/></svg>Rareté</span><span>Extension</span><span><svg class="i" style="width:16px;height:16px"><use href="#i-sort"/></svg>Prix</span></div>
+          <div class="cgrid" id="cgrid"></div>
+        </div>
+        <div class="nav"><div><svg class="i"><use href="#i-home"/></svg>Accueil</div><div class="on"><svg class="i"><use href="#i-cards"/></svg>Collection</div><div class="scan"><i><svg class="i"><use href="#i-scan"/></svg></i></div><div><svg class="i"><use href="#i-trade"/></svg>Échange</div><div><svg class="i"><use href="#i-deck"/></svg>Decks</div></div>
+      </div>
+      <div class="ph-cap">Collection · grille</div>
+    </div>
+
+    <div>
+      <div class="phone" style="background:var(--bg)">
+        <div class="lore">
+          <div class="half top da-sky" style="--c:var(--ruby)">
+            <div class="who"><svg><use href="#ink-ruby"/></svg>Adversaire</div>
+            <div class="dots" id="d1"></div>
+            <div class="pts">14</div><div class="goal">encore 6 pour gagner</div>
+            <span class="pm l"><svg class="i"><use href="#i-minus"/></svg></span><span class="pm r"><svg class="i"><use href="#i-plus"/></svg></span>
+          </div>
+          <div class="mid"><span class="ib"><svg class="i"><use href="#i-refresh"/></svg></span><span class="turn">Tour 7</span><svg class="m"><use href="#i-mark"/></svg><span class="turn">À toi</span><span class="ib"><svg class="i"><use href="#i-close"/></svg></span></div>
+          <div class="half da-sky" style="--c:var(--sapphire)">
+            <div class="who"><svg><use href="#ink-sapphire"/></svg>Martin</div>
+            <div class="dots" id="d2"></div>
+            <div class="pts">17</div><div class="goal">encore 3 pour gagner</div>
+            <span class="pm l"><svg class="i"><use href="#i-minus"/></svg></span><span class="pm r"><svg class="i"><use href="#i-plus"/></svg></span>
+          </div>
+        </div>
+      </div>
+      <div class="ph-cap">Compteur de lore · 1 contre 1</div>
+    </div>
+  </div>
+</section>
+
+<p class="foot" data-p="ecrans">Ink Orbit est une application de fan gratuite et non officielle. Elle n'est ni publiée, ni approuvée, ni soutenue par Disney ou Ravensburger. Images de cartes : Lorcast. Données : LorcanaJSON.</p>
+</div>
+<script>
+const q = new URLSearchParams(location.search), s = q.get('s'); if (s) document.body.dataset.s = s; if (q.get('t')) document.documentElement.dataset.theme = q.get('t');
+const CARDS = [[2972,"1792f6aa4efe42ce93bd680da01f7016?1783188235","Woody","Aide une amie",1,2,23],[2998,"2d7345f0bdb249708ef511c1fe289bc7?1783188517","Pocahontas & Meeko","Amis aventureux",3,4,141],[2999,"6642a0a4e7984d78bc81e54df6fab1c0?1783188524","Woody & Buzz l'Éclair","Meilleurs amis",5,4,195],[3000,"84ac4e601f31462988d5fef80d41f5b2?1783188531","Sulli & Bouh","Amis de terreur",9,3,77],[3001,"f82d2fbf598249eb924b2cdbdc915f62?1783188535","La famille Madrigal","Toutes les générations",17,2,12],[3002,"cdbcb2228d794fd3a1a3573a7c29db1f?1783188540","Lilo & Stitch","Amis qui aiment s'amuser",33,3,162],[3017,"fc2532363c67421eb4fa47cd45af9576?1783188620","Vixy","Pêcheuse experte",2,2,27],[3030,"b0820bdd94db41b597a5bafeb75e9e96?1783188683","Aladdin & Génie","Potes facétieux",6,3,51],[3031,"706270bcb64b4f08b79b4d50a9306ad4?1783188688","Peter Pan & La Fée Clochette","Amis rapides",10,3,91]];
+document.getElementById('cgrid').innerHTML = CARDS.map(([id, tok, name, ver, ink, rar, px], i) => {
+  const [hex, v] = tok.split('?');
+  return `<div class="cc"><div class="im"><img src="https://cards.lorcast.io/card/digital/normal/crd_${hex}.avif?${v}" alt="${name} – ${ver}">${i === 1 || i === 5 ? '<i class="fo"></i>' : ''}${i % 3 === 0 ? `<span class="q">×${i % 4 + 2}</span>` : ''}</div><div class="p"><span>${['C','U','R','SR','L','É','E','I','S'][rar]}</span><b>${(px / 100).toFixed(2).replace('.', ',')} €</b></div></div>`;
+}).join('');
+const dots = (el, n) => { document.getElementById(el).innerHTML = Array.from({ length: 20 }, (_, i) => `<i class="${i < n ? 'on' : ''}"></i>`).join(''); };
+dots('d1', 14); dots('d2', 17);
+const IC = 'home cards scan trade deck search plus minus close back chev more gear share qr star heart binder chart filter sort camera trash edit check copy link download upload moon sun sparkle lore mystery info help book grid list refresh offline inkwell'.split(' ');
+document.getElementById('icoGrid').innerHTML = IC.map(n => `<div><svg><use href="#i-${n}"/></svg>${n}</div>`).join('');
+</script>
+</body>
+</html>

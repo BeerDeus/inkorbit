@@ -1,0 +1,297 @@
+<!doctype html>
+<!-- Gabarit de la planche de DA : node tools/make-icons.mjs --sheet → docs/da/maquettes.html (autonome : thème et sprite intégrés) + docs/da/shots/*.png -->
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ink Orbit · Direction artistique</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT,WONK@9..144,500..800,100,1&family=Nunito+Sans:opsz,wght@6..12,400..800&display=swap">
+<style>
+/*THEME*/
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:color-mix(in srgb,var(--bg) 70%,#000);color:var(--ink);font-family:var(--font-body);font-size:15px;line-height:1.45;-webkit-font-smoothing:antialiased}
+svg.i{width:22px;height:22px;flex:none}
+.sheet{max-width:1380px;margin:0 auto;padding:56px 48px 80px;display:flex;flex-direction:column;gap:64px}
+.sec{display:flex;flex-direction:column;gap:22px}
+.sec>h2{font:700 28px/1.1 var(--font-display);font-variation-settings:'SOFT' 100,'WONK' 1;margin:0;color:var(--ink)}
+.sec>h2 small{display:block;font:600 12px/1 var(--font-body);letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:10px}
+.row{display:flex;flex-wrap:wrap;gap:22px;align-items:stretch}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);padding:26px;display:flex;flex-direction:column;gap:14px}
+.lab{font:700 11px/1 var(--font-body);letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3)}
+/* Héros */
+.hero{border-radius:28px;overflow:hidden;padding:56px;display:flex;align-items:center;gap:48px;min-height:360px;border:1px solid var(--line)}
+.hero .big{width:240px;height:240px;filter:drop-shadow(0 18px 40px rgba(120,80,255,.45))}
+.hero h1{margin:0;font:800 84px/.95 var(--font-display);font-variation-settings:'SOFT' 100,'WONK' 1;letter-spacing:-.02em}
+.hero h1 b{font-weight:800;background:linear-gradient(100deg,#fff1c9,#e9c47c 45%,#b07f2a);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{margin:14px 0 0;color:var(--ink-2);font-size:19px;max-width:30ch}
+.hero .tag{margin-top:22px;font-size:12.5px;color:var(--ink-3);max-width:60ch}
+.lockups{display:flex;gap:22px;flex-wrap:wrap}
+.lock{flex:1;min-width:300px;border-radius:var(--r-lg);padding:28px;display:flex;align-items:center;gap:14px;border:1px solid var(--line)}
+.lock .word{font:700 30px/1 var(--font-display);font-variation-settings:'SOFT' 100,'WONK' 1}
+.lock.paper{background:#f5eedf;color:#2a1b46;border-color:#d8c9a8}
+.sizes{display:flex;align-items:flex-end;gap:26px}
+.sizes figure{margin:0;display:flex;flex-direction:column;align-items:center;gap:8px;font-size:11px;color:var(--ink-3)}
+.appicon{border-radius:22%;box-shadow:var(--shadow-lg)}
+/* Palette */
+.sw{display:grid;grid-template-columns:repeat(auto-fill,minmax(122px,1fr));gap:12px;flex:1}
+.sw div{border-radius:14px;padding:58px 12px 10px;font-size:11.5px;line-height:1.3;border:1px solid rgba(255,255,255,.08);color:#fff}
+.sw div b{display:block;font-size:12.5px}
+.sw.paper div{color:#2a1b46;border-color:rgba(42,27,70,.12)}
+.inks{display:grid;grid-template-columns:repeat(6,1fr);gap:14px}
+.inkc{border-radius:var(--r-lg);padding:20px 14px;display:flex;flex-direction:column;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--line);position:relative;overflow:hidden}
+.inkc svg{width:56px;height:56px;filter:drop-shadow(0 6px 16px var(--g))}
+.inkc b{font:700 16px/1 var(--font-display)}
+.inkc span{font-size:11.5px;color:var(--ink-3)}
+.inkc::before{content:'';position:absolute;inset:auto -30% -55% -30%;height:90%;background:radial-gradient(closest-side,var(--g),transparent);opacity:.5}
+.rar{display:flex;flex-wrap:wrap;gap:10px}
+.rar span{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:99px;background:var(--surface-2);font-weight:700;font-size:13px}
+.rar i{width:10px;height:10px;border-radius:50%;background:var(--c);box-shadow:0 0 10px var(--c)}
+.type .t1{font:800 54px/1 var(--font-display);font-variation-settings:'SOFT' 100,'WONK' 1}
+.type .t2{font:600 26px/1.15 var(--font-display);font-variation-settings:'SOFT' 50,'WONK' 0}
+.type .t3{font-size:16px;color:var(--ink-2);max-width:62ch}
+.ico{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:10px}
+.ico div{display:flex;flex-direction:column;align-items:center;gap:8px;padding:14px 6px;border-radius:14px;background:var(--surface-2);font-size:10.5px;color:var(--ink-3)}
+.ico svg{width:26px;height:26px;color:var(--ink)}
+/* Téléphones */
+.phones{display:flex;gap:40px;justify-content:center;flex-wrap:wrap}
+.phone{width:390px;height:844px;border-radius:48px;overflow:hidden;position:relative;box-shadow:0 0 0 10px #0a0718,0 0 0 11px #3b3074,0 40px 80px -20px rgba(0,0,0,.8);display:flex;flex-direction:column;flex:none}
+.ph-cap{text-align:center;color:var(--ink-3);font-size:13px;margin-top:22px}
+.status{height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 28px;font:700 14px var(--font-body);flex:none}
+.bar{display:flex;align-items:center;justify-content:space-between;padding:6px 18px 10px;flex:none}
+.brand{display:flex;align-items:center;gap:9px}
+.brand svg{width:30px;height:30px}
+.brand span{font:700 21px/1 var(--font-display);font-variation-settings:'SOFT' 100,'WONK' 1}
+.ib{width:38px;height:38px;border-radius:13px;display:grid;place-items:center;background:color-mix(in srgb,var(--surface) 80%,transparent);border:1px solid var(--line);color:var(--ink-2)}
+.body{flex:1;overflow:hidden;padding:4px 18px 0;display:flex;flex-direction:column;gap:16px}
+.body>*{flex:none}
+.hello{font:600 15px var(--font-body);color:var(--ink-2)}
+.hello b{display:block;font:700 27px/1.1 var(--font-display);font-variation-settings:'SOFT' 100,'WONK' 1;color:var(--ink);margin-top:3px}
+.val{padding:20px 20px 14px}
+.val .lab{color:var(--gold)}
+.val .amt{font:800 40px/1 var(--font-display);margin-top:10px;letter-spacing:-.01em}
+.val .amt small{font-size:22px;color:var(--ink-2);font-weight:600}
+.val .chg{display:inline-flex;gap:5px;align-items:center;margin-top:8px;padding:4px 10px;border-radius:99px;background:var(--good-soft);color:var(--good);font-weight:800;font-size:12.5px}
+.val svg.curve{width:100%;height:70px;margin-top:6px;display:block}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.stats div{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);padding:12px}
+.stats b{display:block;font:800 21px/1 var(--font-display)}
+.stats span{font-size:11.5px;color:var(--ink-3)}
+.acts{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.acts div{display:flex;flex-direction:column;align-items:center;gap:7px;font-size:11.5px;font-weight:700;color:var(--ink-2);text-align:center}
+.acts i{width:56px;height:56px;border-radius:18px;display:grid;place-items:center;background:var(--surface);border:1px solid var(--line);color:var(--gold)}
+.acts i svg{width:26px;height:26px}
+.setc{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);padding:14px 16px;display:flex;gap:14px;align-items:center}
+.setc .n{font:700 17px var(--font-display)}
+.setc .s{font-size:12px;color:var(--ink-3)}
+.prog{height:8px;border-radius:99px;background:var(--surface-3);overflow:hidden;margin-top:8px}
+.prog i{display:block;height:100%;width:70%;background:linear-gradient(90deg,var(--amber),var(--amethyst),var(--sapphire));border-radius:inherit}
+.num14{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;font:800 18px var(--font-display);color:var(--gold);background:var(--gold-soft);border:1px solid color-mix(in srgb,var(--gold) 40%,transparent)}
+.nav{flex:none;height:84px;padding:8px 10px 22px;display:grid;grid-template-columns:repeat(5,1fr);align-items:center;background:color-mix(in srgb,var(--bg) 86%,transparent);border-top:1px solid var(--line);backdrop-filter:blur(14px)}
+.nav div{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:10.5px;font-weight:700;color:var(--ink-3)}
+.nav div.on{color:var(--gold)}
+.nav .scan i{width:58px;height:58px;margin-top:-30px;border-radius:50%;display:grid;place-items:center;color:#2a1b08;background:radial-gradient(circle at 35% 30%,#fff1c9,#e9c47c 45%,#b07f2a);box-shadow:0 0 0 5px var(--bg),0 10px 24px -6px rgba(233,196,124,.6)}
+.nav .scan i svg{width:28px;height:28px}
+/* Collection */
+.srch{display:flex;align-items:center;gap:10px;height:46px;padding:0 14px;border-radius:15px;background:var(--surface);border:1px solid var(--line);color:var(--ink-3)}
+.pips{display:flex;gap:8px;align-items:center}
+.pips span{width:36px;height:36px;border-radius:12px;display:grid;place-items:center;background:var(--surface);border:1px solid var(--line)}
+.pips span.on{border-color:var(--gold);background:var(--gold-soft)}
+.pips svg{width:22px;height:22px}
+.chips{display:flex;gap:8px}
+.chips span{height:32px;padding:0 12px;border-radius:99px;display:inline-flex;align-items:center;gap:6px;background:var(--surface-2);font-size:12.5px;font-weight:700;color:var(--ink-2)}
+.cgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px 10px}
+.cc{display:flex;flex-direction:column;gap:5px}
+.cc .im{position:relative;aspect-ratio:488/681;border-radius:8px;overflow:hidden;background:var(--surface-2);box-shadow:0 8px 18px -8px rgba(0,0,0,.7)}
+.cc img{width:100%;height:100%;object-fit:cover;display:block}
+.cc .q{position:absolute;top:5px;right:5px;min-width:24px;height:22px;padding:0 6px;border-radius:99px;background:rgba(18,13,46,.86);color:var(--gold);font:800 12px/22px var(--font-body);text-align:center;border:1px solid rgba(233,196,124,.5)}
+.cc .fo{position:absolute;inset:0;background:var(--foil);mix-blend-mode:color-dodge;opacity:.35}
+.cc .p{font-size:12px;font-weight:800;display:flex;justify-content:space-between;color:var(--ink-2)}
+.cc .p b{color:var(--ink)}
+.ctitle{display:flex;align-items:baseline;justify-content:space-between}
+.ctitle h3{margin:0;font:700 26px var(--font-display);font-variation-settings:'SOFT' 100,'WONK' 1}
+.ctitle span{font-size:12.5px;color:var(--ink-3)}
+/* Lore */
+.lore{flex:1;display:flex;flex-direction:column;position:relative}
+.half{flex:1;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden}
+.half.top{transform:rotate(180deg)}
+.half::before{content:'';position:absolute;inset:-20%;background:radial-gradient(50% 45% at 50% 55%,var(--c) 0%,transparent 70%);opacity:.38;filter:blur(10px)}
+.half .who{position:relative;font:700 13px var(--font-body);letter-spacing:.16em;text-transform:uppercase;color:var(--ink-2);display:flex;gap:8px;align-items:center}
+.half .who svg{width:20px;height:20px}
+.half .pts{position:relative;font:800 150px/.9 var(--font-display);font-variation-settings:'SOFT' 100,'WONK' 1;color:var(--ink);text-shadow:0 0 40px var(--c)}
+.half .goal{position:relative;font-size:13px;color:var(--ink-3);font-weight:700}
+.half .pm{position:absolute;top:50%;transform:translateY(-50%);width:60px;height:60px;border-radius:50%;display:grid;place-items:center;background:color-mix(in srgb,var(--ink) 6%,transparent);border:1px solid color-mix(in srgb,var(--ink) 16%,transparent);color:var(--ink)}
+.half .pm.l{left:22px}.half .pm.r{right:22px}
+.dots{position:relative;display:flex;gap:5px;margin:14px 0 6px}
+.dots i{width:9px;height:9px;transform:rotate(45deg);background:color-mix(in srgb,var(--ink) 16%,transparent);border-radius:2px}
+.dots i.on{background:var(--gold);box-shadow:0 0 8px var(--gold)}
+.mid{height:58px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 22px;background:var(--surface-3);border-block:1px solid color-mix(in srgb,var(--gold) 35%,transparent);position:relative;z-index:1}
+.mid svg.m{width:34px;height:34px}
+.mid .ib{width:40px;height:40px}
+.turn{font:700 13px var(--font-body);color:var(--gold);letter-spacing:.08em;text-transform:uppercase}
+.foot{font-size:12.5px;color:var(--ink-3);border-top:1px solid var(--line);padding-top:22px}
+body[data-s] .sec,body[data-s] .hero{display:none}
+body[data-s="identite"] [data-p="identite"],body[data-s="ecrans"] [data-p="ecrans"]{display:flex}
+body[data-s] .sheet{gap:44px;padding-block:44px}
+</style>
+</head>
+<body>
+<!--SPRITE-->
+<div class="sheet">
+
+<header class="hero da-sky da-ink" data-p="identite">
+  <svg class="big" viewBox="0 0 100 100"><use href="#i-logo"/></svg>
+  <div>
+    <div class="da-rule" style="width:320px;margin-bottom:18px"><span>Direction artistique</span></div>
+    <h1>Ink <b>Orbit</b></h1>
+    <p>Un livre de contes ouvert la nuit : ta collection en orbite autour d'une goutte d'encre.</p>
+    <p class="tag">Appli de fan gratuite et non officielle. Non publiée, approuvée ni soutenue par Disney ou Ravensburger. Logo, symboles et icônes : dessins originaux.</p>
+  </div>
+</header>
+
+<section class="sec" data-p="identite">
+  <h2><small>Logo</small>La goutte et son orbite</h2>
+  <div class="lockups">
+    <div class="lock da-sky"><svg style="width:64px;height:64px"><use href="#i-logo"/></svg><span class="word">Ink Orbit</span></div>
+    <div class="lock paper"><svg style="width:64px;height:64px"><use href="#i-logo"/></svg><span class="word">Ink Orbit</span></div>
+    <div class="panel" style="flex:1;min-width:300px"><span class="lab">Icône de l'appli · repère 24 et 16 px</span>
+      <div class="sizes">
+        <figure><img class="appicon" src="../../public/icons/icon-512.png" width="112" height="112" alt=""><span>512 / 192</span></figure>
+        <figure><img class="appicon" src="../../public/icons/maskable-512.png" width="72" height="72" alt="" style="border-radius:50%"><span>maskable</span></figure>
+        <figure><svg style="width:24px;height:24px"><use href="#i-mark"/></svg><span>24 px</span></figure>
+        <figure><svg style="width:16px;height:16px"><use href="#i-mark"/></svg><span>16 px</span></figure>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" data-p="identite">
+  <h2><small>Couleurs</small>Nuit (par défaut) et Parchemin</h2>
+  <div class="row">
+    <div class="sw">
+      <div style="background:#120d2e"><b>--bg</b>#120d2e</div><div style="background:#2a1756"><b>--bg-2</b>#2a1756</div>
+      <div style="background:#1d1745"><b>--surface</b>#1d1745</div><div style="background:#282056"><b>--surface-2</b>#282056</div>
+      <div style="background:#e9c47c;color:#2a1b08"><b>--gold</b>#e9c47c</div><div style="background:#b9a2ff;color:#150f33"><b>--accent</b>#b9a2ff</div>
+      <div style="background:#f5f0fd;color:#120d2e"><b>--ink</b>#f5f0fd</div><div style="background:#a99dce;color:#120d2e"><b>--ink-3</b>#a99dce</div>
+    </div>
+    <div class="sw paper">
+      <div style="background:#f5eedf"><b>--bg</b>#f5eedf</div><div style="background:#fffaf0"><b>--surface</b>#fffaf0</div>
+      <div style="background:#efe5d0"><b>--surface-2</b>#efe5d0</div><div style="background:#8a5d14;color:#fff"><b>--gold</b>#8a5d14</div>
+      <div style="background:#5a3db2;color:#fff"><b>--accent</b>#5a3db2</div><div style="background:#2a1b46;color:#fff"><b>--ink</b>#2a1b46</div>
+      <div style="background:#66567f;color:#fff"><b>--ink-3</b>#66567f</div><div style="background:#d8c9a8"><b>--line</b>#d8c9a8</div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" data-p="identite">
+  <h2><small>Les six encres</small>Nos symboles, nos teintes</h2>
+  <div class="inks">
+    <div class="inkc" style="--g:var(--amber)"><svg><use href="#ink-amber"/></svg><b>Ambre</b><span>Éclat de soleil · #f3aa3c</span></div>
+    <div class="inkc" style="--g:var(--amethyst)"><svg><use href="#ink-amethyst"/></svg><b>Améthyste</b><span>Croissant de lune · #a274ee</span></div>
+    <div class="inkc" style="--g:var(--emerald)"><svg><use href="#ink-emerald"/></svg><b>Émeraude</b><span>Feuille · #33b27a</span></div>
+    <div class="inkc" style="--g:var(--ruby)"><svg><use href="#ink-ruby"/></svg><b>Rubis</b><span>Flamme · #ea4c63</span></div>
+    <div class="inkc" style="--g:var(--sapphire)"><svg><use href="#ink-sapphire"/></svg><b>Saphir</b><span>Goutte et vague · #3f97e6</span></div>
+    <div class="inkc" style="--g:var(--steel)"><svg><use href="#ink-steel"/></svg><b>Acier</b><span>Bouclier · #a3afc0</span></div>
+  </div>
+  <div class="rar">
+    <span style="--c:var(--r-common)"><i></i>Commune</span><span style="--c:var(--r-uncommon)"><i></i>Inhabituelle</span><span style="--c:var(--r-rare)"><i></i>Rare</span>
+    <span style="--c:var(--r-super)"><i></i>Très rare</span><span style="--c:var(--r-legendary)"><i></i>Légendaire</span><span style="--c:var(--r-epic)"><i></i>Épique</span>
+    <span style="--c:var(--r-enchanted)"><i></i>Enchantée</span><span style="--c:var(--r-iconic)"><i></i>Iconique</span><span style="--c:var(--r-special)"><i></i>Spéciale</span>
+  </div>
+</section>
+
+<section class="sec" data-p="identite">
+  <h2><small>Typographie et icônes</small>Fraunces et Nunito Sans (OFL)</h2>
+  <div class="row" style="align-items:flex-start">
+    <div class="panel type" style="flex:1.2;min-width:420px">
+      <span class="lab">Titres · Fraunces, axes SOFT 100 et WONK</span>
+      <div class="t1">Il était une fois…</div>
+      <div class="t2">Premier Chapitre · 142 / 204 cartes</div>
+      <div class="da-rule"><i></i></div>
+      <span class="lab">Texte · Nunito Sans</span>
+      <div class="t3">Ajoute tes cartes au scan, suis la valeur de ta collection jour après jour et partage ta liste d'échange par un QR code. Chiffres : 1 284,50 € · 60 cartes · ×4.</div>
+    </div>
+    <div class="panel" style="flex:1;min-width:420px"><span class="lab">Icônes de l'interface (trait 1,8)</span><div class="ico" id="icoGrid"></div></div>
+  </div>
+</section>
+
+<section class="sec" data-p="ecrans">
+  <h2><small>Maquettes · téléphone 390 × 844</small>Accueil · Collection · Compteur de lore</h2>
+  <div class="phones">
+    <div>
+      <div class="phone da-sky">
+        <div class="status"><span>21:04</span><span>●●● 5G</span></div>
+        <div class="bar"><div class="brand"><svg><use href="#i-mark"/></svg><span>Ink Orbit</span></div><div class="ib"><svg class="i"><use href="#i-gear"/></svg></div></div>
+        <div class="body">
+          <div class="hello">Bonsoir, Martin<b>Ta collection brille ce soir</b></div>
+          <div class="da-frame val">
+            <span class="lab">Valeur de ma collection</span>
+            <div class="amt">1 284<small>,50 €</small></div>
+            <span class="chg">▲ 3,2 % · 7 jours</span>
+            <svg class="curve" viewBox="0 0 300 70" preserveAspectRatio="none"><defs><linearGradient id="cf" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--gold)" stop-opacity=".35"/><stop offset="1" style="stop-color:var(--gold)" stop-opacity="0"/></linearGradient></defs><path d="M0 52 C20 50 32 56 50 48 S82 40 100 42 132 30 150 34 182 22 200 26 232 16 250 18 282 8 300 6 V70 H0Z" fill="url(#cf)"/><path d="M0 52 C20 50 32 56 50 48 S82 40 100 42 132 30 150 34 182 22 200 26 232 16 250 18 282 8 300 6" fill="none" style="stroke:var(--gold)" stroke-width="2.4" stroke-linecap="round"/><circle cx="300" cy="6" r="4" fill="#fff1c9"/></svg>
+          </div>
+          <div class="stats"><div><b>1 342</b><span>cartes</span></div><div><b>812</b><span>différentes</span></div><div><b>37</b><span>à échanger</span></div></div>
+          <div class="acts">
+            <div><i><svg class="i"><use href="#i-scan"/></svg></i>Scanner</div><div><i><svg class="i"><use href="#i-plus"/></svg></i>Ajouter</div>
+            <div><i><svg class="i"><use href="#i-lore"/></svg></i>Lore</div><div><i><svg class="i"><use href="#i-mystery"/></svg></i>Carte mystère</div>
+          </div>
+          <div class="setc"><span class="num14">14</span><div style="flex:1"><div class="n">Hyperia City</div><div class="s">143 / 204 · masterset 58 %</div><div class="prog"><i></i></div></div><svg class="i" style="color:var(--ink-3)"><use href="#i-chev"/></svg></div>
+        </div>
+        <div class="nav"><div class="on"><svg class="i"><use href="#i-home"/></svg>Accueil</div><div><svg class="i"><use href="#i-cards"/></svg>Collection</div><div class="scan"><i><svg class="i"><use href="#i-scan"/></svg></i></div><div><svg class="i"><use href="#i-trade"/></svg>Échange</div><div><svg class="i"><use href="#i-deck"/></svg>Decks</div></div>
+      </div>
+      <div class="ph-cap">Accueil</div>
+    </div>
+
+    <div>
+      <div class="phone" style="background:var(--bg)">
+        <div class="status"><span>21:06</span><span>●●● 5G</span></div>
+        <div class="bar"><div class="ctitle" style="flex:1"><h3>Ma collection</h3><span>812 cartes · 1 284 €</span></div></div>
+        <div class="body" style="gap:12px">
+          <div class="srch"><svg class="i"><use href="#i-search"/></svg>Chercher un nom, un trait…</div>
+          <div class="pips"><span class="on"><svg><use href="#ink-amber"/></svg></span><span><svg><use href="#ink-amethyst"/></svg></span><span><svg><use href="#ink-emerald"/></svg></span><span class="on"><svg><use href="#ink-ruby"/></svg></span><span><svg><use href="#ink-sapphire"/></svg></span><span><svg><use href="#ink-steel"/></svg></span><span style="margin-left:auto"><svg class="i"><use href="#i-grid"/></svg></span></div>
+          <div class="chips"><span><svg class="i" style="width:16px;height:16px"><use href="#i-filter"/></svg>Rareté</span><span>Extension</span><span><svg class="i" style="width:16px;height:16px"><use href="#i-sort"/></svg>Prix</span></div>
+          <div class="cgrid" id="cgrid"></div>
+        </div>
+        <div class="nav"><div><svg class="i"><use href="#i-home"/></svg>Accueil</div><div class="on"><svg class="i"><use href="#i-cards"/></svg>Collection</div><div class="scan"><i><svg class="i"><use href="#i-scan"/></svg></i></div><div><svg class="i"><use href="#i-trade"/></svg>Échange</div><div><svg class="i"><use href="#i-deck"/></svg>Decks</div></div>
+      </div>
+      <div class="ph-cap">Collection · grille</div>
+    </div>
+
+    <div>
+      <div class="phone" style="background:var(--bg)">
+        <div class="lore">
+          <div class="half top da-sky" style="--c:var(--ruby)">
+            <div class="who"><svg><use href="#ink-ruby"/></svg>Adversaire</div>
+            <div class="dots" id="d1"></div>
+            <div class="pts">14</div><div class="goal">encore 6 pour gagner</div>
+            <span class="pm l"><svg class="i"><use href="#i-minus"/></svg></span><span class="pm r"><svg class="i"><use href="#i-plus"/></svg></span>
+          </div>
+          <div class="mid"><span class="ib"><svg class="i"><use href="#i-refresh"/></svg></span><span class="turn">Tour 7</span><svg class="m"><use href="#i-mark"/></svg><span class="turn">À toi</span><span class="ib"><svg class="i"><use href="#i-close"/></svg></span></div>
+          <div class="half da-sky" style="--c:var(--sapphire)">
+            <div class="who"><svg><use href="#ink-sapphire"/></svg>Martin</div>
+            <div class="dots" id="d2"></div>
+            <div class="pts">17</div><div class="goal">encore 3 pour gagner</div>
+            <span class="pm l"><svg class="i"><use href="#i-minus"/></svg></span><span class="pm r"><svg class="i"><use href="#i-plus"/></svg></span>
+          </div>
+        </div>
+      </div>
+      <div class="ph-cap">Compteur de lore · 1 contre 1</div>
+    </div>
+  </div>
+</section>
+
+<p class="foot" data-p="ecrans">Ink Orbit est une application de fan gratuite et non officielle. Elle n'est ni publiée, ni approuvée, ni soutenue par Disney ou Ravensburger. Images de cartes : Lorcast. Données : LorcanaJSON.</p>
+</div>
+<script>
+const q = new URLSearchParams(location.search), s = q.get('s'); if (s) document.body.dataset.s = s; if (q.get('t')) document.documentElement.dataset.theme = q.get('t');
+const CARDS = /*CARDS*/[];
+document.getElementById('cgrid').innerHTML = CARDS.map(([id, tok, name, ver, ink, rar, px], i) => {
+  const [hex, v] = tok.split('?');
+  return `<div class="cc"><div class="im"><img src="https://cards.lorcast.io/card/digital/normal/crd_${hex}.avif?${v}" alt="${name} – ${ver}">${i === 1 || i === 5 ? '<i class="fo"></i>' : ''}${i % 3 === 0 ? `<span class="q">×${i % 4 + 2}</span>` : ''}</div><div class="p"><span>${['C','U','R','SR','L','É','E','I','S'][rar]}</span><b>${(px / 100).toFixed(2).replace('.', ',')} €</b></div></div>`;
+}).join('');
+const dots = (el, n) => { document.getElementById(el).innerHTML = Array.from({ length: 20 }, (_, i) => `<i class="${i < n ? 'on' : ''}"></i>`).join(''); };
+dots('d1', 14); dots('d2', 17);
+const IC = 'home cards scan trade deck search plus minus close back chev more gear share qr star heart binder chart filter sort camera trash edit check copy link download upload moon sun sparkle lore mystery info help book grid list refresh offline inkwell'.split(' ');
+document.getElementById('icoGrid').innerHTML = IC.map(n => `<div><svg><use href="#i-${n}"/></svg>${n}</div>`).join('');
+</script>
+</body>
+</html>

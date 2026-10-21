@@ -1,0 +1,13 @@
+node_modules/
+.env
+.env.*
+*.log
+.DS_Store
+dist/
+tests/.tmp/
+tests/logs/
+tests/run-tests.out
+shots/
+.claude/
+.idea/
+*.iml

@@ -1,0 +1,57 @@
+/* Collection, extensions (masterset), échange, classeur. */
+.coll-head{display:flex;flex-direction:column;gap:4px}
+.coll-body,.trade-body{display:flex;flex-direction:column;gap:14px}
+.coll-tools{display:flex;flex-direction:column;gap:10px}
+.coll-tools .chip{padding:0 10px}
+.coll-actions{display:flex;gap:8px;align-items:center}
+.coll-actions .select{flex:1;min-width:0}
+.grid-cards .card-cap{text-align:center}
+.imp-bad{max-height:180px;overflow:auto;font-size:12px;background:var(--surface-2);padding:10px;border-radius:var(--r-sm);white-space:pre-wrap}
+
+.bars{display:flex;flex-direction:column;gap:8px}
+.bar-row{display:grid;grid-template-columns:minmax(96px,36%) 1fr auto;align-items:center;gap:10px;font-size:14px}
+.bar-l{display:flex;align-items:center;gap:6px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bar-l .ink-sym{width:16px;height:16px}
+.bar-t{height:10px;border-radius:99px;background:var(--surface-2);overflow:hidden}
+.bar-t i{display:block;height:100%;border-radius:inherit}
+
+/* Progression (anneau doré) */
+.ms-ring{width:44px;height:44px;transform:rotate(-90deg)}
+.ms-ring circle{fill:none;stroke-width:3.2}
+.ms-ring-bg{stroke:color-mix(in srgb,var(--ink) 14%,transparent)}
+.ms-ring-fg{stroke:var(--gold);stroke-linecap:round}
+.ms-ring-w{position:relative;flex:none;display:grid;place-items:center}
+.ms-ring-w b{position:absolute;font-size:12px}
+.ms-head{padding:16px;display:flex;flex-direction:column;gap:8px}
+.ms-big{display:flex;align-items:center;gap:14px}
+.ms-big .ms-ring{width:64px;height:64px}
+.ms-big b{font-family:var(--font-display);font-size:32px;display:block;line-height:1}
+.ms-big small{font-size:18px;color:var(--ink-3)}
+.ms-host{display:flex;flex-direction:column;gap:14px}
+
+.trade-tools{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
+.trade-tools .seg:not(.seg-icons){flex:1;min-width:220px}
+.seg-icons>button{flex:none;width:44px;padding:0;display:grid;place-items:center}
+.seg-icons svg.i{width:20px;height:20px}
+.trade-list .row .card-thumb{width:40px}
+.tr-qr{display:grid;place-items:center;padding:8px}
+.tr-qr svg{width:min(240px,70vw);height:auto;border-radius:12px;background:#fff;padding:6px}
+.pub-host{display:flex;flex-direction:column;gap:14px}
+.pub-match{padding:14px 16px}
+
+/* Classeur : pages de 3 × 3, défilement horizontal aimanté */
+.binder{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:14px;padding-bottom:6px;scrollbar-width:thin;overscroll-behavior-x:contain}
+.bnd-page{flex:0 0 100%;scroll-snap-align:center;display:flex;flex-direction:column;gap:6px}
+.bnd-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:12px;border-radius:var(--r-lg);background:linear-gradient(160deg,var(--surface-3),var(--surface));border:1px solid var(--line);box-shadow:inset 0 0 0 4px var(--surface-2),var(--shadow)}
+.bnd-pocket{aspect-ratio:63/88;border-radius:6px;background:var(--surface-2);box-shadow:inset 0 1px 0 rgba(255,255,255,.06),inset 0 -8px 14px -10px rgba(0,0,0,.4);padding:3px}
+.bnd-pocket .card-thumb{box-shadow:none}
+.bnd-pocket.is-foil{background:var(--foil)}
+.bnd-pocket.is-empty{opacity:.5}
+.bnd-no{text-align:center}
+
+@media (min-width:1024px){
+  .coll-tools{flex-direction:row;flex-wrap:wrap;align-items:center}
+  .coll-tools .search{flex:1;min-width:260px}
+  .coll-actions .select{flex:none;width:170px}
+  .bnd-page{flex-basis:calc(50% - 7px)}
+}

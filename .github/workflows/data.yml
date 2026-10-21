@@ -1,0 +1,34 @@
+# Données du jour : catalogue (LorcanaJSON + images Lorcast) et prix (Cardmarket + TCGplayer via tcgcsv) → public/data/, commités s'ils ont changé.
+# Les prix ratés (garde-fou de gen-prices.mjs : trop peu de cartes) laissent le fichier de la veille ; le catalogue raté arrête tout.
+name: Données
+on:
+  schedule:
+    - cron: '0 4 * * *'      # 04:00 UTC : après le guide Cardmarket (~01:00 UTC) et tcgcsv (~20:00 UTC)
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: data
+  cancel-in-progress: false
+jobs:
+  data:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Catalogue
+        run: node gen-cards.mjs
+      - name: Prix
+        continue-on-error: true
+        run: node gen-prices.mjs
+      - name: Commit
+        run: |
+          git add public/data
+          if git diff --cached --quiet; then echo "rien de nouveau"; exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Données du $(date -u +%F)"
+          git push

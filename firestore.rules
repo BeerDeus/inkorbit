@@ -1,0 +1,19 @@
+rules_version = '2';
+// Ink Orbit : un document de synchro par compte (src/cloud.js), lisible et modifiable par son seul propriétaire. Tout le reste est fermé.
+// Publier : console Firebase › Firestore › Règles (coller ce fichier), ou « firebase deploy --only firestore:rules ». Testé par tests/rules-test.mjs.
+service cloud.firestore {
+  match /databases/{db}/documents {
+    match /users/{uid}/data/main {
+      function mine() { return request.auth != null && request.auth.uid == uid; }
+      allow read, delete: if mine();
+      allow create, update: if mine()
+        && request.resource.data.keys().hasOnly(['v', 'coll', 'wants', 'hold', 'decks', 'prefs', 'at', 'dev'])
+        && request.resource.data.v == 1
+        && request.resource.data.at is int
+        && request.resource.data.coll is map && request.resource.data.wants is map && request.resource.data.hold is map
+        && request.resource.data.decks is list && request.resource.data.decks.size() <= 500
+        && request.resource.data.prefs is map
+        && request.resource.data.dev is string && request.resource.data.dev.size() <= 20;
+    }
+  }
+}

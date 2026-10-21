@@ -1,0 +1,63 @@
+/* ── Compteur de lore (lore.js) : plein écran, chiffres géants, deux moitiés face à face ── */
+.lore-screen .screen-body{overflow:hidden;display:flex;flex-direction:column}
+.lore-screen .screen-in{max-width:none;width:100%;flex:1;min-height:0;padding:0;gap:0}
+.lore-board{flex:1;min-height:0;display:grid;grid-template-rows:1fr 1fr;gap:6px;padding:6px max(6px,env(safe-area-inset-right,0px)) 0 max(6px,env(safe-area-inset-left,0px));user-select:none;-webkit-user-select:none;touch-action:manipulation}
+.lore-board[data-n="3"],.lore-board[data-n="4"]{grid-template-columns:1fr 1fr}
+.lore-board[data-n="3"] .lore-p:last-child{grid-column:1 / -1}
+.lore-p{--c:var(--amber);position:relative;min-height:0;border-radius:var(--r-lg);overflow:hidden;isolation:isolate;
+  background:radial-gradient(90% 80% at 50% 50%,color-mix(in srgb,var(--c) 30%,var(--surface)) 0%,var(--surface) 75%);border:1px solid color-mix(in srgb,var(--c) 40%,var(--line));transition:box-shadow .3s,border-color .3s}
+.lore-p.flip{transform:rotate(180deg)}
+.lore-p.is-cur{border-color:var(--gold);box-shadow:inset 0 0 0 1px var(--gold),0 0 24px -6px var(--gold)}
+.lore-in{position:absolute;inset:0}
+.lore-zone{position:absolute;top:0;bottom:0;width:50%;display:flex;align-items:center;padding:0 6%;color:color-mix(in srgb,var(--ink) 45%,transparent);cursor:pointer;transition:background .15s}
+.lore-zone[data-d="-1"]{left:0;justify-content:flex-start}.lore-zone[data-d="1"]{right:0;justify-content:flex-end}
+.lore-zone.on{background:color-mix(in srgb,var(--c) 22%,transparent)}
+.lore-zone svg.i{width:30px;height:30px}
+.lore-mid{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);max-width:76%;pointer-events:none;display:flex;flex-direction:column;align-items:center;gap:2px;text-align:center}
+.lore-name{display:flex;align-items:center;gap:6px;font-weight:800;font-size:15px;max-width:100%}
+.lore-name span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lore-name .ink-sym{width:20px;height:20px;flex:none;color:var(--c)}
+.lore-n{font-family:var(--font-display);font-variation-settings:'SOFT' 100,'WONK' 1;font-weight:800;font-size:clamp(84px,24vmin,200px);line-height:.95;font-variant-numeric:tabular-nums;color:var(--ink);text-shadow:0 2px 20px color-mix(in srgb,var(--c) 45%,transparent)}
+.lore-board[data-n="3"] .lore-n,.lore-board[data-n="4"] .lore-n{font-size:clamp(64px,17vmin,150px)}
+.lore-goal{font-size:12.5px;color:var(--ink-3);font-weight:700}
+.lore-track{width:min(150px,100%);height:5px;border-radius:99px;background:var(--surface-3);overflow:hidden;margin-top:6px}
+.lore-track i{display:block;height:100%;background:linear-gradient(90deg,var(--c),var(--gold));border-radius:inherit;transition:width .3s var(--out)}
+.lore-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.lore-sr:focus-visible{width:auto;height:auto;clip:auto;left:8px;bottom:8px;padding:6px 10px;border-radius:var(--r-sm);background:var(--surface);z-index:2}
+.lore-sr[data-sr="1"]:focus-visible{left:auto;right:8px}
+.lore-bar{flex:none;display:flex;align-items:center;justify-content:center;gap:10px;padding:8px 12px calc(8px + env(safe-area-inset-bottom,0px))}
+.lore-turn{flex:1;max-width:320px;gap:8px}
+.lore-turn span{color:var(--ink-3);font-weight:700}
+.lore-turn b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.btn-icon[disabled]{opacity:.4;pointer-events:none}
+svg.i.flip{transform:scaleX(-1)}
+
+/* Victoire : étincelles dorées */
+.lore-win{position:absolute;inset:0;z-index:3;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;background:color-mix(in srgb,var(--bg) 62%,transparent);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);animation:fade .3s ease both}
+.lore-win-t{font-family:var(--font-display);font-variation-settings:'SOFT' 100,'WONK' 1;font-weight:800;font-size:clamp(26px,7vw,40px);color:var(--gold);text-align:center;padding:0 12px}
+.lore-sparks{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.lore-sparks i{position:absolute;left:50%;top:50%;width:14px;height:14px;background:var(--gold);clip-path:polygon(50% 0,61% 39%,100% 50%,61% 61%,50% 100%,39% 61%,0 50%,39% 39%);opacity:0;animation:loreSpark 1.6s var(--out) infinite}
+.lore-sparks i:nth-child(odd){background:var(--gold-2);width:9px;height:9px}
+.lore-sparks i:nth-child(1){--x:-140px;--y:-80px;animation-delay:0s}.lore-sparks i:nth-child(2){--x:120px;--y:-90px;animation-delay:.1s}
+.lore-sparks i:nth-child(3){--x:-90px;--y:70px;animation-delay:.2s}.lore-sparks i:nth-child(4){--x:150px;--y:60px;animation-delay:.3s}
+.lore-sparks i:nth-child(5){--x:0;--y:-120px;animation-delay:.4s}.lore-sparks i:nth-child(6){--x:-170px;--y:10px;animation-delay:.5s}
+.lore-sparks i:nth-child(7){--x:170px;--y:-10px;animation-delay:.6s}.lore-sparks i:nth-child(8){--x:40px;--y:110px;animation-delay:.7s}
+.lore-sparks i:nth-child(9){--x:-50px;--y:-140px;animation-delay:.8s}.lore-sparks i:nth-child(10){--x:80px;--y:130px;animation-delay:.9s}
+.lore-sparks i:nth-child(11){--x:-120px;--y:120px;animation-delay:1s}.lore-sparks i:nth-child(12){--x:110px;--y:-140px;animation-delay:1.1s}
+.lore-sparks i:nth-child(13){--x:-30px;--y:90px;animation-delay:1.2s}.lore-sparks i:nth-child(14){--x:200px;--y:100px;animation-delay:1.3s}
+@keyframes loreSpark{0%{opacity:0;transform:translate(-50%,-50%) scale(.2) rotate(0)}25%{opacity:1}100%{opacity:0;transform:translate(calc(-50% + var(--x)),calc(-50% + var(--y))) scale(1.1) rotate(160deg)}}
+@media (prefers-reduced-motion: reduce){.lore-sparks i{animation:none;opacity:.8;transform:translate(calc(-50% + var(--x)),calc(-50% + var(--y)))}.lore-track i{transition:none}}
+
+/* Réglages de la partie */
+.lore-set-players{display:flex;flex-direction:column;gap:14px}
+.lore-inks{display:flex;gap:6px;flex-wrap:wrap}
+.lore-ink{--c:var(--amber);width:44px;height:44px;border-radius:50%;display:grid;place-items:center;border:2px solid transparent;background:var(--surface-2)}
+.lore-ink .ink-sym{width:24px;height:24px;color:var(--c)}
+.lore-ink[aria-pressed="true"]{border-color:var(--c);background:color-mix(in srgb,var(--c) 20%,var(--surface-2))}
+
+@media (min-width:1024px){
+  .lore-board{padding:10px 10px 0}
+  .lore-board[data-n="2"]{grid-template-rows:1fr;grid-template-columns:1fr 1fr}
+  .lore-p.flip{transform:none}      /* sur ordinateur, pas de table : personne n'est en face */
+  .lore-zone:hover{background:color-mix(in srgb,var(--c) 12%,transparent)}
+}

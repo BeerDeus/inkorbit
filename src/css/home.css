@@ -1,0 +1,48 @@
+/* Accueil (home.js) et Réglages / À propos (settings.js). */
+.hm-orb{padding:22px 20px 18px;display:flex;flex-direction:column;gap:6px;overflow:hidden}
+.hm-kicker{font:700 11.5px/1 var(--font-body);letter-spacing:.18em;text-transform:uppercase;color:var(--gold)}
+.hm-val{font-family:var(--font-display);font-variation-settings:'SOFT' 100,'WONK' 1;font-weight:700;font-size:clamp(38px,11vw,52px);line-height:1.05;letter-spacing:-.02em}
+.hm-sub{color:var(--ink-2)}
+.hm-curve{height:72px;margin:6px -4px 4px}
+.val-curve{width:100%;height:100%;display:block}
+.hm-orb .btn-row{margin-top:4px}
+.hm-install{flex-direction:row;align-items:center;gap:12px}
+.hm-install>svg.i{color:var(--gold);width:28px;height:28px}
+.hm-install>div{flex:1;min-width:0}
+.hm-tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.hm-tile{display:flex;flex-direction:column;align-items:flex-start;gap:4px;min-height:104px;padding:14px;border-radius:var(--r-lg);background:var(--surface);border:1px solid var(--line);text-align:left;box-shadow:var(--shadow);transition:transform .15s}
+.hm-tile:active{transform:scale(.97)}
+.hm-tile svg.i{width:26px;height:26px;color:var(--gold);margin-bottom:auto}
+.hm-tile-t{font-family:var(--font-display);font-weight:700;font-size:16.5px;line-height:1.15}
+.hm-tile-s{font-size:12.5px;color:var(--ink-3)}
+.hm-tile-gold{background:linear-gradient(160deg,var(--gold-soft),var(--surface) 70%);border-color:color-mix(in srgb,var(--gold) 45%,var(--line))}
+.hm-tile-new{position:relative}
+.hm-tile-new::after{content:'';position:absolute;top:14px;right:14px;width:9px;height:9px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 4px var(--gold-soft)}
+.hm-sets{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.hm-set{display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 8px;border-radius:var(--r-md);background:var(--surface-2);text-align:center;min-height:44px}
+.hm-set .ms-ring{width:52px;height:52px}
+.hm-set-n{font-weight:700;font-size:13.5px;line-height:1.2}
+
+.settings-sheet .seg>button{font-size:13px;padding:0 8px}
+.about-logo{display:grid;place-items:center;padding:6px 0}
+.about-mark{width:120px;height:120px}
+.about-legal p{font-size:13.5px;line-height:1.5;color:var(--ink-2)}
+.about-credits{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px}
+
+@media (min-width:1024px){
+  .hm-orb{padding:32px 32px 24px}
+  .hm-curve{height:110px}
+  .hm-tiles{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .hm-tile:hover{transform:translateY(-2px);border-color:var(--gold)}
+  .hm-sets{grid-template-columns:repeat(4,minmax(0,1fr))}
+}
+
+/* Compte (cloud.js) : bloc des Réglages, feuille de connexion */
+.acct{display:flex;align-items:center;gap:12px;padding:14px;border-radius:var(--r-md);background:var(--surface-2);border:1px solid var(--line)}
+.acct-main{flex:1;min-width:0;display:flex;flex-direction:column}
+.acct-main .small{overflow:hidden;text-overflow:ellipsis}
+.btn-google{background:#fff;color:#1f1f1f;border-color:#dadce0}
+.btn-google svg.i{width:20px;height:20px}
+.signin-form{display:flex;flex-direction:column;gap:12px}
+.signin-form [data-err]:empty{display:none}
+.signin-alt{justify-content:center}

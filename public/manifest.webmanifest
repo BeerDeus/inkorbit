@@ -1,0 +1,28 @@
+{
+  "id": "./",
+  "name": "Ink Orbit",
+  "short_name": "Ink Orbit",
+  "description": "Ta collection de cartes Lorcana, tes decks et leur valeur. Appli de fan gratuite et non officielle.",
+  "lang": "fr",
+  "dir": "ltr",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
+  "orientation": "any",
+  "background_color": "#140f2e",
+  "theme_color": "#140f2e",
+  "categories": ["games", "utilities"],
+  "prefer_related_applications": false,
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
+    { "src": "icons/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ],
+  "shortcuts": [
+    { "name": "Scanner", "short_name": "Scanner", "description": "Ajouter des cartes avec l'appareil photo", "url": "./?open=scan", "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" }] },
+    { "name": "Ma collection", "short_name": "Collection", "description": "Tes cartes et leur valeur", "url": "./?open=coll", "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" }] },
+    { "name": "Échange", "short_name": "Échange", "description": "Tes doublons et les cartes que tu cherches", "url": "./?open=trade", "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" }] }
+  ]
+}

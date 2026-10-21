@@ -1,0 +1,31 @@
+# Build à jour, puis tous les tests de tests/run-tests.sh. Un push qui ne touche que les données du jour ou des .md ne relance rien.
+name: Tests
+on:
+  push:
+    paths-ignore: ['public/data/**', '**.md']
+  pull_request:
+  workflow_dispatch:
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Build à jour
+        run: |
+          node build.mjs
+          git diff --exit-code public/index.html || { echo "public/index.html n'est pas à jour : lance node build.mjs et commite-le"; exit 1; }
+      - name: Dépendances des tests
+        run: cd tests && npm ci
+      - name: Tests
+        env:
+          CHROMIUM: /usr/bin/google-chrome      # Chrome préinstallé sur les machines ubuntu de GitHub
+        run: bash tests/run-tests.sh
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: logs-tests
+          path: tests/logs/
